@@ -1,0 +1,42 @@
+body {
+    padding-top: 84px;
+}
+
+.jumbotron {
+    background-color: #C60E2A;
+}
+
+.small-img {
+    width: 180px;
+    height: auto;
+}
+
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-signin .input-group input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin .input-group input[type="password"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.form-floating input:focus {
+    border-color: #C60E2A !important;
+    box-shadow: 0 0 8px rgba(198, 14, 42, 0.5);
+}
+
+.form-registration input {
+    border-radius: 0;
+    margin-bottom: -1px;
+}
+
+.custom-border {
+    border: 4px solid #C60E2A;
+    border-right: 2px solid #C60E2A;
+}
