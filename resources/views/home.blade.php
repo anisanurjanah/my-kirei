@@ -2,9 +2,6 @@
 
 @section('container')
 
-    {{-- @include('partials.navbar')
-    @include('partials.jumbotron') --}}
-
     <section id="about" class="my-4">
         <h1>Tentang Kami</h1>
     </section>

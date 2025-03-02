@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminMenuController;
+use App\Http\Controllers\AdminOutletController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 
@@ -15,3 +17,9 @@ Route::get('/dashboard', function() {
     return view('dashboard.index');
 });
 // ->middleware('auth');
+
+Route::get('/dashboard/menus', [AdminMenuController::class, 'index']);
+// Route::get('/menus/{menu:slug}', [AdminMenuController::class, 'show']);
+
+Route::get('/dashboard/outlets', [AdminOutletController::class, 'index']);
+

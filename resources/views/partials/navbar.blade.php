@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md fixed-top">
+<nav class="navbar navbar-expand-md fixed-top bg-light">
     <div class="container-fluid my-2">
         <a class="navbar-brand ms-3" href="/">
             <h1 class="h3 fw-bold text-center">My<span style="color: #C60E2A">Kirei</span></h1>
@@ -18,16 +18,18 @@
                     <a class="nav-link fw-bold" href="#menu">Menu</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link fw-bold href="#location">Lokasi</a>
+                    <a class="nav-link fw-bold" href="#location">Lokasi</a>
                 </li>
                 <li class="nav-item mx-4">
                     <a class="nav-link fw-bold" href="#contact">Kontak</a>
                 </li>
             </ul>
 
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link me-3 fw-bold" href="/login"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+            <hr class="my-2 my-md-none">
+
+            <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+                <li class="nav-item mx-4">
+                    <a class="nav-link me-2 fw-bold" href="/login">Login</a>
                 </li>
 
                 {{-- @auth

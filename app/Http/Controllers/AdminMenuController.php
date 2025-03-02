@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class AdminOutletController extends Controller
+class AdminMenuController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dashboard.outlets.index');
-            // 'posts' => Post::where('user_id', auth()->user()->id)->get()
-        // ]);
+        return view('dashboard.menus.index');
     }
 
     /**
