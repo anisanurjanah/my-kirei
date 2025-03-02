@@ -2,11 +2,11 @@
 
 @section('container')
 
-    <div class="row justify-content-center">
+    <div class="row signin">
 
         <div class="col-md-4 custom-border">
-            <div class="d-flex justify-content-center align-items-center" style="height: 360px; overflow: hidden;">
-                <img src="/img/logo-kirei-sum.jpg" class="img-fluid w-100 h-auto" alt="Logo Kirei Sum">
+            <div class="d-flex justify-content-center align-items-center" style="height: 335px; overflow: hidden;">
+                <img src="/img/logo-kirei-sum.jpg" class="img-fluid h-100" alt="Logo Kirei Sum">
             </div>
         </div>
 

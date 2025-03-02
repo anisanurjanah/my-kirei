@@ -1,31 +1,33 @@
-<nav class="navbar navbar-expand-md fixed-top bg-light">
+<nav class="navbar navbar-expand-md fixed-top">
     <div class="container-fluid my-2">
-        <a class="navbar-brand ms-3" href="#">My Kirei</a>
+        <a class="navbar-brand ms-3" href="/">
+            <h1 class="h3 fw-bold text-center">My<span style="color: #C60E2A">Kirei</span></h1>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mx-auto mb-2 mb-md-0">
                 <li class="nav-item mx-4">
-                    <a class="nav-link" href="/">Beranda</a>
+                    <a class="nav-link fw-bold" href="/">Beranda</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link" href="#about">Tentang</a>
+                    <a class="nav-link fw-bold" href="#about">Tentang</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link" href="#menu">Menu</a>
+                    <a class="nav-link fw-bold" href="#menu">Menu</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link" href="#location">Lokasi</a>
+                    <a class="nav-link fw-bold href="#location">Lokasi</a>
                 </li>
                 <li class="nav-item mx-4">
-                    <a class="nav-link" href="#contact">Kontak</a>
+                    <a class="nav-link fw-bold" href="#contact">Kontak</a>
                 </li>
             </ul>
 
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link me-3" href="/login"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+                    <a class="nav-link me-3 fw-bold" href="/login"><i class="bi bi-box-arrow-in-right"></i> Login</a>
                 </li>
 
                 {{-- @auth
