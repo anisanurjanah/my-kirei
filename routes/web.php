@@ -1,15 +1,15 @@
 <?php
 
+use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminOutletController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
 
 Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
+Route::get('/dashboard/login', [AdminLoginController::class, 'index'])->name('login')->middleware('guest');
 // Route::post('/login', [LoginController::class, 'authenticate']);
 // Route::post('/logout', [LoginController::class, 'logout']);
 
@@ -18,8 +18,4 @@ Route::get('/dashboard', function() {
 });
 // ->middleware('auth');
 
-Route::get('/dashboard/menus', [AdminMenuController::class, 'index']);
-// Route::get('/menus/{menu:slug}', [AdminMenuController::class, 'show']);
-
-Route::get('/dashboard/outlets', [AdminOutletController::class, 'index']);
-
+Route::resource('/dashboard/menus', AdminMenuController::class);

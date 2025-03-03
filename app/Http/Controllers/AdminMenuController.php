@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
 use Illuminate\Http\Request;
 
 class AdminMenuController extends Controller
@@ -11,7 +12,9 @@ class AdminMenuController extends Controller
      */
     public function index()
     {
-        return view('dashboard.menus.index');
+        return view('dashboard.menus.index', [
+            'menus' => Menu::all()
+        ]);
     }
 
     /**
@@ -33,9 +36,11 @@ class AdminMenuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Menu $menu)
     {
-        //
+        // return view('dashboard.menus.show', [
+        //     'menu' => $menu
+        // ]);
     }
 
     /**
