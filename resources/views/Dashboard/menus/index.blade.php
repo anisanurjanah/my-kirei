@@ -18,12 +18,21 @@
             </nav>
         </div>
 
-        <button type="button" class="btn btn-danger ms-auto my-3">
-            <i class="bi bi-plus-circle-fill fs-6 me-2"></i>Tambah Menu
-        </button>
+        <a href="/dashboard/menus/create" class="btn btn-danger ms-auto my-3"><i class="bi bi-plus-circle-fill fs-6 me-2"></i>Tambah Menu</a>
     </div>
 
     <div class="row py-3">
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            <div class="card shadow border-0 w-100 h-100 ">
+                <div class="card-body d-flex align-items-start">
+                    <i class="bi bi-fire text-danger h3 mx-2 mb-auto"></i>
+                    <div class="ms-4 border-start ps-3">
+                        <h5 class="card-title fw-bold m-0">Siu Mai Ayam</h5>
+                        <small class="card-text m-0">Paling Banyak Diminati</small>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-sm-3 mb-3 mb-sm-0">
             <div class="card shadow border-0 w-100 h-100 ">
                 <div class="card-body d-flex align-items-start">
@@ -46,7 +55,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-3 mb-3 mb-sm-0">
+        <div class="col-sm-3">
             <div class="card shadow border-0 w-100 h-100 ">
                 <div class="card-body d-flex align-items-start">
                     <i class="bi bi-exclamation-diamond-fill text-warning h3 mx-2 mb-auto"></i>
@@ -57,68 +66,97 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-3">
-            <div class="card shadow border-0 w-100 h-100 ">
-                <div class="card-body d-flex align-items-start">
-                    <i class="bi bi-fire text-danger h3 mx-2 mb-auto"></i>
-                    <div class="ms-4 border-start ps-3">
-                        <h5 class="card-title fw-bold m-0">Siu Mai Ayam</h5>
-                        <small class="card-text m-0">Paling Banyak Diminati</small>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-top-2 p-3 bg-white">
                 <div class="input-group w-25">
                     <input type="text" class="form-control" placeholder="Cari menu.." style="font-size: 12px;">
-                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" style="font-size: 12px;">Cari</button>
+                    <button class="btn btn-outline-secondary" type="button" id="search" name="search" style="font-size: 12px;">Cari</button>
                 </div>
-                <select class="form-select w-25 ms-auto" style="font-size: 12px;">
-                    <option selected>Outlet:</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </select>
+                <select class="form-select w-25 ms-auto" name="outlet_id" style="font-size: 12px;">
+                    @foreach ($outlets as $outlet)
+                        <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                            Outlet: {{ $outlet->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-            <div class="table-responsive">
-                <table class="table">
-                  <thead class="table-light">
-                    <tr>
-                        <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up"></i></th>
-                        <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up"></th>
-                        <th scope="col" class="text-secondary" style="font-size: 12px;">DESKRIPSI <i class="bi bi-arrow-down-up"></th>
-                        <th scope="col" class="text-secondary" style="font-size: 12px;">HARGA <i class="bi bi-arrow-down-up"></th>
-                        {{-- <th scope="col" class="text-secondary" style="font-size: 12px;">GAMBAR <i class="bi bi-arrow-down-up"></th> --}}
-                        <th scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @if ($menus->isNotEmpty())
-                        @foreach ($menus as $menu)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td><a href="/dashboard/menus/{{ $menu->slug }}" class="text-decoration-none text-black">{{ $menu->name }}</td>
-                                <td><a href="/dashboard/menus/{{ $menu->slug }}" class="text-decoration-none text-black">{{ Str::limit($menu->description, 20, '...') }}</td>
-                                <td><a href="/dashboard/menus/{{ $menu->slug }}" class="text-decoration-none text-black">{{ $menu->price }}</td>
-                                {{-- <td><a href="/dashboard/menus/{{ $menu->slug }}" class="text-decoration-none text-black">{{ $menu->image }}</td> --}}
-                                <td><a href="/dashboard/menus/{{ $menu->slug }}"><i class="bi bi-arrow-right-circle-fill text-danger"></i></td>
-                            </tr>
-                        @endforeach
-                    @else
+
+            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
+                <table id="table" class="table">
+                    <thead class="table-light">
                         <tr>
-                            <td colspan="5" class="text-center">No data available.</td>
+                            <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                            <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                            {{-- <th scope="col" class="text-secondary" style="font-size: 12px;">DESKRIPSI <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th> --}}
+                            <th scope="col" class="text-secondary" style="font-size: 12px;">HARGA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                            <th scope="col" class="text-secondary" style="font-size: 12px;">POTONGAN HARGA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                            <th scope="col" class="text-secondary w-25" style="font-size: 12px;">STOK <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                            <th scope="col"></th>
                         </tr>
-                    @endif
-                  </tbody>
+                    </thead>
+                    <tbody>
+                        @if ($menus->isNotEmpty())
+                            @foreach ($menus as $menu)
+                                <tr>
+                                    <td>{{ ($menus->currentPage() - 1) * $menus->perPage() + $loop->iteration }}</td>
+                                    <td>{{ $menu->name }}</td>
+                                    {{-- <td>{{ Str::limit($menu->description, 20, '...') }}</td> --}}
+                                    <td>{{ $menu->price }}</td>
+                                    <td>{{ $menu->price }}</td>
+                                    <td class="w-25">
+                                        <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-success" style="width: 100%">100%</div>
+                                        </div>
+                                    </td>
+                                    {{-- <td class="text-end" style="width: 64px">
+                                        <a href="/dashboard/menus/{{ $menu->slug }}"><i class="bi bi-arrow-right-circle-fill text-danger"></i></a>
+                                    </td> --}}
+                                    <td class="text-center" style="width: 64px">
+                                        <div class="dropdown mx-auto">
+                                            <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots text-black"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item" href="/dashboard/menus/{{ $menu->slug }}">
+                                                        <i class="bi bi-eye mx-2" style="font-size: 16px"></i>Lihat
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#">
+                                                        <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#">
+                                                        <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="7" class="text-center">No data available.</td>
+                            </tr>
+                        @endif
+                    </tbody>
                 </table>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        Menampilkan {{ $menus->firstItem() }} sampai {{ $menus->lastItem() }} dari {{ $menus->total() }} data
+                    </small>
+                    {{ $menus->links('vendor.custom-pagination') }}
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4">
+        {{-- <div class="col-md-4">
             <div class="table-responsive small">
                 <table class="table table-striped table-sm">
                     <thead>
@@ -169,9 +207,7 @@
                     </tbody>
                   </table>
             </div>
-        </div>
+        </div> --}}
     </div>
-
-
 
 @endsection
