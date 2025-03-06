@@ -21,3 +21,5 @@ Route::get('/dashboard', function() {
 Route::get('/dashboard/menus/checkSlug', [AdminMenuController::class, 'checkSlug']);
 // ->middleware('auth');
 Route::resource('/dashboard/menus', AdminMenuController::class);
+
+Route::resource('/dashboard/outlets', AdminOutletController::class);

@@ -42,8 +42,7 @@ class AdminMenuController extends Controller
     public function show(Menu $menu)
     {
         return view('dashboard.menus.show', [
-            'menu' => $menu,
-            'outlets' => Outlet::all()
+            'menu' => $menu
         ]);
     }
 

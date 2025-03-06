@@ -70,7 +70,7 @@
                                         <div class="accordion-body">
                                             <div class="card border-0 w-100 mb-3">
                                                 <p class="card-text mb-2 mb-md-0">
-                                                    <small class="text-body-secondary">Ditambahkan pada {{ \Carbon\Carbon::parse($menu->created_at)->locale('id')->translatedFormat('d F Y') }}</small>
+                                                    <small class="text-body-secondary">Ditambahkan pada {{ Carbon::parse($menu->created_at)->locale('id')->translatedFormat('d F Y') }}</small>
                                                 </p>
                                                 <div class="row g-0">
                                                     <div class="col-md-4 d-flex align-items-center justify-content-center">

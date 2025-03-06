@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
+use App\Models\Outlet;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class AdminOutletController extends Controller
 {
@@ -11,9 +15,9 @@ class AdminOutletController extends Controller
      */
     public function index()
     {
-        return view('dashboard.outlets.index');
-            // 'posts' => Post::where('user_id', auth()->user()->id)->get()
-        // ]);
+        return view('dashboard.outlets.index', [
+            'outlets' => Outlet::paginate(10)->withQueryString()
+        ]);
     }
 
     /**
@@ -35,9 +39,17 @@ class AdminOutletController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Outlet $outlet)
     {
-        //
+        $users = User::where('outlet_id', $outlet->id)
+                 ->orWhere('role', 'administrator')
+                 ->paginate(5);
+
+        return view('dashboard.outlets.show', [
+            'outlet' => $outlet,
+            'menus' => Menu::where('outlet_id', $outlet->id)->paginate(5),
+            'users' => $users
+        ]);
     }
 
     /**
@@ -62,5 +74,11 @@ class AdminOutletController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function checkSlug(Request $request)
+    {
+        $slug = SlugService::createSlug(Outlet::class, 'slug', $request->name);
+        return response()->json(['slug' => $slug]);
     }
 }
