@@ -24,46 +24,59 @@
     </div>
 
     <div class="row py-3">
-        <div class="col-sm-3 mb-3 mb-sm-0">
-            <div class="card shadow border-0 w-100 h-100">
-                <div class="card-body d-flex align-items-start">
-                    <i class="bi bi-shop text-danger h3 mx-2 mb-auto"></i>
-                    <div class="ms-4 border-start ps-3">
-                        <h5 class="card-title fw-bold m-0">{{ $outlets->count() }}</h5>
-                        <small class="card-text m-0">Total Outlet</small>
+        <div class="col-md-6">
+            <div class="row align-items-stretch">
+                <div class="col-6 col-sm-6 mb-3 mb-md-0">
+                    <div class="card shadow border-0 w-100 h-100">
+                        <div class="card-body d-flex align-items-start">
+                            <i class="bi bi-shop text-danger h3 mx-2 mb-auto"></i>
+                            <div class="ms-4 border-start ps-3">
+                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $outlets->count() }}</h5>
+                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $outlets->count() }}</h6>
+                                <small class="card-text m-0">Total Outlet</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-6 mb-3 mb-md-0">
+                    <div class="card shadow border-0 w-100 h-100">
+                        <div class="card-body d-flex align-items-start">
+                            <i class="bi bi-cart-check-fill text-primary h3 mx-2 mb-auto"></i>
+                            <div class="ms-4 border-start ps-3">
+                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">120</h5>
+                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">120</h6>
+                                <small class="card-text m-0">Transaksi Hari Ini</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-3 mb-3 mb-sm-0">
-            <div class="card shadow border-0 w-100 h-100">
-                <div class="card-body d-flex align-items-start">
-                    <i class="bi bi-cart-check-fill text-primary h3 mx-2 mb-auto"></i>
-                    <div class="ms-4 border-start ps-3">
-                        <h5 class="card-title fw-bold m-0">120</h5>
-                        <small class="card-text m-0">Transaksi Hari Ini</small>
+
+        <div class="col-md-6">
+            <div class="row align-items-stretch">
+                <div class="col-6 col-sm-6 mb-3 mb-md-0">
+                    <div class="card shadow border-0 w-100 h-100">
+                        <div class="card-body d-flex align-items-start">
+                            <i class="bi bi-graph-up-arrow text-success h3 mx-2 mb-auto"></i>
+                            <div class="ms-4 border-start ps-3">
+                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp 24.300.000</h5>
+                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp 24.300.000</h6>
+                                <small class="card-text m-0">Pendapatan Bulan Ini</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-sm-3 mb-3 mb-sm-0">
-            <div class="card shadow border-0 w-100 h-100">
-                <div class="card-body d-flex align-items-start">
-                    <i class="bi bi-graph-up-arrow text-success h3 mx-2 mb-auto"></i>
-                    <div class="ms-4 border-start ps-3">
-                        <h5 class="card-title fw-bold m-0">Rp 24.300.000</h5>
-                        <small class="card-text m-0">Pendapatan Bulan Ini</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="card shadow border-0 w-100 h-100">
-                <div class="card-body d-flex align-items-start">
-                    <i class="bi bi-star-fill text-warning h3 mx-2 mb-auto"></i>
-                    <div class="ms-4 border-start ps-3">
-                        <h5 class="card-title fw-bold m-0">Outlet A</h5>
-                        <small class="card-text m-0">Rating Tertinggi</small>
+                <div class="col-6 col-sm-6 mb-3 mb-md-0">
+                    <div class="card shadow border-0 w-100 h-100">
+                        <div class="card-body d-flex align-items-start">
+                            <i class="bi bi-trophy-fill text-warning h3 mx-2 mb-auto"></i>
+                            <div class="ms-4 border-start ps-3">
+                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">Outlet A</h5>
+                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">Outlet A</h6>
+                                <small class="card-text m-0">Penjualan Terbanyak</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -73,7 +86,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-top-2 p-3 bg-white">
-                <div class="input-group w-50 w-lg-25">
+                <div class="input-group w-50">
                     <input type="text" class="form-control" placeholder="Cari outlet.." style="font-size: 12px;">
                     <button class="btn btn-outline-secondary" type="button" id="search" name="search" style="font-size: 12px;">Cari</button>
                 </div>
