@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Outlet;
 use Illuminate\Http\Request;
+use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class AdminMenuController extends Controller
 {
@@ -41,7 +42,8 @@ class AdminMenuController extends Controller
     public function show(Menu $menu)
     {
         return view('dashboard.menus.show', [
-            'menu' => $menu
+            'menu' => $menu,
+            'outlets' => Outlet::all()
         ]);
     }
 
@@ -67,5 +69,11 @@ class AdminMenuController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function checkSlug(Request $request)
+    {
+        $slug = SlugService::createSlug(Menu::class, 'slug', $request->name);
+        return response()->json(['slug' => $slug]);
     }
 }

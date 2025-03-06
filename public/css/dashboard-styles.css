@@ -37,3 +37,17 @@
     border: 4px solid #C60E2A;
     height: 100%;
 }
+
+.accordion-button:not(.collapsed) {
+    background-color: #FFFFFF;
+    color: #000000;
+    box-shadow: none;
+}
+
+.accordion-button:hover {
+    border: 1px solid #C60E2A;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+}

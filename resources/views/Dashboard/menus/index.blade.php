@@ -18,7 +18,9 @@
             </nav>
         </div>
 
-        <a href="/dashboard/menus/create" class="btn btn-danger ms-auto my-3"><i class="bi bi-plus-circle-fill fs-6 me-2"></i>Tambah Menu</a>
+        <a href="/dashboard/menus/create" class="btn btn-danger ms-auto my-3">
+            <i class="bi bi-plus-circle-fill fs-6 me-2"></i>Tambah Menu
+        </a>
     </div>
 
     <div class="row py-3">
@@ -90,6 +92,7 @@
                         <tr>
                             <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                             <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                            <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                             {{-- <th scope="col" class="text-secondary" style="font-size: 12px;">DESKRIPSI <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th> --}}
                             <th scope="col" class="text-secondary" style="font-size: 12px;">HARGA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                             <th scope="col" class="text-secondary" style="font-size: 12px;">POTONGAN HARGA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
@@ -103,17 +106,15 @@
                                 <tr>
                                     <td>{{ ($menus->currentPage() - 1) * $menus->perPage() + $loop->iteration }}</td>
                                     <td>{{ $menu->name }}</td>
+                                    <td>{{ $menu->outlet->name }}</td>
                                     {{-- <td>{{ Str::limit($menu->description, 20, '...') }}</td> --}}
                                     <td>{{ $menu->price }}</td>
                                     <td>{{ $menu->price }}</td>
-                                    <td class="w-25">
-                                        <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-                                            <div class="progress-bar bg-success" style="width: 100%">100%</div>
+                                    <td class="w-25 align-middle">
+                                        <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="height: 20px">
+                                            <div class="progress-bar bg-success" style="width: 100%;">100%</div>
                                         </div>
                                     </td>
-                                    {{-- <td class="text-end" style="width: 64px">
-                                        <a href="/dashboard/menus/{{ $menu->slug }}"><i class="bi bi-arrow-right-circle-fill text-danger"></i></a>
-                                    </td> --}}
                                     <td class="text-center" style="width: 64px">
                                         <div class="dropdown mx-auto">
                                             <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
@@ -126,12 +127,13 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="#">
+                                                    <a class="dropdown-item" href="/dashboard/menus/edit">
                                                         <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
                                                     </a>
                                                 </li>
+                                                <li><hr class="dropdown-divider"></li>
                                                 <li>
-                                                    <a class="dropdown-item" href="#">
+                                                    <a class="dropdown-item" href="/dashboard/menus/delete">
                                                         <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
                                                     </a>
                                                 </li>
@@ -142,72 +144,19 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="7" class="text-center">No data available.</td>
+                                <td colspan="7" class="text-center">Data tidak tersedia.</td>
                             </tr>
                         @endif
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted">
-                        Menampilkan {{ $menus->firstItem() }} sampai {{ $menus->lastItem() }} dari {{ $menus->total() }} data
-                    </small>
-                    {{ $menus->links('vendor.custom-pagination') }}
-                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center py-3 py-md-0">
+                <small class="text-muted">
+                    Menampilkan {{ $menus->firstItem() }} sampai {{ $menus->lastItem() }} dari {{ $menus->total() }} data
+                </small>
+                {{ $menus->links('vendor.custom-pagination') }}
             </div>
         </div>
-
-        {{-- <div class="col-md-4">
-            <div class="table-responsive small">
-                <table class="table table-striped table-sm">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Header</th>
-                        <th scope="col">Header</th>
-                        <th scope="col">Header</th>
-                        <th scope="col">Header</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1,001</td>
-                        <td>random</td>
-                        <td>data</td>
-                        <td>placeholder</td>
-                        <td>text</td>
-                      </tr>
-                      <tr>
-                        <td>1,002</td>
-                        <td>placeholder</td>
-                        <td>irrelevant</td>
-                        <td>visual</td>
-                        <td>layout</td>
-                      </tr>
-                      <tr>
-                        <td>1,003</td>
-                        <td>data</td>
-                        <td>rich</td>
-                        <td>dashboard</td>
-                        <td>tabular</td>
-                      </tr>
-                      <tr>
-                        <td>1,003</td>
-                        <td>information</td>
-                        <td>placeholder</td>
-                        <td>illustrative</td>
-                        <td>data</td>
-                      </tr>
-                      <tr>
-                        <td>1,004</td>
-                        <td>text</td>
-                        <td>random</td>
-                        <td>layout</td>
-                        <td>dashboard</td>
-                      </tr>
-                    </tbody>
-                  </table>
-            </div>
-        </div> --}}
     </div>
 
 @endsection

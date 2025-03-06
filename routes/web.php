@@ -18,4 +18,6 @@ Route::get('/dashboard', function() {
 });
 // ->middleware('auth');
 
+Route::get('/dashboard/menus/checkSlug', [AdminMenuController::class, 'checkSlug']);
+// ->middleware('auth');
 Route::resource('/dashboard/menus', AdminMenuController::class);
