@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Menu;
 use App\Models\Outlet;
+use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,16 +17,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Administrator',
-            'email' => 'admin@my-kirei.com',
-            'username' => 'administrator',
-            'password' => Hash::make('password'),
-            'outlet_id' => 0,
-        ]);
+        // User::create([
+        //     'name' => 'Administrator',
+        //     'email' => 'admin@my-kirei.com',
+        //     'username' => 'administrator',
+        //     'password' => Hash::make('password'),
+        //     'outlet_id' => 0,
+        // ]);
 
-        User::factory(10)->create();
-        Outlet::factory(5)->create();
-        Menu::factory(25)->create();
+        // User::factory(10)->create();
+        // Outlet::factory(5)->create();
+        // Menu::factory(25)->create();
+        // Stock::factory(25)->create();
     }
 }

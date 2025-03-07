@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Outlet;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 
@@ -15,7 +16,8 @@ class AdminMenuController extends Controller
     public function index()
     {
         return view('dashboard.menus.index', [
-            'menus' => Menu::paginate(10)->withQueryString(),
+            'menus' => Menu::with('stock')->paginate(10)->withQueryString(),
+            'emptyStock' => Stock::orderBy('current_stock', 'asc')->first(),
             'outlets' => Outlet::all()
         ]);
     }

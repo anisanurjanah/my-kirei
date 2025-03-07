@@ -18,6 +18,11 @@ class Menu extends Model
         return $this->belongsTo(Outlet::class);
     }
 
+    public function stock()
+    {
+        return $this->hasOne(Stock::class);
+    }
+
     public function getRouteKeyName()
     {
         return 'slug';

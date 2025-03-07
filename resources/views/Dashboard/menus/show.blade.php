@@ -120,15 +120,15 @@
                                             <div id="informasi-stok" class="accordion-collapse collapse show">
                                                 <div class="accordion-body">
                                                     <div class="d-flex justify-content-between">
-                                                        <p class="text-black mb-0">100%</p>
+                                                        <p class="text-black mb-0">{{ ($menu->stock->current_stock ?? '0') }}</p>
 
                                                         <a href="/dashboard/stocks/create" class="text-decoration-none text-success mb-3" style="font-size: 14px">
                                                             <small><i class="bi bi-plus me-1"></i>Tambah Stok</small>
                                                         </a>
                                                     </div>
 
-                                                    <div class="progress mb-3" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="height: 24px">
-                                                        <div class="progress-bar progress-bar-striped bg-success" style="width: 100%;"></div>
+                                                    <div class="progress mb-3" role="progressbar" aria-valuenow="{{ $menu->stock->current_stock}}" aria-valuemin="0" aria-valuemax="1000" style="height: 20px">
+                                                        <div class="progress-bar progress-bar-striped bg-success" style="width: {{ ($menu->stock->current_stock) / 10 }}%;"></div>
                                                     </div>
 
                                                     <div class="d-flex align-items-center justify-content-between">

@@ -31,8 +31,8 @@
                         <div class="card-body d-flex align-items-start">
                             <i class="bi bi-fire text-danger h3 mx-2 mb-auto"></i>
                             <div class="ms-4 border-start ps-3">
-                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">Siu Mai Ayam</h5>
-                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">Siu Mai Ayam</h6>
+                                {{-- <h5 class="card-title fw-bold m-0 d-none d-sm-block">Siu Mai Ayam</h5> --}}
+                                <h6 class="card-title fw-bold m-0 d-block">Siu Mai Ayam</h6>
                                 <small class="card-text m-0">Paling Banyak Diminati</small>
                             </div>
                         </div>
@@ -43,8 +43,8 @@
                         <div class="card-body d-flex align-items-start">
                             <i class="bi bi-cart-check-fill text-primary h3 mx-2 mb-auto"></i>
                             <div class="ms-4 border-start ps-3">
-                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">120</h5>
-                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">120</h6>
+                                {{-- <h5 class="card-title fw-bold m-0 d-none d-sm-block">120</h5> --}}
+                                <h6 class="card-title fw-bold m-0 d-block">120</h6>
                                 <small class="card-text m-0">Terjual Hari Ini</small>
                             </div>
                         </div>
@@ -60,8 +60,8 @@
                         <div class="card-body d-flex align-items-start">
                             <i class="bi bi-graph-up-arrow text-success h3 mx-2 mb-auto"></i>
                             <div class="ms-4 border-start ps-3">
-                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">2.430</h5>
-                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">2.430</h6>
+                                {{-- <h5 class="card-title fw-bold m-0 d-none d-sm-block">2.430</h5> --}}
+                                <h6 class="card-title fw-bold m-0 d-block">2.430</h6>
                                 <small class="card-text m-0">Terjual Bulan Ini</small>
                             </div>
                         </div>
@@ -72,8 +72,8 @@
                         <div class="card-body d-flex align-items-start">
                             <i class="bi bi-exclamation-diamond-fill text-warning h3 mx-2 mb-auto"></i>
                             <div class="ms-4 border-start ps-3">
-                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">Siu Mai Ayam</h5>
-                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">Siu Mai Ayam</h6>
+                                {{-- <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $emptyStock->menu->name }}</h5> --}}
+                                <h6 class="card-title fw-bold m-0 d-block">{{ $emptyStock->menu->name }}</h6>
                                 <small class="card-text m-0">Stok Hampir Habis</small>
                             </div>
                         </div>
@@ -124,8 +124,12 @@
                                     <td>{{ $menu->price }}</td>
                                     <td>{{ $menu->price }}</td>
                                     <td class="w-25 align-middle">
-                                        <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="height: 20px">
-                                            <div class="progress-bar bg-success" style="width: 100%;">100%</div>
+                                        <div class="progress" role="progressbar" aria-valuenow="{{ $menu->stock->current_stock}}" aria-valuemin="0" aria-valuemax="1000" style="height: 20px">
+                                            <div class="progress-bar bg-success"
+                                                    style="width: {{ ($menu->stock->current_stock) / 10 }}%;">
+
+                                                    {{ ($menu->stock->current_stock ?? '0') }}
+                                                </div>
                                         </div>
                                     </td>
                                     <td class="text-center" style="width: 64px">
