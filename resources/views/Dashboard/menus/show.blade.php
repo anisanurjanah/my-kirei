@@ -155,7 +155,7 @@
                                         <div class="accordion-item">
                                             <h2 class="accordion-header border-bottom">
                                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#informasi-diskon">
-                                                    <small>Diskon:<span class="fw-bold ms-2">{{ $menu->name }}</span></small>
+                                                    <small>Potongan Harga:<span class="fw-bold ms-2">{{ $menu->name }}</span></small>
                                                 </button>
                                             </h2>
                                             <div id="informasi-diskon" class="accordion-collapse collapse show">
@@ -166,7 +166,7 @@
                                                         </a>
                                                     </div>
 
-                                                    {{-- @if(isset($menu->price_promo) && isset($menu->promo_start_date) && isset($menu->promo_end_date)) --}}
+                                                    @if(isset($menu->pricePromo->price_promo) && isset($menu->pricePromo->promo_start_date) && isset($menu->pricePromo->promo_end_date))
                                                         <table class="table table-sm text-center" style="font-size: 10px;">
                                                             <thead class="table-dark">
                                                                 <tr>
@@ -179,9 +179,9 @@
                                                             <tbody>
                                                                 <tr>
                                                                     <td>Rp {{ number_format($menu->price, 0, ',', '.') }}</td>
-                                                                    <td class="text-danger fw-bold">Rp {{ number_format($menu->price_promo, 0, ',', '.') }}</td>
+                                                                    <td class="text-danger fw-bold">Rp {{ number_format($menu->pricePromo->price_promo, 0, ',', '.') }}</td>
                                                                     <td>
-                                                                        <small>{{ date('d/m', strtotime($menu->promo_start_date)) }} - {{ date('d/m', strtotime($menu->promo_end_date)) }}</small>
+                                                                        <small>{{ date('d/m', strtotime($menu->pricePromo->promo_start_date)) }} - {{ date('d/m', strtotime($menu->pricePromo->promo_end_date)) }}</small>
                                                                     </td>
                                                                     <td class="text-center">
                                                                         <div class="dropdown mx-auto">
@@ -190,12 +190,12 @@
                                                                             </button>
                                                                             <ul class="dropdown-menu dropdown-menu-end">
                                                                                 <li>
-                                                                                    <a class="dropdown-item" href="/dashboard/stocks/edit">
+                                                                                    <a class="dropdown-item" href="/dashboard/prices/edit">
                                                                                         <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
                                                                                     </a>
                                                                                 </li>
                                                                                 <li>
-                                                                                    <a class="dropdown-item" href="/dashboard/stocks/delete">
+                                                                                    <a class="dropdown-item" href="/dashboard/prices/delete">
                                                                                         <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
                                                                                     </a>
                                                                                 </li>
@@ -205,9 +205,9 @@
                                                                 </tr>
                                                             </tbody>
                                                         </table>
-                                                    {{-- @else --}}
-                                                        <h5 class="h6 text-center mb-3 text-muted">Diskon tidak tersedia.</h5>
-                                                    {{-- @endif --}}
+                                                    @else
+                                                        <h5 class="h6 text-center mb-3 text-muted">Potongan harga tidak tersedia.</h5>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

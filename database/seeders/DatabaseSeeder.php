@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Menu;
 use App\Models\Outlet;
+use App\Models\Price;
 use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -29,5 +30,6 @@ class DatabaseSeeder extends Seeder
         // Outlet::factory(5)->create();
         // Menu::factory(25)->create();
         // Stock::factory(25)->create();
+        // Price::factory(10)->create();
     }
 }

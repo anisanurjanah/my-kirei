@@ -16,7 +16,7 @@ class AdminMenuController extends Controller
     public function index()
     {
         return view('dashboard.menus.index', [
-            'menus' => Menu::with('stock')->paginate(10)->withQueryString(),
+            'menus' => Menu::with(['stock', 'pricePromo'])->paginate(10)->withQueryString(),
             'emptyStock' => Stock::orderBy('current_stock', 'asc')->first(),
             'outlets' => Outlet::all()
         ]);
