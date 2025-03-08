@@ -2,25 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Outlet;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
-class AdminUserController extends Controller
+class AdminOrderItemController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dashboard.users.index', [
-            'users' => User::where('username', '!=', 'administrator')->paginate(10)->withQueryString(),
-            'totalUsers' => User::count(),
-            'totalOutlets' => Outlet::count(),
-            'totalCashiers' => User::where('role', 'kasir')->count(),
-            'totalProduction' => User::where('role', 'produksi')->count(),
-            'outlets' => Outlet::all()
-        ]);
+        //
     }
 
     /**
@@ -42,7 +34,7 @@ class AdminUserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(OrderItem $orderItem)
     {
         //
     }
@@ -50,7 +42,7 @@ class AdminUserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(OrderItem $orderItem)
     {
         //
     }
@@ -58,7 +50,7 @@ class AdminUserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, OrderItem $orderItem)
     {
         //
     }
@@ -66,7 +58,7 @@ class AdminUserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(OrderItem $orderItem)
     {
         //
     }

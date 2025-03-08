@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use App\Models\Menu;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Outlet extends Model
 {
@@ -21,6 +22,11 @@ class Outlet extends Model
     public function menus()
     {
         return $this->hasMany(Menu::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function getRouteKeyName()

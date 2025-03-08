@@ -30,6 +30,11 @@ class Menu extends Model
         return $this->hasOne(Price::class);
     }
 
+    public function orderItem()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function getRouteKeyName()
     {
         return 'slug';

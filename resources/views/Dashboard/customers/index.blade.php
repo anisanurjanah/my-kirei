@@ -27,7 +27,7 @@
         <div class="col-md-8">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-top-2 p-3 bg-white">
                 <div class="input-group w-50">
-                    <input type="text" class="form-control" placeholder="Cari pengguna.." style="font-size: 12px;">
+                    <input type="text" class="form-control" placeholder="Cari pelanggan.." style="font-size: 12px;">
                     <button class="btn btn-outline-secondary" type="button" id="search" name="search" style="font-size: 12px;">Cari</button>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li>
-                                                    <a class="dropdown-item" href="#{{ $customer->username }}" data-bs-toggle="modal">
+                                                    <a class="dropdown-item" href="#{{ Str::slug($customer->name) }}" data-bs-toggle="modal">
                                                         <i class="bi bi-eye mx-2" style="font-size: 16px"></i> Lihat
                                                     </a>
                                                 </li>
@@ -94,12 +94,12 @@
     </div>
 
     @foreach ($customers as $customer)
-        <div class="modal fade" id="{{ $customer->username }}" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="{{ Str::slug($customer->name) }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2 class="modal-title fs-6">
-                            Informasi Lengkap Pelanggan:<span class="fw-bold ms-2">{{ $customer->name }}</span>
+                            Informasi Pelanggan:<span class="fw-bold ms-2">{{ $customer->name }}</span>
                         </h2>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>

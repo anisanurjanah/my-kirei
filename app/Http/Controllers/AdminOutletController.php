@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use App\Models\Order;
 use App\Models\Outlet;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,7 +17,8 @@ class AdminOutletController extends Controller
     public function index()
     {
         return view('dashboard.outlets.index', [
-            'outlets' => Outlet::paginate(10)->withQueryString()
+            'outlets' => Outlet::paginate(10)->withQueryString(),
+            'totalOutlets' => Outlet::count()
         ]);
     }
 
@@ -43,8 +45,9 @@ class AdminOutletController extends Controller
     {
         return view('dashboard.outlets.show', [
             'outlet' => $outlet,
-            'menus' => Menu::where('outlet_id', $outlet->id)->paginate(5),
-            'users' => User::where('outlet_id', $outlet->id)->paginate(5),
+            'menus' => Menu::where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
+            'users' => User::where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
+            'orders' => Order::where('outlet_id', $outlet->id)->paginate(5)->withQueryString()
         ]);
     }
 

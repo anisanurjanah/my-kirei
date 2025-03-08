@@ -2,15 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
 use App\Models\Menu;
-use App\Models\Outlet;
+use App\Models\User;
+use App\Models\Order;
 use App\Models\Price;
 use App\Models\Stock;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Outlet;
+use App\Models\Customer;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\OrderItem;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,9 +31,14 @@ class DatabaseSeeder extends Seeder
 
         // User::factory(10)->create();
         // Customer::factory(20)->create();
+
         // Outlet::factory(5)->create();
+
         // Menu::factory(25)->create();
         // Stock::factory(25)->create();
-        Price::factory(10)->create();
+        // Price::factory(10)->create();
+
+        // Order::factory(10)->create();
+        // OrderItem::factory(35)->create();
     }
 }

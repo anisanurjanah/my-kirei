@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminMenuController;
+use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminOrderItemController;
 use App\Http\Controllers\AdminOutletController;
 use App\Http\Controllers\AdminPriceController;
 use App\Http\Controllers\AdminStockController;
@@ -33,6 +35,9 @@ Route::resource('/dashboard/menus', AdminMenuController::class);
 Route::resource('/dashboard/stocks', AdminStockController::class);
 
 Route::resource('/dashboard/prices', AdminPriceController::class);
+
+Route::resource('/dashboard/orders', AdminOrderController::class);
+// Route::resource('/dashboard/orders', AdminOrderItemController::class);
 
 // Route::post('/login', [LoginController::class, 'authenticate']);
 // Route::post('/logout', [LoginController::class, 'logout']);

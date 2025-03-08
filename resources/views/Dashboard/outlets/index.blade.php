@@ -31,8 +31,8 @@
                         <div class="card-body d-flex align-items-start">
                             <i class="bi bi-shop text-danger h3 mx-2 mb-auto"></i>
                             <div class="ms-4 border-start ps-3">
-                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $outlets->count() }}</h5>
-                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $outlets->count() }}</h6>
+                                <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalOutlets }}</h5>
+                                <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalOutlets }}</h6>
                                 <small class="card-text m-0">Total Outlet</small>
                             </div>
                         </div>

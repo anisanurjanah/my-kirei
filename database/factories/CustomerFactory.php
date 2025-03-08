@@ -18,7 +18,6 @@ class CustomerFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'username' => fake()->unique()->userName(),
             'phone' => fake()->phoneNumber()
         ];
     }
