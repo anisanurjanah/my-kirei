@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Outlet;
+use App\Models\Stock;
+use App\Models\Price;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -16,6 +18,21 @@ class Menu extends Model
     public function outlet()
     {
         return $this->belongsTo(Outlet::class);
+    }
+
+    public function stock()
+    {
+        return $this->hasOne(Stock::class);
+    }
+
+    public function pricePromo()
+    {
+        return $this->hasOne(Price::class);
+    }
+
+    public function orderItem()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 
     public function getRouteKeyName()

@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Menu;
+use App\Models\User;
 use App\Models\Outlet;
-use App\Models\Stock;
 use Illuminate\Http\Request;
-use Cviebrock\EloquentSluggable\Services\SlugService;
 
-class AdminMenuController extends Controller
+class AdminUserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dashboard.menus.index', [
-            'menus' => Menu::with(['stock', 'pricePromo'])->paginate(10)->withQueryString(),
-            'emptyStock' => Stock::orderBy('current_stock', 'asc')->first(),
+        return view('dashboard.users.index', [
+            'users' => User::where('username', '!=', 'administrator')->paginate(10)->withQueryString(),
+            'totalUsers' => User::count(),
+            'totalOutlets' => Outlet::count(),
+            'totalCashiers' => User::where('role', 'kasir')->count(),
+            'totalProduction' => User::where('role', 'produksi')->count(),
             'outlets' => Outlet::all()
         ]);
     }
@@ -41,11 +42,9 @@ class AdminMenuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Menu $menu)
+    public function show(string $id)
     {
-        return view('dashboard.menus.show', [
-            'menu' => $menu
-        ]);
+        //
     }
 
     /**
@@ -70,11 +69,5 @@ class AdminMenuController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function checkSlug(Request $request)
-    {
-        $slug = SlugService::createSlug(Menu::class, 'slug', $request->name);
-        return response()->json(['slug' => $slug]);
     }
 }

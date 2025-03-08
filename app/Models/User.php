@@ -3,9 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Order;
+use App\Models\Outlet;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -24,7 +26,7 @@ class User extends Authenticatable
     // ];
 
     protected $guarded = ['id'];
-    
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -46,5 +48,32 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function isKasir()
+    {
+        return $this->role === 'kasir';
+    }
+
+    public function isProduksi()
+    {
+        return $this->role === 'produksi';
+    }
+
+    public function isAdministrator()
+    {
+        return in_array($this->email, [
+            'admin@my-kirei.com',
+        ]);
     }
 }

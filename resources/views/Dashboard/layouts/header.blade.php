@@ -1,5 +1,5 @@
 <header class="navbar flex-md-nowrap shadow bg-light">
-    <a class="col-md-3 col-lg-2 m-0 p-2 fs-6 text-black text-decoration-none d-none d-md-block" href="/dashboard">
+    <a class="ms-3 m-0 p-2 fs-6 text-black text-decoration-none d-none d-md-block" href="/dashboard">
         <h1 class="h3 fw-bold text-center">My<span style="color: #C60E2A">Kirei</span></h1>
     </a>
 
