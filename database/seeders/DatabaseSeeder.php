@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Customer;
 use App\Models\Menu;
 use App\Models\Outlet;
 use App\Models\Price;
@@ -27,9 +28,10 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // User::factory(10)->create();
+        // Customer::factory(20)->create();
         // Outlet::factory(5)->create();
         // Menu::factory(25)->create();
         // Stock::factory(25)->create();
-        // Price::factory(10)->create();
+        Price::factory(10)->create();
     }
 }

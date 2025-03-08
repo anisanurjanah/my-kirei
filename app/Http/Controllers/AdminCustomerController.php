@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Price;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
-class PriceController extends Controller
+class AdminCustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return view('dashboard.customers.index', [
+            'customers' => Customer::paginate(10)->withQueryString()
+        ]);
     }
 
     /**
@@ -34,7 +36,7 @@ class PriceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Price $price)
+    public function show(Customer $customer)
     {
         //
     }
@@ -42,7 +44,7 @@ class PriceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Price $price)
+    public function edit(Customer $customer)
     {
         //
     }
@@ -50,7 +52,7 @@ class PriceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Price $price)
+    public function update(Request $request, Customer $customer)
     {
         //
     }
@@ -58,7 +60,7 @@ class PriceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Price $price)
+    public function destroy(Customer $customer)
     {
         //
     }

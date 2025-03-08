@@ -133,7 +133,7 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li>
-                                                    <a class="dropdown-item" href="#userModal{{ $user->username }}" data-bs-toggle="modal">
+                                                    <a class="dropdown-item" href="#{{ $user->username }}" data-bs-toggle="modal">
                                                         <i class="bi bi-eye mx-2" style="font-size: 16px"></i> Lihat
                                                     </a>
                                                 </li>
@@ -171,7 +171,7 @@
     </div>
 
     @foreach ($users as $user)
-        <div class="modal fade" id="userModal{{ $user->username }}" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="{{ $user->username }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">

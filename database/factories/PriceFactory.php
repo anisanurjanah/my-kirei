@@ -22,7 +22,7 @@ class PriceFactory extends Factory
         $endDate = (clone $startDate)->modify('+7 days');
 
         return [
-            'menu_id' => Menu::whereDoesntHave('price')->inRandomOrder()->first()->id,
+            'menu_id' => Menu::whereDoesntHave('pricePromo')->inRandomOrder()->first()->id,
             'price_promo' => $this->faker->randomFloat(2, 100, 1900),
             'promo_start_date' => Carbon::instance($startDate)->format('Y-m-d'),
             'promo_end_date' => Carbon::instance($endDate)->format('Y-m-d'),
