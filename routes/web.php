@@ -23,19 +23,11 @@ Route::get('/dashboard', function() {
 // ->middleware('auth');
 
 Route::resource('/dashboard/users', AdminUserController::class);
-
 Route::resource('/dashboard/customers', AdminCustomerController::class);
-
 Route::resource('/dashboard/outlets', AdminOutletController::class);
-
-// Route::get('/dashboard/menus/checkSlug', [AdminMenuController::class, 'checkSlug']);
-// ->middleware('auth');
 Route::resource('/dashboard/menus', AdminMenuController::class);
-
 Route::resource('/dashboard/stocks', AdminStockController::class);
-
 Route::resource('/dashboard/prices', AdminPriceController::class);
-
 Route::resource('/dashboard/orders', AdminOrderController::class);
 // Route::resource('/dashboard/orders', AdminOrderItemController::class);
 

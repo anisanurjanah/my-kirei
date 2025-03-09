@@ -50,15 +50,6 @@
                                             </div>
                                         @enderror
                                     </div>
-                                    {{-- <div class="mb-3">
-                                        <label for="slug" class="form-label">Slug</label>
-                                        <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" placeholder="Slug.." value="{{ old('slug') }}" required>
-                                        @error('slug')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div> --}}
                                     <div class="mb-3">
                                         <label for="outlet_id" class="form-label">Outlet</label>
                                         <select class="form-select" id="outlet_id" name="outlet_id" required>
@@ -97,7 +88,7 @@
                                         <label for="price" class="form-label">Harga</label>
                                         <div class="input-group">
                                             <span class="input-group-text">Rp</span>
-                                            <input type="text" class="form-control @error('price') is-invalid @enderror" id="price" name="price" placeholder="Harga menu.." value="{{ number_format((int) old('price', 0), 0, ',', '.') }}" autocomplete="off" required>
+                                            <input type="text" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ number_format((int) old('price', 0), 0, ',', '.') }}" autocomplete="off" required>
                                         </div>
                                         @error('price')
                                             <div class="invalid-feedback">
@@ -120,7 +111,7 @@
                                         <label for="price_promo" class="form-label">Potongan Harga</label>
                                         <div class="input-group">
                                             <span class="input-group-text">Rp</span>
-                                            <input type="text" class="form-control @error('price_promo') is-invalid @enderror" id="price_promo" name="price_promo" placeholder="Potongan harga menu.." value="{{ number_format((int) old('price_promo', 0), 0, ',', '.') }}">
+                                            <input type="text" class="form-control @error('price_promo') is-invalid @enderror" id="price_promo" name="price_promo" value="{{ number_format((int) old('price_promo', 0), 0, ',', '.') }}">
                                         </div>
                                         @error('price_promo')
                                             <div class="invalid-feedback">

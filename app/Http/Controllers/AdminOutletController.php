@@ -7,7 +7,8 @@ use App\Models\Order;
 use App\Models\Outlet;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Cviebrock\EloquentSluggable\Services\SlugService;
+use Illuminate\Support\Str;
+// use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class AdminOutletController extends Controller
 {
@@ -17,7 +18,7 @@ class AdminOutletController extends Controller
     public function index()
     {
         return view('dashboard.outlets.index', [
-            'outlets' => Outlet::paginate(10)->withQueryString(),
+            'outlets' => Outlet::latest()->paginate(10)->withQueryString(),
             'totalOutlets' => Outlet::count()
         ]);
     }
@@ -27,7 +28,7 @@ class AdminOutletController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.outlets.create');
     }
 
     /**
@@ -35,7 +36,36 @@ class AdminOutletController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Remove Phone's Strip
+        $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
+
+        $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+
+        // Validated
+        $validatedData = $request->validate([
+            'name' => 'required|max:32',
+            'phone' => 'required|max:20',
+            'address' => 'required|max:128',
+        ]);
+
+        // Generate Menu Slug
+        $slug = Str::slug($request->name);
+
+        $existingSlugCount = Outlet::where('slug', 'LIKE', "$slug%")
+            ->where('id', $request->id)
+            ->count();
+
+        if($existingSlugCount > 0) {
+            $slug .= '-' . ($existingSlugCount + 1);
+        }
+
+        $validatedData['slug'] = $slug;
+        $validatedData['phone'] = $formattedPhone;
+
+        Outlet::create($validatedData);
+
+        // Redirect to outlet
+        return redirect('/dashboard/outlets')->with('success', 'Outlet berhasil ditambahkan!');
     }
 
     /**
@@ -75,9 +105,9 @@ class AdminOutletController extends Controller
         //
     }
 
-    public function checkSlug(Request $request)
-    {
-        $slug = SlugService::createSlug(Outlet::class, 'slug', $request->name);
-        return response()->json(['slug' => $slug]);
-    }
+    // public function checkSlug(Request $request)
+    // {
+    //     $slug = SlugService::createSlug(Outlet::class, 'slug', $request->name);
+    //     return response()->json(['slug' => $slug]);
+    // }
 }
