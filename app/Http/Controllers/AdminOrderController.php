@@ -51,7 +51,7 @@ class AdminOrderController extends Controller
     {
         return view('dashboard.orders.show', [
             'order' => $order,
-            'orderItems' => OrderItem::where('order_id', $order->id)->paginate(10)->withQueryString(),
+            'orderItems' => OrderItem::latest()->where('order_id', $order->id)->paginate(10)->withQueryString(),
         ]);
     }
 

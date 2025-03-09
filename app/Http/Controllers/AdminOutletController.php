@@ -45,9 +45,9 @@ class AdminOutletController extends Controller
     {
         return view('dashboard.outlets.show', [
             'outlet' => $outlet,
-            'menus' => Menu::where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
-            'users' => User::where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
-            'orders' => Order::where('outlet_id', $outlet->id)->paginate(5)->withQueryString()
+            'menus' => Menu::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
+            'users' => User::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
+            'orders' => Order::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString()
         ]);
     }
 

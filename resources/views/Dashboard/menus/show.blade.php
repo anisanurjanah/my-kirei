@@ -13,8 +13,9 @@ use Carbon\Carbon;
             <div class="d-block">
                 <h1 class="h2">
                     <a href="/dashboard/menus" class="text-decoration-none text-danger">
-                        <i class="bi bi-arrow-left-circle-fill text-danger me-3" style="font-size: 20px"></i>{{ $menu->name }}
+                        <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
+                    {{ $menu->name }}
                 </h1>
 
                 <nav aria-label="breadcrumb">
@@ -54,7 +55,11 @@ use Carbon\Carbon;
                                 <div class="row g-0">
                                     <div class="col-md-4 d-flex align-items-center justify-content-center">
                                         {{-- <img src="{{ $menu->image }}" class="img-fluid rounded p-3" alt="{{ $menu->name }}"> --}}
-                                        <img src="https://picsum.photos/640/480" class="img-fluid rounded" alt="{{ $menu->name }}">
+                                        @if ($menu->image)
+                                            <img src="{{ asset('storage/' . $menu->image) }}" class="img-fluid rounded" alt="{{ $menu->name }}">
+                                        @else
+                                            <img src="https://picsum.photos/640/480" class="img-fluid rounded" alt="{{ $menu->name }}">
+                                        @endif
                                     </div>
                                     <div class="col-md-8">
                                         <div class="card-body">

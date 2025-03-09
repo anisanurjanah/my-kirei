@@ -14,7 +14,7 @@ class AdminUserController extends Controller
     public function index()
     {
         return view('dashboard.users.index', [
-            'users' => User::where('username', '!=', 'administrator')->paginate(10)->withQueryString(),
+            'users' => User::latest()->where('username', '!=', 'administrator')->paginate(10)->withQueryString(),
             'totalUsers' => User::count(),
             'totalOutlets' => Outlet::count(),
             'totalCashiers' => User::where('role', 'kasir')->count(),

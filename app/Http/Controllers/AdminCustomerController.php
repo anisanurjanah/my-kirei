@@ -15,7 +15,7 @@ class AdminCustomerController extends Controller
     public function index()
     {
         return view('dashboard.customers.index', [
-            'customers' => Customer::paginate(10)->withQueryString(),
+            'customers' => Customer::latest()->paginate(10)->withQueryString(),
             'totalCustomers' => Customer::count(),
             'totalOrders' => Order::count(),
             'newCustomers' => Customer::where('created_at', '>=', Carbon::now()->subWeek())->count(),

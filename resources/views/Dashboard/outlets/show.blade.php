@@ -7,8 +7,9 @@
             <div class="d-block">
                 <h1 class="h2">
                     <a href="/dashboard/outlets" class="text-decoration-none text-danger">
-                        <i class="bi bi-arrow-left-circle-fill text-danger me-3" style="font-size: 20px"></i>{{ $outlet->name }}
+                        <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
+                    {{ $outlet->name }}
                 </h1>
 
                 <nav aria-label="breadcrumb">
