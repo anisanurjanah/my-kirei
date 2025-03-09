@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AdminCustomerController extends Controller
@@ -13,7 +15,14 @@ class AdminCustomerController extends Controller
     public function index()
     {
         return view('dashboard.customers.index', [
-            'customers' => Customer::paginate(10)->withQueryString()
+            'customers' => Customer::paginate(10)->withQueryString(),
+            'totalCustomers' => Customer::count(),
+            'totalOrders' => Order::count(),
+            'newCustomers' => Customer::where('created_at', '>=', Carbon::now()->subWeek())->count(),
+            'activeCustomers' => Order::where('created_at', '>=', Carbon::now()->subWeek())->distinct('customer_id')->count(),
+            'avgPurchases' => Order::selectRaw('COUNT(id) / COUNT(DISTINCT customer_id) as avg_purchases')
+                                ->where('created_at', '>=', Carbon::now()->subMonth())
+                                ->value('avg_purchases')
         ]);
     }
 

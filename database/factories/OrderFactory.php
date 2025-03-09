@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Outlet;
 use App\Models\Customer;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -22,7 +23,7 @@ class OrderFactory extends Factory
 
         $outlet = Outlet::inRandomOrder()->first();
         $customer = Customer::inRandomOrder()->first();
-        $orderDate = fake()->date();
+        $orderDate = Carbon::now()->format('Y-m-d');
 
         return [
             'outlet_id' => mt_rand(1, 5),

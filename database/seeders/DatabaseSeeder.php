@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         // Stock::factory(25)->create();
         // Price::factory(10)->create();
 
-        // Order::factory(10)->create();
-        // OrderItem::factory(35)->create();
+        // Order::factory(5)->create();
+        // OrderItem::factory(7)->create();
     }
 }

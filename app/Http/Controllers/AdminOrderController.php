@@ -15,7 +15,7 @@ class AdminOrderController extends Controller
     public function index()
     {
         return view('dashboard.orders.index', [
-            'orders' => Order::with(['outlet', 'customer', 'user'])->paginate(10)->withQueryString(),
+            'orders' => Order::latest()->with(['outlet', 'customer', 'user'])->paginate(10)->withQueryString(),
             'outlets' => Outlet::all(),
             'totalOrders' => Order::count(),
             'totalTransactions' => Order::whereDate('created_at', today())->count(),
