@@ -25,11 +25,11 @@
         </div>
 
         @if (session()->has('success'))
-            <div class="alert alert-success col-lg-12" role="alert">
+            <div class="alert alert-success col-lg-12 mt-3" role="alert">
                 {{ session('success') }}
             </div>
         @endif
-        
+
         <div class="row py-3">
             <div class="col-md-6">
                 <div class="row align-items-stretch">

@@ -26,7 +26,7 @@
                             <h5 class="card-title mb-0">Email</h5>
                             <p class="card-text">{{ $user->email }}</p>
 
-                            <h5 class="card-title mb-0">Phone</h5>
+                            <h5 class="card-title mb-0">No. Telepon</h5>
                             <p class="card-text">{{ $user->phone }}</p>
 
                             <h5 class="card-title mb-0">Username</h5>
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
                 </div>
             </div>
         </div>

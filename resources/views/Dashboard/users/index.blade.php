@@ -113,7 +113,7 @@
             </div>
         </div>
 
-        @include('dashboard.components.show-users')
+        @include('dashboard.components.modal-show-users')
     </div>
 
 @endsection

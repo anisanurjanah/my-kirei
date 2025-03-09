@@ -48,7 +48,7 @@ class AdminOutletController extends Controller
             'address' => 'required|max:128',
         ]);
 
-        // Generate Menu Slug
+        // Generate Outlet Slug
         $slug = Str::slug($request->name);
 
         $existingSlugCount = Outlet::where('slug', 'LIKE', "$slug%")

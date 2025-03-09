@@ -35,7 +35,7 @@
         <div class="col-lg-8">
             <div class="shadow border rounded-3 p-3">
 
-                <form method="post" action="/dashboard/outlets" enctype="multipart/form-data">
+                <form method="post" action="/dashboard/outlets">
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Nama</label>
@@ -76,29 +76,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const phoneInput = document.getElementById("phone");
-
-            phoneInput.addEventListener("input", function () {
-                let value = phoneInput.value.replace(/\D/g, "");
-
-                if (value.startsWith("0")) {
-                    value = value.substring(1);
-                }
-
-                value = value.replace(/^(\d{3})(\d{4})?(\d{4})?/, function(match, p1, p2, p3) {
-                    let formatted = p1;
-                    if (p2) formatted += "-" + p2;
-                    if (p3) formatted += "-" + p3;
-
-                    return formatted;
-                });
-
-                phoneInput.value = value;
-            });
-        });
-    </script>
 
 @endsection

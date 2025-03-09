@@ -1,0 +1,52 @@
+<div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
+    <table id="table" class="table">
+        <thead class="table-light">
+            <tr>
+                <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                <th scope="col" class="text-secondary" style="font-size: 12px;">PHONE <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($customers->isNotEmpty())
+                @foreach ($customers as $customer)
+                    <tr>
+                        <td>{{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}</td>
+                        <td>{{ $customer->name }}</td>
+                        <td>{{ $customer->phone }}</td>
+                        <td class="text-center" style="width: 64px">
+                            <div class="dropdown mx-auto">
+                                <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots text-black"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#{{ Str::slug($customer->name) }}" data-bs-toggle="modal">
+                                            <i class="bi bi-eye mx-2" style="font-size: 16px"></i> Lihat
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/dashboard/customers/edit">
+                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="/dashboard/customers/delete">
+                                            <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="5" class="text-center">Data tidak tersedia.</td>
+                </tr>
+            @endif
+        </tbody>
+    </table>
+</div>

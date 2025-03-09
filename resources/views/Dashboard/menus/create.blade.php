@@ -74,7 +74,7 @@
                                     <div class="mb-3">
                                         <label for="image" class="form-label">Gambar</label>
                                         <img class="img-preview img-fluid mb-3 col-sm-5">
-                                        <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" onchange="previewImage()" required>
+                                        <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" required>
                                         @error('image')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -111,7 +111,7 @@
                                         <label for="price_promo" class="form-label">Potongan Harga</label>
                                         <div class="input-group">
                                             <span class="input-group-text">Rp</span>
-                                            <input type="text" class="form-control @error('price_promo') is-invalid @enderror" id="price_promo" name="price_promo" value="{{ number_format((int) old('price_promo', 0), 0, ',', '.') }}">
+                                            <input type="text" class="form-control @error('price_promo') is-invalid @enderror" id="price_promo" name="price_promo" value="{{ number_format((int) old('price_promo', 0), 0, ',', '.') }}" autocomplete="off">
                                         </div>
                                         @error('price_promo')
                                             <div class="invalid-feedback">
@@ -132,33 +132,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function formatPrice(input) {
-                input.addEventListener("input", function () {
-                    let value = this.value.replace(/\./g, "").replace(/\D/g, "");
-                    this.value = value ? parseInt(value, 10).toLocaleString("id-ID") : "";
-                });
-            }
-
-            formatPrice(document.getElementById("price"));
-            formatPrice(document.getElementById("price_promo"));
-        });
-
-        function previewImage() {
-            const image = document.querySelector('#image');
-            const imgPreview = document.querySelector('.img-preview');
-
-            imgPreview.style.display = 'block';
-
-            const oFReader = new FileReader();
-            oFReader.readAsDataURL(image.files[0]);
-
-            oFReader.onload = function(oFREvent) {
-                imgPreview.src = oFREvent.target.result;
-            }
-        }
-    </script>
 
 @endsection

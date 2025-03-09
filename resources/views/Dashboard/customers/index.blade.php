@@ -93,58 +93,8 @@
                     </div>
                 </div>
 
-                <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
-                    <table id="table" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                <th scope="col" class="text-secondary" style="font-size: 12px;">PHONE <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($customers->isNotEmpty())
-                                @foreach ($customers as $customer)
-                                    <tr>
-                                        <td>{{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}</td>
-                                        <td>{{ $customer->name }}</td>
-                                        <td>{{ $customer->phone }}</td>
-                                        <td class="text-center" style="width: 64px">
-                                            <div class="dropdown mx-auto">
-                                                <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots text-black"></i>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li>
-                                                        <a class="dropdown-item" href="#{{ Str::slug($customer->name) }}" data-bs-toggle="modal">
-                                                            <i class="bi bi-eye mx-2" style="font-size: 16px"></i> Lihat
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="/dashboard/customers/edit">
-                                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
-                                                        </a>
-                                                    </li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="/dashboard/customers/delete">
-                                                            <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="5" class="text-center">Data tidak tersedia.</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+                @include('dashboard.components.table-customers')
+
                 <div class="d-flex justify-content-between align-items-center py-3 py-md-0">
                     <small class="text-muted">
                         Menampilkan {{ $customers->firstItem() }} sampai {{ $customers->lastItem() }} dari {{ $customers->total() }} data
@@ -154,34 +104,8 @@
             </div>
         </div>
 
-        @foreach ($customers as $customer)
-            <div class="modal fade" id="{{ Str::slug($customer->name) }}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title fs-6">
-                                Informasi Pelanggan:<span class="fw-bold ms-2">{{ $customer->name }}</span>
-                            </h2>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="card border-0 w-100">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-0">Nama</h5>
-                                    <p class="card-text">{{ $customer->name }}</p>
+        @include('dashboard.components.modal-show-customers')
 
-                                    <h5 class="card-title mb-0">Phone</h5>
-                                    <p class="card-text">{{ $customer->phone }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach
     </div>
 
 @endsection
