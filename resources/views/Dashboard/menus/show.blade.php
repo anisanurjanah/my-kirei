@@ -36,11 +36,11 @@
             <div class="accordion accordion-flush">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#informasi-menu">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#menu-information">
                             Informasi Lengkap Menu:<span class="fw-bold ms-2">{{ $menu->name }}</span>
                         </button>
                     </h2>
-                    <div id="informasi-menu" class="accordion-collapse collapse show">
+                    <div id="menu-information" class="accordion-collapse collapse show">
                         <div class="accordion-body">
                             @include('dashboard.components.card-menu-information')
                         </div>
@@ -55,11 +55,11 @@
                     <div class="accordion">
                         <div class="accordion-item">
                             <h2 class="accordion-header border-bottom">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#informasi-stok">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#stock-information">
                                     <small>Stok:<span class="fw-bold ms-2">{{ $menu->name }}</span></small>
                                 </button>
                             </h2>
-                            <div id="informasi-stok" class="accordion-collapse collapse show">
+                            <div id="stock-information" class="accordion-collapse collapse show">
                                 <div class="accordion-body">
                                     <div class="d-flex justify-content-between">
                                         <p class="text-black mb-0">{{ ($menu->stock->current_stock ?? '0') }}</p>
@@ -96,11 +96,11 @@
                     <div class="accordion">
                         <div class="accordion-item">
                             <h2 class="accordion-header border-bottom">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#informasi-diskon">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#promo-information">
                                     <small>Potongan Harga:<span class="fw-bold ms-2">{{ $menu->name }}</span></small>
                                 </button>
                             </h2>
-                            <div id="informasi-diskon" class="accordion-collapse collapse show">
+                            <div id="promo-information" class="accordion-collapse collapse show">
                                 <div class="accordion-body">
                                     <div class="d-flex justify-content-end">
                                         <a href="#{{ $menu->slug }}-promo" data-bs-toggle="modal" class="text-decoration-none text-success mb-3" style="font-size: 14px">

@@ -29,7 +29,7 @@ Route::resource('/dashboard/menus', AdminMenuController::class);
 Route::resource('/dashboard/stocks', AdminStockController::class);
 Route::resource('/dashboard/prices', AdminPriceController::class);
 Route::resource('/dashboard/orders', AdminOrderController::class);
-// Route::resource('/dashboard/orders', AdminOrderItemController::class);
+Route::resource('/dashboard/orderitems', AdminOrderItemController::class);
 
 // Route::post('/login', [LoginController::class, 'authenticate']);
 // Route::post('/logout', [LoginController::class, 'logout']);

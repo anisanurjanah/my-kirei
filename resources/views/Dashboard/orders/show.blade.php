@@ -77,11 +77,11 @@
             <div class="accordion accordion-flush">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#informasi-item-pesanan">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#order-items-information">
                             <span class="fw-bold">Item Pesanan</span>
                         </button>
                     </h2>
-                    <div id="informasi-item-pesanan" class="accordion-collapse collapse show">
+                    <div id="order-items-information" class="accordion-collapse collapse show">
                         <div class="accordion-body">
                             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap border rounded-top-2 p-3 bg-white">
                                 <div class="input-group w-50">
@@ -91,7 +91,7 @@
                             </div>
 
                             @include('dashboard.components.table-order-items')
-                            
+
                             <div class="d-flex justify-content-between align-items-center py-3">
                                 <small class="text-muted">
                                     Menampilkan {{ $orderItems->firstItem() }} sampai {{ $orderItems->lastItem() }} dari {{ $orderItems->total() }} data

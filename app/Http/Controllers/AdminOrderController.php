@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Outlet;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
@@ -33,7 +36,13 @@ class AdminOrderController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.orders.create', [
+            'orders' => Order::all(),
+            'outlets' => Outlet::all(),
+            'customers' => Customer::all(),
+            'users' => User::all(),
+            'menus' => Menu::all()
+        ]);
     }
 
     /**

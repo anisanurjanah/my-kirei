@@ -51,3 +51,12 @@
 .accordion-button:focus {
     box-shadow: none;
 }
+
+@media (max-width: 768px) {
+    .order-summary {
+        order: 1;
+    }
+    .order-items {
+        order: 2;
+    }
+}
