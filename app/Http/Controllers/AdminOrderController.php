@@ -37,11 +37,13 @@ class AdminOrderController extends Controller
     public function create()
     {
         return view('dashboard.orders.create', [
-            'orders' => Order::all(),
             'outlets' => Outlet::all(),
-            'customers' => Customer::all(),
+            'customers' => Customer::latest()->get(),
             'users' => User::all(),
-            'menus' => Menu::all()
+            'menus' => Menu::all(),
+
+            'orderStatuses' => Order::ORDER_STATUSES,
+            'paymentStatuses' => Order::PAYMENT_STATUSES
         ]);
     }
 
@@ -86,5 +88,17 @@ class AdminOrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function getUsers($outletId)
+    {
+        $users = User::where('outlet_id', $outletId)->get();
+        return response()->json($users);
+    }
+
+    public function getMenus($outletId)
+    {
+        $menus = Menu::where('outlet_id', $outletId)->get();
+        return response()->json($menus);
     }
 }

@@ -84,14 +84,21 @@ document.addEventListener("DOMContentLoaded", function () {
         const quantityInput = $("#quantity");
         const addMenuBtnContainer = $("#add-menu-btn-container");
         const menuContainer = $("#menu-container");
-        const subTotalInput = $("#sub_total");
 
+        const subTotalInput = $("#sub_total");
+        const totalInput = $("#total_price");
+
+        const outletSelect = $("#outlet_id");
+        const userSelect = $("#user_id");
+
+        let menuOptions = menuSelect.html();
+
+        // Select2 menu
         menuSelect.select2({
             theme: "bootstrap-5",
             width: "100%"
         });
 
-        // Add menu button displays
         function toggleAddButton() {
             if (menuSelect.val() && quantityInput.val() > 0) {
                 addMenuBtnContainer.removeClass("d-none");
@@ -100,63 +107,49 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        menuSelect.on("change", toggleAddButton);
-        quantityInput.on("input", toggleAddButton);
-
-        // Sub total
         function updateSubTotal() {
             let total = 0;
 
             $(".menu-select").each(function () {
                 const selectedOption = $(this).find("option:selected");
                 const price = parseFloat(selectedOption.attr("data-price")) || 0;
-                const quantity = parseInt($(this).closest(".row").find(".menu-quantity").val()) || 0;
-
+                const quantity = parseInt($(this).closest(".row").find(".menu-quantity").val()) || 1;
                 total += price * quantity;
             });
 
+            // Insert total
             subTotalInput.val(total.toLocaleString("id-ID"));
+            totalInput.val(total.toLocaleString("id-ID"));
         }
 
-        menuSelect.on("change select2:select", updateSubTotal);
-        quantityInput.on("change input", updateSubTotal);
-
-        menuContainer.on("change", ".menu-select, .menu-quantity", updateSubTotal);
-
-        let menuOptions = menuSelect.html();
-
-        $("#add-menu-btn").on("click", function () {
+        function addMenuRow() {
             const newMenuRow = $("<div>").addClass("row align-items-end mb-3");
 
-            // Menu Select
+            // Menu
+            const newSelect = $("<select>")
+                .addClass("form-select select2 menu-select")
+                .attr({ name: "menu_id[]", required: true })
+                .css("width", "100%")
+                .html(menuOptions);
+
             const newSelectWrapper = $("<div>").addClass("col-lg-7 col-md-6 col-7").append(
                 $("<div>").addClass("mb-3").append(
                     $("<label>").addClass("form-label").text("Menu"),
-                    $("<select>")
-                        .addClass("form-select select2 menu-select")
-                        .attr({ name: "menu_id[]", required: true })
-                        .css("width", "100%")
-                        .html(menuOptions)
+                    newSelect
                 )
             );
 
-            // Quantity Input
+            // Quantity
             const newQuantityWrapper = $("<div>").addClass("col-lg-3 col-md-4 col-3").append(
                 $("<div>").addClass("mb-3").append(
                     $("<label>").addClass("form-label").text("Quantity"),
                     $("<input>")
                         .addClass("form-control menu-quantity")
-                        .attr({
-                            type: "number",
-                            name: "quantity[]",
-                            min: 1,
-                            placeholder: "Quantity..",
-                            required: true,
-                        })
+                        .attr({ type: "number", name: "quantity[]", min: 1, placeholder: "Quantity..", required: true })
                 )
             );
 
-            // Delete Button
+            // Delete
             const newDeleteWrapper = $("<div>").addClass("col-lg-2 col-md-2 col-2 text-md-center text-end").append(
                 $("<div>").addClass("mb-3").append(
                     $("<button>")
@@ -169,23 +162,85 @@ document.addEventListener("DOMContentLoaded", function () {
             newMenuRow.append(newSelectWrapper, newQuantityWrapper, newDeleteWrapper);
             menuContainer.append(newMenuRow);
 
-            newSelectWrapper.find("select").select2({
-                theme: "bootstrap-5",
-                width: "100%",
-            });
+            newSelect.select2({ theme: "bootstrap-5", width: "100%" });
 
-            newSelectWrapper.find("select").on("change select2:select", updateSubTotal);
+            // newSelectWrapper.find("select").on("change select2:select", updateSubTotal);
             newQuantityWrapper.find("input").on("change input", updateSubTotal);
 
-            // Delete
             newDeleteWrapper.find(".btn-remove-menu").on("click", function () {
                 newMenuRow.remove();
                 updateSubTotal();
             });
 
             updateSubTotal();
+        }
+
+        $("#add-menu-btn").on("click", addMenuRow);
+        menuSelect.on("change", toggleAddButton);
+        quantityInput.on("input", toggleAddButton);
+
+        outletSelect.change(function () {
+            let outletId = $(this).val();
+
+            if (outletId > 0) {
+                $(".order-form").removeClass("d-none");
+            }
+
+            userSelect.html('<option>Loading...</option>');
+            menuSelect.html('<option>Loading...</option>');
+
+            // Fetch Users
+            $.ajax({
+                url: '/get-users/' + outletId,
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" disabled selected>Pilih Staff</option>';
+
+                    data.forEach(user => {
+                        options += `<option value="${user.id}">${user.name}</option>`;
+                    });
+
+                    userSelect.html(options);
+                }
+            });
+
+            // Fetch Menus
+            $.ajax({
+                url: '/get-menus/' + outletId,
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" disabled selected>Pilih Menu</option>';
+
+                    data.forEach(menu => {
+                        options += `<option value="${menu.id}" data-price="${menu.price}">${menu.name}</option>`;
+                    });
+
+                    menuSelect.html(options).trigger("change");
+                    menuSelect.select2("destroy").html(options).select2({ theme: "bootstrap-5", width: "100%" });
+
+                    menuOptions = options;
+                    updateSubTotal();
+                }
+            });
         });
 
+        // $(document).on("change select2:select", ".menu-select", updateSubTotal);
+        $(document).on("change input", ".menu-quantity", updateSubTotal);
+
         updateSubTotal();
+    });
+
+    $(document).ready(function () {
+        $("#customer_id").change(function () {
+            let selectedOption = $(this).find("option:selected");
+            let customerName = selectedOption.data("name");
+
+            if (customerName) {
+                $("#customer_name").val(customerName);
+                $("#customer_name_wrapper").removeClass("d-none");
+            } else {
+                $("#customer_name_wrapper").addClass("d-none");
+            }
+        });
     });
 });

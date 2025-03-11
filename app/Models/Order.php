@@ -58,4 +58,15 @@ class Order extends Model
     {
         return 'slug';
     }
+
+    const ORDER_STATUSES = [
+        'processing' => 'Diproses',
+        'completed' => 'Selesai',
+        'canceled' => 'Dibatalkan',
+    ];
+
+    const PAYMENT_STATUSES = [
+        'paid' => 'Lunas',
+        'unpaid' => 'Belum Lunas',
+    ];
 }
