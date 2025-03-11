@@ -36,11 +36,11 @@ class AdminOrderController extends Controller
      */
     public function create()
     {
-        return view('dashboard.orders.create', [
+       return view('dashboard.orders.create', [
             'outlets' => Outlet::all(),
             'customers' => Customer::latest()->get(),
             'users' => User::all(),
-            'menus' => Menu::all(),
+            'menus' => Menu::with('pricePromo')->get(),
 
             'orderStatuses' => Order::ORDER_STATUSES,
             'paymentStatuses' => Order::PAYMENT_STATUSES
@@ -90,15 +90,36 @@ class AdminOrderController extends Controller
         //
     }
 
-    public function getUsers($outletId)
+    public function getUsers($slug)
     {
-        $users = User::where('outlet_id', $outletId)->get();
+        $outlet = Outlet::where('slug', $slug)->first();
+
+        if (!$outlet) {
+            return response()->json(['message' => 'Outlet tidak ditemukan'], 404);
+        }
+
+        $users = User::where('outlet_id', $outlet->id)->get();
         return response()->json($users);
     }
 
-    public function getMenus($outletId)
+    public function getMenus($slug)
     {
-        $menus = Menu::where('outlet_id', $outletId)->get();
+        $outlet = Outlet::where('slug', $slug)->first();
+
+        if (!$outlet) {
+            return response()->json(['message' => 'Outlet tidak ditemukan'], 404);
+        }
+
+        $menus = Menu::with('pricePromo')
+            ->where('outlet_id', $outlet->id)
+            ->get()
+            ->map(function ($menu) {
+                $menu->is_promo_active = $menu->pricePromo &&
+                    now()->between($menu->pricePromo->promo_start_date, $menu->pricePromo->promo_end_date);
+
+                return $menu;
+            });
+
         return response()->json($menus);
     }
 }

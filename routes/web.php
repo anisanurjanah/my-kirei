@@ -30,8 +30,8 @@ Route::resource('/dashboard/stocks', AdminStockController::class);
 Route::resource('/dashboard/prices', AdminPriceController::class);
 
 Route::resource('/dashboard/orders', AdminOrderController::class);
-Route::get('/get-users/{outletId}', [AdminOrderController::class, 'getUsers']);
-Route::get('/get-menus/{outletId}', [AdminOrderController::class, 'getMenus']);
+Route::get('/get-users/{slug}', [AdminOrderController::class, 'getUsers']);
+Route::get('/get-menus/{slug}', [AdminOrderController::class, 'getMenus']);
 
 Route::resource('/dashboard/orderitems', AdminOrderItemController::class);
 

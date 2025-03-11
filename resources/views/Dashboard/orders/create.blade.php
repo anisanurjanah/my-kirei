@@ -50,7 +50,7 @@
                                         <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
                                             <option value="" disabled selected>Pilih Outlet</option>
                                             @foreach ($outlets as $outlet)
-                                                <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                                                <option value="{{ $outlet->id }}" data-slug="{{ $outlet->slug }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
                                                     {{ $outlet->name }}
                                                 </option>
                                             @endforeach
@@ -82,8 +82,14 @@
                                                     <select class="form-select select2 menu-select" id="menu_id" name="menu_id" required>
                                                         <option value="" disabled selected>Pilih Menu</option>
                                                         @foreach ($menus as $menu)
-                                                            <option value="{{ $menu->id }}" data-price="{{ $menu->price }}" {{ in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
-                                                                {{ $menu->name }}
+                                                            @php
+                                                                $finalPrice = $menu->price;
+                                                                if (optional($menu->price_promo)->price_promo) {
+                                                                    $finalPrice = $menu->price - $menu->price_promo->price_promo; // Dikurangi diskon
+                                                                }
+                                                            @endphp
+                                                            <option value="{{ $menu->id }}" data-price="{{ $finalPrice }}" {{ in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
+                                                                {{ $menu->name }} - Rp{{ number_format($finalPrice, 0, ',', '.') }}
                                                             </option>
                                                         @endforeach
                                                     </select>

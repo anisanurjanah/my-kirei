@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             newSelect.select2({ theme: "bootstrap-5", width: "100%" });
 
-            // newSelectWrapper.find("select").on("change select2:select", updateSubTotal);
+            newSelectWrapper.find("select").on("change select2:select", updateSubTotal);
             newQuantityWrapper.find("input").on("change input", updateSubTotal);
 
             newDeleteWrapper.find(".btn-remove-menu").on("click", function () {
@@ -181,6 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         outletSelect.change(function () {
             let outletId = $(this).val();
+            let outletSlug = $(this).find(":selected").data("slug");
 
             if (outletId > 0) {
                 $(".order-form").removeClass("d-none");
@@ -191,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Fetch Users
             $.ajax({
-                url: '/get-users/' + outletId,
+                url: '/get-users/' + outletSlug,
                 type: 'GET',
                 success: function (data) {
                     let options = '<option value="" disabled selected>Pilih Staff</option>';
@@ -206,16 +207,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Fetch Menus
             $.ajax({
-                url: '/get-menus/' + outletId,
+                url: '/get-menus/' + outletSlug,
                 type: 'GET',
                 success: function (data) {
                     let options = '<option value="" disabled selected>Pilih Menu</option>';
 
                     data.forEach(menu => {
-                        options += `<option value="${menu.id}" data-price="${menu.price}">${menu.name}</option>`;
+                        let finalPrice = menu.price;
+
+                        if (menu.price_promo && menu.price_promo.price_promo) {
+                            finalPrice = menu.price - menu.price_promo.price_promo;
+                        }
+
+                        options += `<option value="${menu.id}" data-price="${finalPrice}">${menu.name}</option>`;
                     });
 
-                    menuSelect.html(options).trigger("change");
+                    menuSelect.html(options);
                     menuSelect.select2("destroy").html(options).select2({ theme: "bootstrap-5", width: "100%" });
 
                     menuOptions = options;
@@ -224,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        // $(document).on("change select2:select", ".menu-select", updateSubTotal);
+        $(document).on("change select2:select", ".menu-select", updateSubTotal);
         $(document).on("change input", ".menu-quantity", updateSubTotal);
 
         updateSubTotal();
