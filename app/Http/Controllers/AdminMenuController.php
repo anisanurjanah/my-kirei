@@ -10,6 +10,7 @@ use App\Models\Price;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 // use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class AdminMenuController extends Controller
@@ -120,23 +121,66 @@ class AdminMenuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Menu $menu)
     {
-        //
+        return view('/dashboard.menus.edit', [
+            'menu' => $menu,
+            'outlets' => Outlet::all()
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Menu $menu)
     {
-        //
+        // Remove Price's Dot
+        $request->merge([
+            'price' => str_replace('.', '', $request->price),
+            'price_promo' => str_replace('.', '', $request->price_promo),
+        ]);
+
+        // Validated
+        $validatedData = $request->validate([
+            'outlet_id' => 'required|exists:outlets,id',
+            'name' => 'required|max:32',
+            'description' => 'required|max:128',
+            'image' => 'nullable|image|file|max:1024',
+            'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
+            'price_promo' => 'integer|min:0|max:' . $request->price,
+        ]);
+
+        // Insert Image
+        if($request->file('image')) {
+            if($request->oldImage) {
+                Storage::delete($request->oldImage);
+            }
+
+            $validatedData['image'] = $request->file('image')->store('menu-images');
+        }
+
+        // Insert Data
+        $menu->update($validatedData);
+
+        Stock::updateOrCreate(
+            ['menu_id' => $menu->id],
+            ['current_stock' => $request->stock ?? 0]
+        );
+
+        Price::updateOrCreate(
+            ['menu_id' => $menu->id],
+            ['price_promo' => $request->price_promo ?? 0]
+        );
+
+        // Redirect to menus
+        return redirect('/dashboard/menus')->with('success', 'Menu berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Menu $menu)
     {
         //
     }

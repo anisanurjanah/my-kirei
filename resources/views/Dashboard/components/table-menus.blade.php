@@ -48,13 +48,13 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/menus/edit">
+                                        <a class="dropdown-item" href="/dashboard/menus/{{ $menu->slug }}/edit">
                                             <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/menus/delete">
+                                        <a class="dropdown-item" href="/dashboard/menus/{{ $menu->slug }}/delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
                                         </a>
                                     </li>

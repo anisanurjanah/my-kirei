@@ -10,10 +10,10 @@ use Carbon\Carbon;
     </p>
     <div class="row g-0">
         <div class="col-md-4 d-flex align-items-center justify-content-center">
-            @if ($menu->image)
+            @if ($menu->image && file_exists(storage_path('app/public/' . $menu->image)))
                 <img src="{{ asset('storage/' . $menu->image) }}" class="img-fluid rounded" alt="{{ $menu->name }}">
             @else
-                <img src="https://picsum.photos/640/480" class="img-fluid rounded" alt="{{ $menu->name }}">
+                <img src="{{ asset('img/dimsum-placeholder.jpg') }}" class="img-fluid rounded" alt="{{ $menu->name }}">
             @endif
         </div>
         <div class="col-md-8">
