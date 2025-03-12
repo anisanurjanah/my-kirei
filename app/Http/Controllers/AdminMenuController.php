@@ -182,7 +182,14 @@ class AdminMenuController extends Controller
      */
     public function destroy(Menu $menu)
     {
-        //
+        if($menu->image) {
+            Storage::delete($menu->image);
+        }
+
+        Menu::destroy($menu->id);
+
+        // Redirect to menus
+        return redirect('/dashboard/menus')->with('success', 'Menu berhasil dihapus!');
     }
 
     // public function checkSlug(Request $request)

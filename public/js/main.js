@@ -279,4 +279,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    // Modal delete
+    document.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var itemName = button.getAttribute('data-bs-name');
+        var itemUrl = button.getAttribute('data-bs-url');
+
+        var modalItemName = document.getElementById('modalItemName');
+        var modalDeleteForm = document.getElementById('modalDeleteForm');
+
+        modalItemName.textContent = itemName;
+        modalDeleteForm.action = itemUrl;
+    });
 });
