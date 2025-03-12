@@ -79,7 +79,7 @@
                                             <div class="col-lg-7 col-md-6 col-7">
                                                 <div class="mb-3">
                                                     <label for="menu_id" class="form-label">Menu</label>
-                                                    <select class="form-select select2 menu-select" id="menu_id" name="menu_id" required>
+                                                    <select class="form-select select2 menu-select" id="menu_id" name="menu_id[]" required>
                                                         <option value="" disabled selected>Pilih Menu</option>
                                                         @foreach ($menus as $menu)
                                                             @php
@@ -88,7 +88,7 @@
                                                                     $finalPrice = $menu->price - $menu->price_promo->price_promo; // Dikurangi diskon
                                                                 }
                                                             @endphp
-                                                            <option value="{{ $menu->id }}" data-price="{{ $finalPrice }}" {{ in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
+                                                            <option value="{{ $menu->id }}" data-price="{{ $finalPrice }}" {{ is_array(old('menu_id')) && in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
                                                                 {{ $menu->name }} - Rp{{ number_format($finalPrice, 0, ',', '.') }}
                                                             </option>
                                                         @endforeach
@@ -99,7 +99,7 @@
                                             <div class="col-lg-3 col-md-4 col-3">
                                                 <div class="mb-3">
                                                     <label for="quantity" class="form-label">Quantity</label>
-                                                    <input type="number" class="form-control menu-quantity @error('quantity') is-invalid @enderror" id="quantity" name="quantity" min="1" placeholder="Quantity.." value="{{ old('quantity') }}" required>
+                                                    <input type="number" class="form-control menu-quantity @error('quantity') is-invalid @enderror" id="quantity" name="quantity[]" min="1" placeholder="Quantity.." value='@json(old("quantity"))' required>
                                                     @error('quantity')
                                                         <div class="invalid-feedback">
                                                             {{ $message }}
@@ -129,7 +129,8 @@
                                             <label for="sub_total" class="form-label">Sub Total</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">Rp</span>
-                                                <input type="text" class="form-control @error('sub_total') is-invalid @enderror" id="sub_total" name="sub_total" value="{{ number_format((int) old('sub_total', 0), 0, ',', '.') }}" autocomplete="off" required>
+                                                <input type="text" class="form-control sub-total-input @error('sub_total') is-invalid @enderror" id="sub_total" name="sub_total[]" value="{{ number_format((int) old('sub_total'), 0, ',', '.') }}"
+                                                autocomplete="off" required>
                                             </div>
                                             @error('sub_total')
                                                 <div class="invalid-feedback">

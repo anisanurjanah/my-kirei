@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Outlet;
-use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Stock;
 use App\Models\Price;

@@ -85,9 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const addMenuBtnContainer = $("#add-menu-btn-container");
         const menuContainer = $("#menu-container");
 
-        const subTotalInput = $("#sub_total");
-        const totalInput = $("#total_price");
-
         const outletSelect = $("#outlet_id");
         const userSelect = $("#user_id");
 
@@ -113,14 +110,21 @@ document.addEventListener("DOMContentLoaded", function () {
             $(".menu-select").each(function () {
                 const selectedOption = $(this).find("option:selected");
                 const price = parseFloat(selectedOption.attr("data-price")) || 0;
-                const quantity = parseInt($(this).closest(".row").find(".menu-quantity").val()) || 1;
-                total += price * quantity;
+                const quantityInput = $(this).closest(".row").find(".menu-quantity");
+                const subtotalInput = $(this).closest(".row").find(".sub-total-input");
+
+                const quantity = parseInt(quantityInput.val()) || 1;
+                const subtotal = price * quantity;
+
+                subtotalInput.val(subtotal.toLocaleString("id-ID"));
+                total += subtotal;
             });
 
             // Insert total
-            subTotalInput.val(total.toLocaleString("id-ID"));
-            totalInput.val(total.toLocaleString("id-ID"));
+            $("#sub_total").val(total.toLocaleString("id-ID"));
+            $("#total_price").val(total.toLocaleString("id-ID"));
         }
+
 
         function addMenuRow() {
             const newMenuRow = $("<div>").addClass("row align-items-end mb-3");
@@ -149,6 +153,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 )
             );
 
+            // Sub Total
+            const newSubTotalInput = $("<input>")
+                .addClass("form-control sub-total-input")
+                .attr({
+                    type: "text",
+                    name: "sub_total[]",
+                    readonly: true
+                });
+
+            const newSubTotalWrapper = $("<div>").addClass("col-lg-3 col-md-4 col-3 d-none").append(
+                $("<div>").addClass("mb-3").append(
+                    $("<label>").addClass("form-label").text("Sub Total"),
+                    $("<div>").addClass("input-group").append(
+                        $("<span>").addClass("input-group-text").text("Rp"),
+                        newSubTotalInput
+                    )
+                )
+            );
+
             // Delete
             const newDeleteWrapper = $("<div>").addClass("col-lg-2 col-md-2 col-2 text-md-center text-end").append(
                 $("<div>").addClass("mb-3").append(
@@ -159,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 )
             );
 
-            newMenuRow.append(newSelectWrapper, newQuantityWrapper, newDeleteWrapper);
+            newMenuRow.append(newSelectWrapper, newQuantityWrapper, newSubTotalWrapper, newDeleteWrapper);
             menuContainer.append(newMenuRow);
 
             newSelect.select2({ theme: "bootstrap-5", width: "100%" });
@@ -189,6 +212,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             userSelect.html('<option>Loading...</option>');
             menuSelect.html('<option>Loading...</option>');
+
+            menuContainer.empty();
+            $("#quantity").val("Quantity..");
+            $("#sub_total").val("0");
+            $("#total_price").val("0");
+            addMenuBtnContainer.addClass("d-none");
 
             // Fetch Users
             $.ajax({
@@ -231,7 +260,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        $(document).on("change select2:select", ".menu-select", updateSubTotal);
+        // $(document).on("change select2:select", ".menu-select", updateSubTotal);
         $(document).on("change input", ".menu-quantity", updateSubTotal);
 
         updateSubTotal();
