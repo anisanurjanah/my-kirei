@@ -140,6 +140,26 @@
                                 </div>
                             @enderror
                         </div>
+                        <div id="promo_dates" class="d-none">
+                            <div class="mb-3">
+                                <label for="promo_start_date" class="form-label">Waktu Mulai</label>
+                                <input type="date" class="form-control @error('promo_start_date') is-invalid @enderror" id="promo_start_date" name="promo_start_date" value="{{ old('price_promo', optional($menu->pricePromo)->promo_start_date) }}" required>
+                                @error('promo_start_date')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="promo_end_date" class="form-label">Waktu Selesai</label>
+                                <input type="date" class="form-control @error('promo_end_date') is-invalid @enderror" id="promo_end_date" name="promo_end_date" value="{{ old('price_promo', optional($menu->pricePromo)->promo_end_date) }}" required>
+                                @error('promo_end_date')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
 
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-dark">Simpan</button>

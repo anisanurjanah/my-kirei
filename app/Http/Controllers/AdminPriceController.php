@@ -40,7 +40,7 @@ class AdminPriceController extends Controller
         $validatedData = $request->validate([
             'menu_id' => 'required|exists:menus,id',
             'price_promo' => 'required|integer|min:0|max:' . $menuPrice,
-            'promo_start_date' => 'required|date|after_or_equal:date' . $today,
+            'promo_start_date' => 'required|date|after_or_equal:' . $today,
             'promo_end_date' => 'required|date|after:promo_start_date'
         ]);
 

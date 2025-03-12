@@ -70,6 +70,24 @@ document.addEventListener("DOMContentLoaded", function () {
         imageInput.addEventListener("change", previewImage);
     }
 
+    // Menu promotion
+    var $pricePromoInput = $("#price_promo");
+    var $promoDates = $("#promo_dates");
+
+    function togglePromoDates() {
+        var pricePromoValue = $pricePromoInput.val().replace(/\./g, '');
+
+        if ($.trim(pricePromoValue) !== "" && pricePromoValue !== "0") {
+            $promoDates.removeClass("d-none");
+        } else {
+            $promoDates.addClass("d-none");
+        }
+    }
+
+    togglePromoDates();
+
+    $pricePromoInput.on("input", togglePromoDates);
+
     // Select2
     $(document).ready(function() {
         $('.select2').select2({
@@ -266,6 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateSubTotal();
     });
 
+    // Show customer name
     $(document).ready(function () {
         $("#customer_id").change(function () {
             let selectedOption = $(this).find("option:selected");

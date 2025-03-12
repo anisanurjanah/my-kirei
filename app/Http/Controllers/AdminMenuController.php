@@ -54,6 +54,8 @@ class AdminMenuController extends Controller
      */
     public function store(Request $request)
     {
+        $today = now()->toDateString();
+
         // Remove Price's Dot
         $request->merge([
             'price' => str_replace('.', '', $request->price),
@@ -68,7 +70,9 @@ class AdminMenuController extends Controller
             'image' => 'required|image|file|max:1024',
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
-            'price_promo' => 'integer|min:0|max:' . $request->price,
+            'price_promo' => 'nullable|integer|min:0|max:' . $request->price,
+            'promo_start_date' => $request->price_promo ? 'required|date|after_or_equal:' . $today : 'nullable|date',
+            'promo_end_date' => $request->price_promo ? 'required|date|after:promo_start_date' : 'nullable|date|after:promo_start_date',
         ]);
 
         // Generate Menu Slug
@@ -101,7 +105,9 @@ class AdminMenuController extends Controller
 
         Price::create([
             'menu_id' => $menu->id,
-            'price_promo' => $request->price_promo ?? 0
+            'price_promo' => $request->price_promo !== null ? $request->price_promo : null,
+            'promo_start_date' => $request->price_promo ? $request->promo_start_date : null,
+            'promo_end_date' => $request->price_promo ? $request->promo_end_date : null,
         ]);
 
         // Redirect to menus
@@ -134,6 +140,8 @@ class AdminMenuController extends Controller
      */
     public function update(Request $request, Menu $menu)
     {
+        $today = now()->toDateString();
+
         // Remove Price's Dot
         $request->merge([
             'price' => str_replace('.', '', $request->price),
@@ -148,7 +156,9 @@ class AdminMenuController extends Controller
             'image' => 'nullable|image|file|max:1024',
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
-            'price_promo' => 'integer|min:0|max:' . $request->price,
+            'price_promo' => 'nullable|integer|min:0|max:' . $request->price,
+            'promo_start_date' => $request->price_promo ? 'required|date|after_or_equal:' . $today : 'nullable|date',
+            'promo_end_date' => $request->price_promo ? 'required|date|after:promo_start_date' : 'nullable|date|after:promo_start_date',
         ]);
 
         // Insert Image
@@ -168,10 +178,18 @@ class AdminMenuController extends Controller
             ['current_stock' => $request->stock ?? 0]
         );
 
-        Price::updateOrCreate(
-            ['menu_id' => $menu->id],
-            ['price_promo' => $request->price_promo ?? 0]
-        );
+        if ($request->price_promo === "") {
+            Price::where('menu_id', $menu->id)->delete();
+        } else {
+            Price::updateOrCreate(
+                ['menu_id' => $menu->id],
+                [
+                    'price_promo' => $request->price_promo,
+                    'promo_start_date' => $request->promo_start_date,
+                    'promo_end_date' => $request->promo_end_date
+                ]
+            );
+        }
 
         // Redirect to menus
         return redirect('/dashboard/menus')->with('success', 'Menu berhasil diperbarui!');

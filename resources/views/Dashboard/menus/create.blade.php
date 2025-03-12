@@ -87,7 +87,7 @@
                         <div class="mb-3">
                             <label for="image" class="form-label">Gambar</label>
                             <img class="img-preview img-fluid mb-3 col-sm-5">
-                            <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" required>
+                            <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" onchange="previewImage()">
                             @error('image')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -133,6 +133,26 @@
                                     {{ $message }}
                                 </div>
                             @enderror
+                        </div>
+                        <div id="promo_dates" class="d-none">
+                            <div class="mb-3">
+                                <label for="promo_start_date" class="form-label">Waktu Mulai</label>
+                                <input type="date" class="form-control @error('promo_start_date') is-invalid @enderror" id="promo_start_date" name="promo_start_date" value="{{ old('promo_start_date') }}">
+                                @error('promo_start_date')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="promo_end_date" class="form-label">Waktu Selesai</label>
+                                <input type="date" class="form-control @error('promo_end_date') is-invalid @enderror" id="promo_end_date" name="promo_end_date" value="{{ old('promo_end_date') }}">
+                                @error('promo_end_date')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-end">

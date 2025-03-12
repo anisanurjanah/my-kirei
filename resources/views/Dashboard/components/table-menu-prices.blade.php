@@ -6,7 +6,6 @@
                     <th>Harga</th>
                     <th>Potongan</th>
                     <th>Periode</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -15,25 +14,6 @@
                     <td class="text-danger fw-bold">Rp {{ number_format($menu->pricePromo->price_promo, 0, ',', '.') }}</td>
                     <td>
                         <small>{{ date('d/m', strtotime($menu->pricePromo->promo_start_date)) }} - {{ date('d/m', strtotime($menu->pricePromo->promo_end_date)) }}</small>
-                    </td>
-                    <td class="text-center">
-                        <div class="dropdown mx-auto">
-                            <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots text-black"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item" href="/dashboard/prices/edit">
-                                        <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="/dashboard/prices/delete">
-                                        <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
                     </td>
                 </tr>
             </tbody>
