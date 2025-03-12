@@ -14,7 +14,7 @@ class AdminUserController extends Controller
     public function index()
     {
         return view('dashboard.users.index', [
-            'users' => User::where('username', '!=', 'administrator')->paginate(10)->withQueryString(),
+            'users' => User::latest()->where('username', '!=', 'administrator')->paginate(10)->withQueryString(),
             'totalUsers' => User::count(),
             'totalOutlets' => Outlet::count(),
             'totalCashiers' => User::where('role', 'kasir')->count(),
@@ -28,7 +28,10 @@ class AdminUserController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.users.create', [
+            'outlets' => Outlet::all(),
+            'userRoles' => User::USER_ROLES,
+        ]);
     }
 
     /**
@@ -36,7 +39,30 @@ class AdminUserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+
+        // Remove Phone's Strip
+        $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
+
+        $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+
+        // Validated
+        $validatedData = $request->validate([
+            'outlet_id' => 'required|exists:outlets,id',
+            'name' => 'required|max:32',
+            'email' => 'required|email:dns',
+            'phone' => 'required|max:20',
+            'username' => 'required|max:16',
+            'password' => 'required|max:8',
+            'role' => 'required|string|in:Kasir,Produksi',
+        ]);
+
+        $validatedData['phone'] = $formattedPhone;
+
+        User::create($validatedData);
+
+        // Redirect to user
+        return redirect('/dashboard/users')->with('success', 'Pengguna berhasil ditambahkan!');
     }
 
     /**

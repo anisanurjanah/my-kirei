@@ -24,6 +24,12 @@
             </a>
         </div>
 
+        @if (session()->has('success'))
+            <div class="alert alert-success col-lg-12 mt-3" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <div class="row py-3">
             <div class="col-md-6">
                 <div class="row align-items-stretch">
@@ -93,60 +99,8 @@
                     </div>
                 </div>
 
-                <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
-                    <table id="table" class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                <th scope="col" class="text-secondary" style="font-size: 12px;">PHONE <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                <th scope="col" class="text-secondary" style="font-size: 12px;">ADDRESS <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($outlets->isNotEmpty())
-                                @foreach ($outlets as $outlet)
-                                    <tr>
-                                        <td>{{ ($outlets->currentPage() - 1) * $outlets->perPage() + $loop->iteration }}</td>
-                                        <td>{{ $outlet->name }}</td>
-                                        <td>{{ $outlet->phone }}</td>
-                                        <td>{{ $outlet->address }}</td>
-                                        <td class="text-center" style="width: 64px">
-                                            <div class="dropdown mx-auto">
-                                                <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots text-black"></i>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li>
-                                                        <a class="dropdown-item" href="/dashboard/outlets/{{ $outlet->slug }}">
-                                                            <i class="bi bi-eye mx-2" style="font-size: 16px"></i>Lihat
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="/dashboard/outlets/edit">
-                                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
-                                                        </a>
-                                                    </li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="/dashboard/outlets/delete">
-                                                            <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="5" class="text-center">Data tidak tersedia.</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+                @include('dashboard.components.table-outlets')
+
                 <div class="d-flex justify-content-between align-items-center py-3 py-md-0">
                     <small class="text-muted">
                         Menampilkan {{ $outlets->firstItem() }} sampai {{ $outlets->lastItem() }} dari {{ $outlets->total() }} data

@@ -15,7 +15,7 @@ class AdminCustomerController extends Controller
     public function index()
     {
         return view('dashboard.customers.index', [
-            'customers' => Customer::paginate(10)->withQueryString(),
+            'customers' => Customer::latest()->paginate(10)->withQueryString(),
             'totalCustomers' => Customer::count(),
             'totalOrders' => Order::count(),
             'newCustomers' => Customer::where('created_at', '>=', Carbon::now()->subWeek())->count(),
@@ -31,7 +31,7 @@ class AdminCustomerController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.customers.create');
     }
 
     /**
@@ -39,7 +39,23 @@ class AdminCustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Remove Phone's Strip
+        $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
+
+        $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+
+        // Validated
+        $validatedData = $request->validate([
+            'name' => 'required|max:32',
+            'phone' => 'required|max:20',
+        ]);
+
+        $validatedData['phone'] = $formattedPhone;
+
+        Customer::create($validatedData);
+
+        // Redirect to customer
+        return redirect('/dashboard/customers')->with('success', 'Pelanggan berhasil ditambahkan!');
     }
 
     /**

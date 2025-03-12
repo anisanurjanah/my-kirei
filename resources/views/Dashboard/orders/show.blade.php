@@ -7,8 +7,9 @@
             <div class="d-block">
                 <h1 class="h2">
                     <a href="/dashboard/orders" class="text-decoration-none text-danger">
-                        <i class="bi bi-arrow-left-circle-fill text-danger me-3" style="font-size: 20px"></i>{{ $order->slug }}
+                        <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
+                    {{ $order->slug }}
                 </h1>
 
                 <nav aria-label="breadcrumb">
@@ -76,11 +77,11 @@
             <div class="accordion accordion-flush">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#informasi-item-pesanan">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#order-items-information">
                             <span class="fw-bold">Item Pesanan</span>
                         </button>
                     </h2>
-                    <div id="informasi-item-pesanan" class="accordion-collapse collapse show">
+                    <div id="order-items-information" class="accordion-collapse collapse show">
                         <div class="accordion-body">
                             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap border rounded-top-2 p-3 bg-white">
                                 <div class="input-group w-50">
@@ -88,60 +89,9 @@
                                     <button class="btn btn-outline-secondary" type="button" id="search" name="search" style="font-size: 12px;">Cari</button>
                                 </div>
                             </div>
-                            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
-                                <table id="table" class="table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                            <th scope="col" class="text-secondary" style="font-size: 12px;">MENU <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                            <th scope="col" class="text-secondary" style="font-size: 12px;">QUANTITY <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                            <th scope="col" class="text-secondary w-25" style="font-size: 12px;">SUB TOTAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if ($orderItems->isNotEmpty())
-                                            @foreach ($orderItems as $orderItem)
-                                                <tr>
-                                                    <td>{{ ($orderItems->currentPage() - 1) * $orderItems->perPage() + $loop->iteration }}</td>
-                                                    <td>{{ $orderItem->menu->name }}</td>
-                                                    <td>{{ $orderItem->quantity }}</td>
-                                                    <td>Rp. {{ number_format($orderItem->sub_total, 0, ',', '.') }}</td>
-                                                    <td class="text-center" style="width: 64px">
-                                                        <div class="dropdown mx-auto">
-                                                            <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="bi bi-three-dots text-black"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                                <li>
-                                                                    <a class="dropdown-item" href="#{{ $order->slug }}" data-bs-toggle="modal">
-                                                                        <i class="bi bi-eye mx-2" style="font-size: 16px"></i> Lihat
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="dropdown-item" href="/dashboard/orderItems/edit">
-                                                                        <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
-                                                                    </a>
-                                                                </li>
-                                                                <li><hr class="dropdown-divider"></li>
-                                                                <li>
-                                                                    <a class="dropdown-item" href="/dashboard/orderItems/delete">
-                                                                        <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @else
-                                            <tr>
-                                                <td colspan="7" class="text-center">Data tidak tersedia.</td>
-                                            </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
+
+                            @include('dashboard.components.table-order-items')
+
                             <div class="d-flex justify-content-between align-items-center py-3">
                                 <small class="text-muted">
                                     Menampilkan {{ $orderItems->firstItem() }} sampai {{ $orderItems->lastItem() }} dari {{ $orderItems->total() }} data
@@ -157,36 +107,6 @@
 
     </div>
 
-    @foreach ($orderItems as $orderItem)
-        <div class="modal fade" id="{{ $order->slug }}" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 class="modal-title fs-6">
-                            Informasi Item Pesanan:<span class="fw-bold ms-2">{{ $order->slug }}</span>
-                        </h2>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="card border-0 w-100">
-                            <div class="card-body">
-                                <h5 class="card-title mb-0">Menu</h5>
-                                <p class="card-text">{{ $orderItem->menu->name }}</p>
-
-                                <h5 class="card-title mb-0">Quantity</h5>
-                                <p class="card-text">{{ $orderItem->quantity }}</p>
-
-                                <h5 class="card-title mb-0">Sub Total</h5>
-                                <p class="card-text">{{ $orderItem->sub_total }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endforeach
+    @include('dashboard.components.modal-show-order-items')
 
 @endsection

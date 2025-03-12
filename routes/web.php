@@ -1,15 +1,15 @@
 <?php
 
-use App\Http\Controllers\AdminCustomerController;
-use App\Http\Controllers\AdminLoginController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminMenuController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminOrderController;
-use App\Http\Controllers\AdminOrderItemController;
-use App\Http\Controllers\AdminOutletController;
 use App\Http\Controllers\AdminPriceController;
 use App\Http\Controllers\AdminStockController;
-use App\Http\Controllers\AdminUserController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminOutletController;
+use App\Http\Controllers\AdminCustomerController;
+use App\Http\Controllers\AdminOrderItemController;
 
 Route::get('/', function () {
     return view('home');
@@ -23,21 +23,17 @@ Route::get('/dashboard', function() {
 // ->middleware('auth');
 
 Route::resource('/dashboard/users', AdminUserController::class);
-
 Route::resource('/dashboard/customers', AdminCustomerController::class);
-
 Route::resource('/dashboard/outlets', AdminOutletController::class);
-
-// Route::get('/dashboard/menus/checkSlug', [AdminMenuController::class, 'checkSlug']);
-// ->middleware('auth');
 Route::resource('/dashboard/menus', AdminMenuController::class);
-
 Route::resource('/dashboard/stocks', AdminStockController::class);
-
 Route::resource('/dashboard/prices', AdminPriceController::class);
 
 Route::resource('/dashboard/orders', AdminOrderController::class);
-// Route::resource('/dashboard/orders', AdminOrderItemController::class);
+Route::get('/get-users/{slug}', [AdminOrderController::class, 'getUsers']);
+Route::get('/get-menus/{slug}', [AdminOrderController::class, 'getMenus']);
+
+Route::resource('/dashboard/orderitems', AdminOrderItemController::class);
 
 // Route::post('/login', [LoginController::class, 'authenticate']);
 // Route::post('/logout', [LoginController::class, 'logout']);

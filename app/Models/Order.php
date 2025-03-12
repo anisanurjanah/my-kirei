@@ -36,26 +36,18 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($order) {
-            $order->slug = static::generateSlug($order);
-        });
-    }
-
-    public static function generateSlug($order)
-    {
-        $outletName = Str::slug($order->outlet->name);
-        $orderDate = $order->order_date;
-        $customerName = Str::slug($order->customer->name);
-
-        return "{$outletName}-{$orderDate}-{$customerName}";
-    }
-
     public function getRouteKeyName()
     {
         return 'slug';
     }
+
+    const ORDER_STATUSES = [
+        'Selesai' => 'Selesai',
+        'Dibatalkan' => 'Dibatalkan',
+    ];
+
+    const PAYMENT_STATUSES = [
+        'Lunas' => 'Lunas',
+        'Belum Lunas' => 'Belum Lunas',
+    ];
 }

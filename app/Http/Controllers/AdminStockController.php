@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 
@@ -52,7 +53,17 @@ class AdminStockController extends Controller
      */
     public function update(Request $request, Stock $stock)
     {
-        //
+        // Validated
+        $validatedData = $request->validate([
+            'stock' => 'required|integer|min:0'
+        ]);
+
+        $stock->update([
+            'current_stock' => $stock->current_stock + $validatedData['stock']
+        ]);
+
+        // Redirect to menus
+        return redirect('/dashboard/menus')->with('success', 'Stok berhasil ditambahkan!');
     }
 
     /**

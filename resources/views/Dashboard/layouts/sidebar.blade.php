@@ -113,7 +113,7 @@
                 </li>
             </ul>
 
-            <hr class="my-3">
+            {{-- <hr class="my-3">
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mb-1 text-body-secondary text-uppercase">
                 <span class="text-white">Halaman Laporan</span>
@@ -128,7 +128,7 @@
                         Laporan
                     </a>
                 </li>
-            </ul>
+            </ul> --}}
 
         </div>
     </div>

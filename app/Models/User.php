@@ -76,4 +76,9 @@ class User extends Authenticatable
             'admin@my-kirei.com',
         ]);
     }
+
+    const USER_ROLES = [
+        'Kasir' => 'Kasir',
+        'Produksi' => 'Produksi',
+    ];
 }

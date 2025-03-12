@@ -7,11 +7,10 @@ use App\Models\Stock;
 use App\Models\Price;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\Sluggable;
 
 class Menu extends Model
 {
-    use HasFactory, Sluggable;
+    use HasFactory;
 
     protected $guarded = ['id'];
 
@@ -38,14 +37,5 @@ class Menu extends Model
     public function getRouteKeyName()
     {
         return 'slug';
-    }
-
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => 'name'
-            ]
-        ];
     }
 }

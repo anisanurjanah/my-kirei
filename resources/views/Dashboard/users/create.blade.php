@@ -6,10 +6,10 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap py-3">
             <div class="d-block">
                 <h1 class="h2">
-                    <a href="/dashboard/menus" class="text-decoration-none text-danger">
+                    <a href="/dashboard/users" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
-                    Tambah Menu Baru
+                    Tambah Pengguna Baru
                 </h1>
 
                 <nav aria-label="breadcrumb">
@@ -20,11 +20,11 @@
                             </a>
                         </li>
                         <li class="breadcrumb-item" aria-current="page">
-                            <a href="/dashboard/menus" class="text-decoration-none text-black">
-                                Menu
+                            <a href="/dashboard/users" class="text-decoration-none text-black">
+                                Pengguna
                             </a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Tambah Menu</li>
+                        <li class="breadcrumb-item active" aria-current="page">Tambah Pengguna</li>
                     </ol>
                 </nav>
             </div>
@@ -33,7 +33,7 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/menus" enctype="multipart/form-data">
+        <form method="post" action="/dashboard/users">
             @csrf
             <div class="row p-2">
                 <div class="col-lg-12 mb-3 mb-md-0">
@@ -68,7 +68,7 @@
                     <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
                         <div class="mb-3">
                             <label for="name" class="form-label">Nama</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama menu.." value="{{ old('name') }}" autocomplete="off" required autofocus>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama pengguna.." value="{{ old('name') }}" autocomplete="off" required>
                             @error('name')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -76,19 +76,21 @@
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="description" class="form-label">Deskripsi</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="1" placeholder="Deskripsi menu.." required>{{ old('description') }}</textarea>
-                            @error('description')
+                            <label for="email" class="form-label">Email</label>
+                            <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email.." value="{{ old('email') }}" autocomplete="off" required>
+                            @error('email')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="image" class="form-label">Gambar</label>
-                            <img class="img-preview img-fluid mb-3 col-sm-5">
-                            <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" required>
-                            @error('image')
+                            <label for="phone" class="form-label">No. Telepon</label>
+                            <div class="input-group">
+                                <span class="input-group-text">(+62)</span>
+                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" autocomplete="off" required>
+                            </div>
+                            @error('phone')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
@@ -96,43 +98,36 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="col-md-6">
                     <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
                         <div class="mb-3">
-                            <label for="price" class="form-label">Harga</label>
-                            <div class="input-group">
-                                <span class="input-group-text">Rp</span>
-                                <input type="text" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ number_format((int) old('price', 0), 0, ',', '.') }}" autocomplete="off" required>
-                            </div>
-                            @error('price')
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username" placeholder="Username.." value="{{ old('username') }}" autocomplete="off" required>
+                            @error('username')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="stock" class="form-label">Stok</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" min="0" placeholder="Stok menu.." value="{{ old('stock') }}" required>
-                            </div>
-                            @error('stock')
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password.." value="{{ old('password') }}" autocomplete="off" required>
+                            @error('password')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="price_promo" class="form-label">Potongan Harga</label>
-                            <div class="input-group">
-                                <span class="input-group-text">Rp</span>
-                                <input type="text" class="form-control @error('price_promo') is-invalid @enderror" id="price_promo" name="price_promo" value="{{ number_format((int) old('price_promo', 0), 0, ',', '.') }}" autocomplete="off">
-                            </div>
-                            @error('price_promo')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
+                            <label for="role" class="form-label">Role</label>
+                            <select class="form-select" id="role" name="role" required>
+                                @foreach ($userRoles as $key => $status)
+                                    <option value="{{ $key }}" {{ old('role') == $key ? 'selected' : '' }}>
+                                        {{ $status }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="d-flex justify-content-end">
