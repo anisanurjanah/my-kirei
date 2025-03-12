@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let outletSlug = $(this).find(":selected").data("slug");
 
             if (outletId > 0 ) {
-                $(".order-form").removeClass("d-none");
+                $(".row-form").removeClass("d-none");
             }
 
             userSelect.html('<option>Loading...</option>');

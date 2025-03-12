@@ -61,8 +61,8 @@ class AdminMenuController extends Controller
 
         // Validated
         $validatedData = $request->validate([
-            'name' => 'required|max:32',
             'outlet_id' => 'required|exists:outlets,id',
+            'name' => 'required|max:32',
             'description' => 'required|max:128',
             'image' => 'required|image|file|max:1024',
             'price' => 'required|integer|min:0',

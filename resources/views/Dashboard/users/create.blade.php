@@ -65,7 +65,7 @@
 
             <div class="row p-2">
                 <div class="col-md-6">
-                    <div class="order-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
                         <div class="mb-3">
                             <label for="name" class="form-label">Nama</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama pengguna.." value="{{ old('name') }}" autocomplete="off" required>
@@ -98,8 +98,9 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="col-md-6">
-                    <div class="order-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username" placeholder="Username.." value="{{ old('username') }}" autocomplete="off" required>
