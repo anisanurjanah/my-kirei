@@ -65,7 +65,7 @@
 
             <div class="row p-2">
                 <div class="col-md-6 mb-3 mb-md-0">
-                    <div class="order-form d-none">
+                    <div class="order-form {{ $errors->any() ? '' : 'd-none' }}">
                         <div class="accordion accordion-flush">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -145,7 +145,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="order-form d-none">
+                    <div class="order-form {{ $errors->any() ? '' : 'd-none' }}">
                         <div class="mb-3">
                             <label for="customer_id" class="form-label">No. Telepon Pelanggan</label>
                             <select class="form-select select2" id="customer_id" name="customer_id" required>

@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let outletId = $(this).val();
             let outletSlug = $(this).find(":selected").data("slug");
 
-            if (outletId > 0) {
+            if (outletId > 0 ) {
                 $(".order-form").removeClass("d-none");
             }
 

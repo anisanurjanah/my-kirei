@@ -32,49 +32,47 @@
     </div>
 
     <div class="row px-md-2 py-3">
-        <div class="col-lg-8">
-            <div class="shadow border rounded-3 p-3">
 
-                <form method="post" action="/dashboard/outlets">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nama</label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama outlet.." value="{{ old('name') }}" autocomplete="off" required autofocus>
-                        @error('name')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">No. Telepon</label>
-                        <div class="input-group">
-                            <span class="input-group-text">(+62)</span>
-                            <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" autocomplete="off" required>
+        <form method="post" action="/dashboard/outlets">
+            @csrf
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nama</label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama outlet.." value="{{ old('name') }}" autocomplete="off" required autofocus>
+                    @error('name')
+                        <div class="invalid-feedback">
+                            {{ $message }}
                         </div>
-                        @error('phone')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">No. Telepon</label>
+                    <div class="input-group">
+                        <span class="input-group-text">(+62)</span>
+                        <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" autocomplete="off" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Alamat</label>
-                        <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" rows="1" placeholder="Alamat outlet.." required>{{ old('address') }}</textarea>
-                        @error('address')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
+                    @error('phone')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Alamat</label>
+                    <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" rows="1" placeholder="Alamat outlet.." required>{{ old('address') }}</textarea>
+                    @error('address')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
 
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-dark">Simpan</button>
-                    </div>
-                </form>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-dark">Simpan</button>
+                </div>
 
             </div>
-        </div>
+        </form>
     </div>
 
 @endsection
