@@ -49,7 +49,7 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="/dashboard/menus/{{ $menu->slug }}/edit">
-                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
+                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Perbarui
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
@@ -58,7 +58,7 @@
                                             data-bs-url="/dashboard/menus/{{ $menu->slug }}"
                                             data-bs-name="{{ $menu->name }}">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i> Hapus
-                                        </button>
+                                         </button>
                                     </li>
                                 </ul>
                             </div>

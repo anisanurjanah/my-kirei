@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Price Format
+
+    // Price format
     function formatPrice(input) {
         if (input) {
             input.addEventListener("input", function () {
@@ -9,25 +10,46 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Insert price format
     formatPrice(document.getElementById("price"));
     formatPrice(document.getElementById("price_promo"));
     formatPrice(document.getElementById("sub_total"));
     formatPrice(document.getElementById("total_price"));
 
-    // Price Format in Modals
+    // MODALS
     document.querySelectorAll('.modal').forEach(modal => {
+
+        //Modal delete
+        modal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+
+            if (!button) {
+                console.warn("⚠️ Tidak ada tombol yang memicu modal!");
+                return;
+            }
+
+            var itemName = button.getAttribute('data-bs-name');
+            var itemUrl = button.getAttribute('data-bs-url');
+
+            var deleteModalItemName = this.querySelector('#deleteModalItemName');
+            var deleteModalForm = this.querySelector('#deleteModalForm');
+
+            if (deleteModalItemName) {
+                deleteModalItemName.textContent = itemName || "Nama Tidak Ditemukan";
+            }
+
+            if (deleteModalForm) {
+                deleteModalForm.action = itemUrl || "#";
+            }
+        });
+
+        // Format price in modal
         modal.addEventListener('shown.bs.modal', function () {
             formatPrice(document.getElementById("price_promo"));
-
-            let stockInput = this.querySelector("#stock");
-
-            if (stockInput) {
-                stockInput.focus();
-            }
         });
     });
 
-    // Phone Number Formatting
+    // Phone number formatting
     const phoneInput = document.getElementById("phone");
     if (phoneInput) {
         phoneInput.addEventListener("input", function () {
@@ -49,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Image Preview
+    // Image preview
     function previewImage() {
         const image = document.querySelector("#image");
         const imgPreview = document.querySelector(".img-preview");
@@ -71,22 +93,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Menu promotion
-    var $pricePromoInput = $("#price_promo");
-    var $promoDates = $("#promo_dates");
+    $(document).ready(function () {
+        var $pricePromoInput = $("#price_promo");
+        var $promoDates = $("#promo_dates");
 
-    function togglePromoDates() {
-        var pricePromoValue = $pricePromoInput.val().replace(/\./g, '');
+        function togglePromoDates() {
+            var pricePromoValue = $pricePromoInput.val();
+            if (pricePromoValue) {
+                pricePromoValue = pricePromoValue.replace(/\./g, '');
+            } else {
+                pricePromoValue = "0";
+            }
 
-        if ($.trim(pricePromoValue) !== "" && pricePromoValue !== "0") {
-            $promoDates.removeClass("d-none");
-        } else {
-            $promoDates.addClass("d-none");
+            if ($.trim(pricePromoValue) !== "" && pricePromoValue !== "0") {
+                $promoDates.removeClass("d-none");
+            } else {
+                $promoDates.addClass("d-none");
+            }
         }
-    }
 
-    togglePromoDates();
-
-    $pricePromoInput.on("input", togglePromoDates);
+        if ($pricePromoInput.length) {
+            togglePromoDates();
+            $pricePromoInput.on("input", togglePromoDates);
+        }
+    });
 
     // Select2
     $(document).ready(function() {
@@ -171,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 )
             );
 
-            // Sub Total
+            // Sub total
             const newSubTotalInput = $("<input>")
                 .addClass("form-control sub-total-input")
                 .attr({
@@ -237,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
             $("#total_price").val("0");
             addMenuBtnContainer.addClass("d-none");
 
-            // Fetch Users
+            // Fetch users
             $.ajax({
                 url: '/get-users/' + outletSlug,
                 type: 'GET',
@@ -252,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
 
-            // Fetch Menus
+            // Fetch menus
             $.ajax({
                 url: '/get-menus/' + outletSlug,
                 type: 'GET',
@@ -299,16 +329,4 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Modal delete
-    document.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var itemName = button.getAttribute('data-bs-name');
-        var itemUrl = button.getAttribute('data-bs-url');
-
-        var modalItemName = document.getElementById('modalItemName');
-        var modalDeleteForm = document.getElementById('modalDeleteForm');
-
-        modalItemName.textContent = itemName;
-        modalDeleteForm.action = itemUrl;
-    });
 });

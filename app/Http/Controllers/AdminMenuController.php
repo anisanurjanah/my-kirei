@@ -145,9 +145,9 @@ class AdminMenuController extends Controller
         // Remove Price's Dot
         $request->merge([
             'price' => str_replace('.', '', $request->price),
-            'price_promo' => str_replace('.', '', $request->price_promo),
+            'price_promo' => $request->price_promo !== null ? str_replace('.', '', $request->price_promo) : null,
         ]);
-
+        
         // Validated
         $validatedData = $request->validate([
             'outlet_id' => 'required|exists:outlets,id',
@@ -178,8 +178,12 @@ class AdminMenuController extends Controller
             ['current_stock' => $request->stock ?? 0]
         );
 
-        if ($request->price_promo === "") {
+        if ($request->price_promo === "" || $request->price_promo == 0) {
             Price::where('menu_id', $menu->id)->delete();
+            $menu->update([
+                'promo_start_date' => null,
+                'promo_end_date' => null
+            ]);
         } else {
             Price::updateOrCreate(
                 ['menu_id' => $menu->id],

@@ -55,15 +55,26 @@ class AdminStockController extends Controller
     {
         // Validated
         $validatedData = $request->validate([
-            'stock' => 'required|integer|min:0'
+            'stock' => 'required|integer|min:0',
+            'type' => 'required|in:add,update',
         ]);
 
-        $stock->update([
-            'current_stock' => $stock->current_stock + $validatedData['stock']
-        ]);
+        if ($request->type === 'add') {
+            $stock->update([
+                'current_stock' => $stock->current_stock + $validatedData['stock']
+            ]);
+
+            $message = 'Stok berhasil ditambahkan!';
+        } else {
+            $stock->update([
+                'current_stock' => $validatedData['stock']
+            ]);
+
+            $message = 'Stok berhasil diperbarui!';
+        }
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Stok berhasil ditambahkan!');
+        return redirect('/dashboard/menus')->with('success', $message);
     }
 
     /**
@@ -71,6 +82,8 @@ class AdminStockController extends Controller
      */
     public function destroy(Stock $stock)
     {
-        //
+        $stock->update(['current_stock' => 0]);
+
+        return redirect('/dashboard/menus')->with('success', 'Stok berhasil direset!');
     }
 }

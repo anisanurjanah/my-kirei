@@ -77,13 +77,15 @@
                                         <small class="text-black mb-0">Kelola:</small>
 
                                         <div class="d-flex gap-2 ms-auto">
-                                            <a href="/dashboard/stocks/edit" class="text-decoration-none">
+                                            <a href="#{{ $menu->slug }}-stock-edit" data-bs-toggle="modal" class="text-decoration-none">
                                                 <span class="badge text-bg-warning">Perbarui</span>
                                             </a>
 
-                                            <a href="/dashboard/stocks/delete" class="text-decoration-none">
+                                            <button type="button" class="bg-transparent border-0" data-bs-toggle="modal" data-bs-target="#resetStockModal"
+                                                data-bs-url="/dashboard/stocks/{{ $menu->stock->id }}"
+                                                data-bs-name="{{ $menu->name }}">
                                                 <span class="badge text-bg-danger">Reset</span>
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -139,6 +141,9 @@
     </div>
 
     @include('dashboard.components.modal-create-stock')
+    @include('dashboard.components.modal-edit-stock')
+    @include('dashboard.components.modal-reset-stock')
+
     @include('dashboard.components.modal-create-promo')
 
 @endsection
