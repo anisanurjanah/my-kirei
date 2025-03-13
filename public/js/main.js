@@ -17,38 +17,35 @@ document.addEventListener("DOMContentLoaded", function () {
     formatPrice(document.getElementById("total_price"));
 
     // MODALS
-    document.querySelectorAll('.modal').forEach(modal => {
+    $(document).ready(function () {
+        $('.modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var actionType = button.data('action');
+            var itemName = button.data('bs-name');
+            var itemUrl = button.data('bs-url');
 
-        //Modal delete
-        modal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
+            $('#modalItemName').text(itemName || "Nama Tidak Ditemukan");
+            $('#modalForm').attr('action', itemUrl || "#");
 
-            if (!button) {
-                console.warn("⚠️ Tidak ada tombol yang memicu modal!");
-                return;
-            }
-
-            var itemName = button.getAttribute('data-bs-name');
-            var itemUrl = button.getAttribute('data-bs-url');
-
-            var deleteModalItemName = this.querySelector('#deleteModalItemName');
-            var deleteModalForm = this.querySelector('#deleteModalForm');
-
-            if (deleteModalItemName) {
-                deleteModalItemName.textContent = itemName || "Nama Tidak Ditemukan";
-            }
-
-            if (deleteModalForm) {
-                deleteModalForm.action = itemUrl || "#";
+            if (actionType === 'delete') {
+                $('#modalTitle').text("Konfirmasi Hapus");
+                $('#modalMessage').text("Apakah kamu yakin ingin menghapus ");
+                $('#modalSubmitButton').text("Hapus").addClass('btn-danger');
+            } else if (actionType === 'reset') {
+                $('#modalTitle').text("Konfirmasi Hapus Stok");
+                $('#modalMessage').text("Apakah kamu yakin ingin menghapus stok pada menu ");
+                $('#modalSubmitButton').text("Hapus").addClass('btn-danger');
             }
         });
 
-        // Format price in modal
-        modal.addEventListener('shown.bs.modal', function () {
-            formatPrice(document.getElementById("price_promo"));
+        $('.modal').on('shown.bs.modal', function () {
+            var priceInput = $(this).find("#price_promo");
+            if (priceInput.length) {
+                formatPrice(priceInput);
+            }
         });
     });
-
+    
     // Phone number formatting
     const phoneInput = document.getElementById("phone");
     if (phoneInput) {

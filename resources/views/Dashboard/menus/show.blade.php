@@ -81,10 +81,9 @@
                                                 <span class="badge text-bg-warning">Perbarui</span>
                                             </a>
 
-                                            <button type="button" class="bg-transparent border-0" data-bs-toggle="modal" data-bs-target="#resetStockModal"
-                                                data-bs-url="/dashboard/stocks/{{ $menu->stock->id }}"
-                                                data-bs-name="{{ $menu->name }}">
-                                                <span class="badge text-bg-danger">Reset</span>
+                                            <button type="button" class="bg-transparent border-0" data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                data-bs-url="/dashboard/stocks/{{ $menu->stock->id }}" data-bs-name="{{ $menu->name }}" data-action="reset">
+                                                <span class="badge text-bg-danger">Hapus</span>
                                             </button>
                                         </div>
                                     </div>
@@ -142,7 +141,6 @@
 
     @include('dashboard.components.modal-create-stock')
     @include('dashboard.components.modal-edit-stock')
-    @include('dashboard.components.modal-reset-stock')
 
     @include('dashboard.components.modal-create-promo')
 

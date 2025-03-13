@@ -54,11 +54,10 @@
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                            data-bs-url="/dashboard/menus/{{ $menu->slug }}"
-                                            data-bs-name="{{ $menu->name }}">
+                                         <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                            data-bs-url="/dashboard/menus/{{ $menu->slug }}" data-bs-name="{{ $menu->name }}" data-action="delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i> Hapus
-                                         </button>
+                                        </button>
                                     </li>
                                 </ul>
                             </div>
