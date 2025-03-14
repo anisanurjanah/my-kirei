@@ -44,7 +44,7 @@ class AdminOutletController extends Controller
         // Validated
         $validatedData = $request->validate([
             'name' => 'required|max:32',
-            'phone' => 'required|max:20',
+            'phone' => 'required|min:12|max:18',
             'address' => 'required|max:128',
         ]);
 
@@ -64,7 +64,7 @@ class AdminOutletController extends Controller
 
         Outlet::create($validatedData);
 
-        // Redirect to outlet
+        // Redirect to outlets
         return redirect('/dashboard/outlets')->with('success', 'Outlet berhasil ditambahkan!');
     }
 
@@ -84,25 +84,65 @@ class AdminOutletController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Outlet $outlet)
     {
-        //
+        return view('dashboard.outlets.edit', [
+            'outlet' => $outlet,
+            'formatted_phone' => $this->formatPhone($outlet->phone)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Outlet $outlet)
     {
-        //
+        // Validated
+        $validatedData = $request->validate([
+            'name' => 'required|max:32',
+            'phone' => 'required|min:12|max:18',
+            'address' => 'required|max:128',
+        ]);
+
+        // Format phone number
+        if ($request->filled('phone')) {
+            $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
+            $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+    
+            $validatedData['phone'] = $formattedPhone;
+        } else {
+            $validatedData['phone'] = $outlet->phone;
+        }
+
+        $outlet->update($validatedData);
+
+        // Redirect to outlets
+        return redirect('/dashboard/outlets')->with('success', 'Outlet berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Outlet $outlet)
     {
-        //
+        Outlet::destroy($outlet->id);
+
+        // Redirect to outlets
+        return redirect('/dashboard/outlets')->with('success', 'Outlet berhasil dihapus!');
+    }
+
+    function formatPhone($phone) {
+        $phoneNumber = preg_replace('/[^\d]/', '', $phone);
+    
+        if (substr($phoneNumber, 0, 2) === "62") {
+            $phoneNumber = substr($phoneNumber, 2);
+        }
+    
+        if (strlen($phoneNumber) >= 10) {
+            return substr($phoneNumber, 0, 3) . '-' . substr($phoneNumber, 3, 4) . '-' . substr($phoneNumber, 7);
+        }
+    
+        return $phoneNumber;
     }
 
     // public function checkSlug(Request $request)
