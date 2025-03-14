@@ -23,7 +23,9 @@ Route::get('/dashboard', function() {
 // ->middleware('auth');
 
 Route::resource('/dashboard/users', AdminUserController::class);
+
 Route::resource('/dashboard/customers', AdminCustomerController::class);
+
 Route::resource('/dashboard/outlets', AdminOutletController::class);
 Route::resource('/dashboard/menus', AdminMenuController::class);
 Route::resource('/dashboard/stocks', AdminStockController::class);

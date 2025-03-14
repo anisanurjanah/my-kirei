@@ -1,5 +1,5 @@
 @foreach ($customers as $customer)
-    <div class="modal fade" id="{{ Str::slug($customer->name) }}" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="{{ $customer->username }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">

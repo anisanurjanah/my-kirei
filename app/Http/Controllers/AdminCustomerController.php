@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AdminCustomerController extends Controller
 {
@@ -50,6 +51,18 @@ class AdminCustomerController extends Controller
             'phone' => 'required|max:20',
         ]);
 
+        // Generate username
+        $username = Str::slug($request->name);
+
+        $existingUsernameCount = Customer::where('username', 'LIKE', "$username%")
+            ->where('id', $request->id)
+            ->count();
+
+        if($existingUsernameCount > 0) {
+            $username .= '-' . ($existingUsernameCount + 1);
+        }
+
+        $validatedData['username'] = $username;
         $validatedData['phone'] = $formattedPhone;
 
         Customer::create($validatedData);
@@ -71,7 +84,10 @@ class AdminCustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
-        //
+        return view('dashboard.customers.edit',[
+            'customer' => $customer,
+            'formatted_phone' => formatPhone($customer->phone)
+        ]);
     }
 
     /**
@@ -79,7 +95,26 @@ class AdminCustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        // Validated
+        $validatedData = $request->validate([
+            'name' => 'required|max:32',
+            'phone' => 'required|max:20',
+        ]);
+
+        // Format phone number
+        if ($request->filled('phone')) {
+            $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
+            $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+
+            $validatedData['phone'] = $formattedPhone;
+        } else {
+            $validatedData['phone'] = $customer->phone;
+        }
+
+        $customer->update($validatedData);
+
+        // Redirect to customers
+        return redirect('/dashboard/customers')->with('success', 'Pelanggan berhasil diperbarui!');
     }
 
     /**
@@ -87,6 +122,9 @@ class AdminCustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+        Customer::destroy($customer->id);
+
+        // Redirect to customers
+        return redirect('/dashboard/customers')->with('success', 'Pelanggan berhasil dihapus!');
     }
 }

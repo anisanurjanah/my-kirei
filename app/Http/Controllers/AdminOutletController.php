@@ -108,7 +108,7 @@ class AdminOutletController extends Controller
         if ($request->filled('phone')) {
             $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
             $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
-    
+
             $validatedData['phone'] = $formattedPhone;
         } else {
             $validatedData['phone'] = $outlet->phone;
@@ -129,20 +129,6 @@ class AdminOutletController extends Controller
 
         // Redirect to outlets
         return redirect('/dashboard/outlets')->with('success', 'Outlet berhasil dihapus!');
-    }
-
-    function formatPhone($phone) {
-        $phoneNumber = preg_replace('/[^\d]/', '', $phone);
-    
-        if (substr($phoneNumber, 0, 2) === "62") {
-            $phoneNumber = substr($phoneNumber, 2);
-        }
-    
-        if (strlen($phoneNumber) >= 10) {
-            return substr($phoneNumber, 0, 3) . '-' . substr($phoneNumber, 3, 4) . '-' . substr($phoneNumber, 7);
-        }
-    
-        return $phoneNumber;
     }
 
     // public function checkSlug(Request $request)

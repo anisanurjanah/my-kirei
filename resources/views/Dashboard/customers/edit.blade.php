@@ -9,7 +9,7 @@
                     <a href="/dashboard/customers" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
-                    Tambah Pelanggan Baru
+                    Perbarui Pelanggan {{ $customer->name }}
                 </h1>
 
                 <nav aria-label="breadcrumb">
@@ -24,7 +24,7 @@
                                 Pelanggan
                             </a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Tambah Pelanggan</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $customer->name }}</li>
                     </ol>
                 </nav>
             </div>
@@ -33,12 +33,13 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/customers">
+        <form method="post" action="/dashboard/customers/{{ $customer->username }}">
+            @method('PUT')
             @csrf
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="name" class="form-label">Nama</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama pelanggan.." value="{{ old('name') }}" autocomplete="off" required autofocus>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama pelanggan.." value="{{ old('name', $customer->name) }}" autocomplete="off" required autofocus>
                     @error('name')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -49,7 +50,7 @@
                     <label for="phone" class="form-label">No. Telepon</label>
                     <div class="input-group">
                         <span class="input-group-text">(+62)</span>
-                        <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" autocomplete="off" required>
+                        <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $formatted_phone) }}" autocomplete="off" required>
                     </div>
                     @error('phone')
                         <div class="invalid-feedback">
