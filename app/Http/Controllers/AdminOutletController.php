@@ -88,7 +88,7 @@ class AdminOutletController extends Controller
     {
         return view('dashboard.outlets.edit', [
             'outlet' => $outlet,
-            'formatted_phone' => $this->formatPhone($outlet->phone)
+            'formatted_phone' => formatPhone($outlet->phone)
         ]);
     }
 
