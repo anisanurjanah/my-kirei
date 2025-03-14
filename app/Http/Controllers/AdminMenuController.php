@@ -170,7 +170,7 @@ class AdminMenuController extends Controller
             $validatedData['image'] = $request->file('image')->store('menu-images');
         }
 
-        // Insert Data
+        // Update Data
         $menu->update($validatedData);
 
         Stock::updateOrCreate(

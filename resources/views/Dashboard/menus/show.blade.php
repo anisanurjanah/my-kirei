@@ -117,19 +117,27 @@
 
                                     @include('dashboard.components.table-menu-prices')
 
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <small class="text-black mb-0">Kelola:</small>
+                                    @if(optional($menu->pricePromo)->price_promo !== null ||
+                                        optional($menu->pricePromo)->promo_start_date !== null ||
+                                        optional($menu->pricePromo)->promo_end_date !== null
+                                    )
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <small class="text-black mb-0">Kelola:</small>
 
-                                        <div class="d-flex gap-2 ms-auto">
-                                            <a href="/dashboard/prices/edit" class="text-decoration-none">
-                                                <span class="badge text-bg-warning">Perbarui</span>
-                                            </a>
+                                            <div class="d-flex gap-2 ms-auto">
+                                                <div class="d-flex gap-2 ms-auto">
+                                                    <a href="#{{ $menu->slug }}-price-edit" data-bs-toggle="modal" class="text-decoration-none">
+                                                        <span class="badge text-bg-warning">Perbarui</span>
+                                                    </a>
 
-                                            <a href="/dashboard/prices/delete" class="text-decoration-none">
-                                                <span class="badge text-bg-danger">Reset</span>
-                                            </a>
+                                                    <button type="button" class="bg-transparent border-0" data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                        data-bs-url="/dashboard/prices/{{ $menu->pricePromo->id }}" data-bs-name="{{ $menu->name }}" data-action="delete">
+                                                        <span class="badge text-bg-danger">Hapus</span>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -142,6 +150,7 @@
     @include('dashboard.components.modal-create-stock')
     @include('dashboard.components.modal-edit-stock')
 
-    @include('dashboard.components.modal-create-promo')
+    @include('dashboard.components.modal-create-price')
+    @include('dashboard.components.modal-edit-price')
 
 @endsection

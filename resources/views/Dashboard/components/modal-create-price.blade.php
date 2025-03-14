@@ -13,7 +13,9 @@
 
                         <form method="post" action="/dashboard/prices">
                             @csrf
+
                             <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+                            
                             <div class="mb-3">
                                 <label for="price_promo" class="form-label">Potongan Harga</label>
                                 <div class="input-group">

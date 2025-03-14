@@ -71,7 +71,29 @@ class AdminPriceController extends Controller
      */
     public function update(Request $request, Price $price)
     {
-        //
+        $menuPrice = Menu::where('id', $request->menu_id)->value('price');
+        $today = now()->toDateString();
+
+        $request->merge([
+            'price_promo' => str_replace('.', '', $request->price_promo),
+        ]);
+
+        // Validated
+        $validatedData = $request->validate([
+            'menu_id' => 'required|exists:menus,id',
+            'price_promo' => 'required|integer|min:0|max:' . $menuPrice,
+            'promo_start_date' => [
+                'required',
+                'date',
+                'after_or_equal:' . max($today, $price->promo_start_date)
+            ],
+            'promo_end_date' => 'required|date|after:promo_start_date'
+        ]);
+
+        $price->update($validatedData);
+
+        // Redirect to menus
+        return redirect('/dashboard/menus')->with('success', 'Potongan harga berhasil diperbarui!');
     }
 
     /**
@@ -79,6 +101,9 @@ class AdminPriceController extends Controller
      */
     public function destroy(Price $price)
     {
-        //
+        Price::destroy($price->id);
+
+        // Redirect to menus
+        return redirect('/dashboard/menus')->with('success', 'Potongan harga berhasil dihapus!');
     }
 }
