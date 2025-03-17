@@ -31,7 +31,7 @@ class Outlet extends Model
 
     public function getRouteKeyName()
     {
-        return 'slug';
+        return 'outlet_code';
     }
 
 }

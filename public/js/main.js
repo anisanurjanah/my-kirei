@@ -149,27 +149,39 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        function updateSubTotal() {
+        function updatePrice() {
             let total = 0;
+            let totalDiscount = 0;
 
             $(".menu-select").each(function () {
                 const selectedOption = $(this).find("option:selected");
-                const price = parseFloat(selectedOption.attr("data-price")) || 0;
+                const priceData = parseFloat(selectedOption.attr("data-price")) || 0;
+                const discountData = parseFloat(selectedOption.attr("data-discount")) || 0;
+
+                console.log("Price:", priceData, "Discount:", discountData);
+
                 const quantityInput = $(this).closest(".row").find(".menu-quantity");
-                const subtotalInput = $(this).closest(".row").find(".sub-total-input");
+                const priceInput = $(this).closest(".row").find(".price-input");
 
                 const quantity = parseInt(quantityInput.val()) || 1;
-                const subtotal = price * quantity;
+                const price = priceData * quantity;
+                const discountTotal = discountData * quantity;
 
-                subtotalInput.val(subtotal.toLocaleString("id-ID"));
-                total += subtotal;
+                priceInput.val(price.toLocaleString("id-ID"));
+
+                total += price;
+                totalDiscount += discountTotal;
             });
+            console.log("Total Discount:", totalDiscount);
+            // Insert discount
+            $("#discount").val(totalDiscount.toLocaleString("id-ID"));
+
+            const totalPrice = total - totalDiscount;
 
             // Insert total
             $("#sub_total").val(total.toLocaleString("id-ID"));
-            $("#total_price").val(total.toLocaleString("id-ID"));
+            $("#total_price").val(totalPrice.toLocaleString("id-ID"));
         }
-
 
         function addMenuRow() {
             const newMenuRow = $("<div>").addClass("row align-items-end mb-3");
@@ -181,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .css("width", "100%")
                 .html(menuOptions);
 
-            const newSelectWrapper = $("<div>").addClass("col-lg-7 col-md-6 col-7").append(
+            const newSelectWrapper = $("<div>").addClass("col-lg-8 col-md-6 col-8").append(
                 $("<div>").addClass("mb-3").append(
                     $("<label>").addClass("form-label").text("Menu"),
                     newSelect
@@ -189,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
 
             // Quantity
-            const newQuantityWrapper = $("<div>").addClass("col-lg-3 col-md-4 col-3").append(
+            const newQuantityWrapper = $("<div>").addClass("col-lg-4 col-md-4 col-4").append(
                 $("<div>").addClass("mb-3").append(
                     $("<label>").addClass("form-label").text("Quantity"),
                     $("<input>")
@@ -198,24 +210,43 @@ document.addEventListener("DOMContentLoaded", function () {
                 )
             );
 
-            // Sub total
-            const newSubTotalInput = $("<input>")
-                .addClass("form-control sub-total-input")
+            // Price
+            const newPriceInput = $("<input>")
+                .addClass("form-control price-input")
                 .attr({
                     type: "text",
                     name: "sub_total[]",
                     readonly: true
                 });
 
-            const newSubTotalWrapper = $("<div>").addClass("col-lg-3 col-md-4 col-3 d-none").append(
+            const newPriceWrapper = $("<div>").addClass("col-lg-10 col-md-6 col-10").append(
                 $("<div>").addClass("mb-3").append(
-                    $("<label>").addClass("form-label").text("Sub Total"),
+                    $("<label>").addClass("form-label").text("Harga"),
                     $("<div>").addClass("input-group").append(
                         $("<span>").addClass("input-group-text").text("Rp"),
-                        newSubTotalInput
+                        newPriceInput
                     )
                 )
             );
+
+            // Sub total
+            // const newSubTotalInput = $("<input>")
+            //     .addClass("form-control sub-total-input")
+            //     .attr({
+            //         type: "text",
+            //         name: "sub_total[]",
+            //         readonly: true
+            //     });
+
+            // const newSubTotalWrapper = $("<div>").addClass("col-lg-3 col-md-4 col-3 d-none").append(
+            //     $("<div>").addClass("mb-3").append(
+            //         $("<label>").addClass("form-label").text("Sub Total"),
+            //         $("<div>").addClass("input-group").append(
+            //             $("<span>").addClass("input-group-text").text("Rp"),
+            //             newSubTotalInput
+            //         )
+            //     )
+            // );
 
             // Delete
             const newDeleteWrapper = $("<div>").addClass("col-lg-2 col-md-2 col-2 text-md-center text-end").append(
@@ -227,21 +258,28 @@ document.addEventListener("DOMContentLoaded", function () {
                 )
             );
 
-            newMenuRow.append(newSelectWrapper, newQuantityWrapper, newSubTotalWrapper, newDeleteWrapper);
+            newMenuRow.append(newSelectWrapper, newQuantityWrapper, newPriceWrapper, newDeleteWrapper);
             menuContainer.append(newMenuRow);
 
             newSelect.select2({ theme: "bootstrap-5", width: "100%" });
 
-            newSelectWrapper.find("select").on("change select2:select", updateSubTotal);
-            newQuantityWrapper.find("input").on("change input", updateSubTotal);
+            newSelectWrapper.find("select").on("change select2:select", updatePrice);
+            newQuantityWrapper.find("input").on("change input", updatePrice);
 
             newDeleteWrapper.find(".btn-remove-menu").on("click", function () {
                 newMenuRow.remove();
-                updateSubTotal();
+                updatePrice();
             });
 
-            updateSubTotal();
+            updatePrice();
         }
+
+        $(".btn-remove-first-menu").on("click", function() {
+            menuSelect.html('<option>Loading...</option>');
+            ("#quantity").val("Quantity..");
+            $("#price").val("0");
+            updatePrice();
+        });
 
         $("#add-menu-btn").on("click", addMenuRow);
         menuSelect.on("change", toggleAddButton);
@@ -260,7 +298,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             menuContainer.empty();
             $("#quantity").val("Quantity..");
+            $("#price").val("0");
             $("#sub_total").val("0");
+            $("#discount").val("0");
             $("#total_price").val("0");
             addMenuBtnContainer.addClass("d-none");
 
@@ -287,45 +327,31 @@ document.addEventListener("DOMContentLoaded", function () {
                     let options = '<option value="" disabled selected>Pilih Menu</option>';
 
                     data.forEach(menu => {
-                        let finalPrice = menu.price;
+                        let finalPrice = 0;
 
                         if (menu.price_promo && menu.price_promo.price_promo) {
-                            finalPrice = menu.price - menu.price_promo.price_promo;
+                            finalPrice = menu.price_promo.price_promo;
                         }
 
-                        options += `<option value="${menu.id}" data-price="${finalPrice}">${menu.name}</option>`;
+                        console.log(`Menu: ${menu.name}, Price: ${menu.price}, Discount: ${finalPrice}`);
+
+                        options += `<option value="${menu.id}" data-price="${menu.price} data-discount="${finalPrice}">${menu.name}</option>`;
                     });
 
                     menuSelect.html(options);
                     menuSelect.select2("destroy").html(options).select2({ theme: "bootstrap-5", width: "100%" });
 
                     menuOptions = options;
-                    updateSubTotal();
+                    updatePrice();
                 }
             });
         });
 
-        // $(document).on("change select2:select", ".menu-select", updateSubTotal);
-        $(document).on("change input", ".menu-quantity", updateSubTotal);
+        // $(document).on("change select2:select", ".menu-select", updatePrice);
+        $(document).on("change input", ".menu-quantity", updatePrice);
 
-        updateSubTotal();
+        updatePrice();
     });
-
-    // const addMenuBtn = document.getElementById("add-menu-btn");
-    // const menuContainer = document.getElementById("menu-container");
-    // const menuTemplate = document.getElementById("menu-template").innerHTML;
-
-    // // Tambah menu baru
-    // addMenuBtn.addEventListener("click", function () {
-    //     menuContainer.insertAdjacentHTML("beforeend", menuTemplate.replace(/TEMPLATE/g, Date.now()));
-    // });
-
-    // // Hapus menu yang ditambahkan
-    // menuContainer.addEventListener("click", function (event) {
-    //     if (event.target.closest(".btn-remove-menu")) {
-    //         event.target.closest(".order-item-row").remove();
-    //     }
-    // });
 
     // Show customer name
     $(document).ready(function () {

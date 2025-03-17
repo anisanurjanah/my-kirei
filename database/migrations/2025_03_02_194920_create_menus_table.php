@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('outlet_id');
             $table->string('name');
             $table->text('description');
-            $table->float('price');
+            $table->decimal('price');
             $table->string('image');
             $table->string('slug')->unique();
             $table->timestamps();

@@ -24,19 +24,19 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/outlets/{{ $outlet->slug }}">
+                                        <a class="dropdown-item" href="/dashboard/outlets/{{ Str::lower($outlet->outlet_code) }}">
                                             <i class="bi bi-eye mx-2" style="font-size: 16px"></i>Lihat
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/outlets/{{ $outlet->slug }}/edit">
+                                        <a class="dropdown-item" href="/dashboard/outlets/{{ Str::lower($outlet->outlet_code) }}/edit">
                                             <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Perbarui
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmModal"
-                                            data-bs-url="/dashboard/outlets/{{ $outlet->slug }}" data-bs-name="{{ $outlet->name }}" data-action="delete">
+                                            data-bs-url="/dashboard/outlets/{{ $outlet->outlet_code }}" data-bs-name="{{ $outlet->name }}" data-action="delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
                                         </button>
                                     </li>

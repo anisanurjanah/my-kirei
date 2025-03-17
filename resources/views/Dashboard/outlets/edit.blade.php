@@ -33,7 +33,7 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/outlets/{{ $outlet->slug }}">
+        <form method="post" action="/dashboard/outlets/{{ $outlet->outlet_code }}">
             @method('PUT')
             @csrf
             <div class="col-md-6">

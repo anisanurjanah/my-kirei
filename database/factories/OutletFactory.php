@@ -21,7 +21,7 @@ class OutletFactory extends Factory
 
         return [
             'name' => $name,
-            'slug' => Str::slug($name),
+            'outlet_code' => strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $name), 0, 4)),
             'phone' => fake()->phoneNumber(),
             'address' => fake()->address(),
         ];

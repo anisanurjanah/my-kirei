@@ -88,8 +88,6 @@ class AdminOrderController extends Controller
         // Generate Order Slug
         $outlet = Outlet::find($request->outlet_id);
         $formattedDate = Carbon::parse($request->order_date)->format('Ymd');
-
-        // $customer = Customer::find($request->customer_id);
         $customerName = $request->customer_name ? $request->customer_name : 'unknown';
 
         $slug = Str::slug($outlet->name) . '-' . $formattedDate . '-' . Str::slug($customerName);

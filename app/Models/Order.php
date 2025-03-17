@@ -37,8 +37,13 @@ class Order extends Model
 
     public function getRouteKeyName()
     {
-        return 'slug';
+        return 'order_number';
     }
+
+    const ORDER_TYPES = [
+        'Dine In' => 'Dine In',
+        'Take Away' => 'Take Away',
+    ];
 
     const ORDER_STATUSES = [
         'Selesai' => 'Selesai',

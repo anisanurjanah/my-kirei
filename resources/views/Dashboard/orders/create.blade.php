@@ -76,12 +76,12 @@
                                 <div id="order-items-information" class="accordion-collapse collapse show">
                                     <div class="accordion-body">
                                         <div class="row align-items-end mb-3">
-                                            <div class="col-lg-7 col-md-6 col-7">
+                                            <div class="col-lg-8 col-md-6 col-8">
                                                 <div class="mb-3">
                                                     <label for="menu_id" class="form-label">Menu</label>
                                                     <select class="form-select select2 menu-select" id="menu_id" name="menu_id[]" required>
                                                         <option value="" disabled selected>Pilih Menu</option>
-                                                        @foreach ($menus as $menu)
+                                                        {{-- @foreach ($menus as $menu)
                                                             @php
                                                                 $finalPrice = $menu->price;
                                                                 if (optional($menu->price_promo)->price_promo) {
@@ -91,12 +91,17 @@
                                                             <option value="{{ $menu->id }}" data-price="{{ $finalPrice }}" {{ is_array(old('menu_id')) && in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
                                                                 {{ $menu->name }}
                                                             </option>
+                                                        @endforeach --}}
+                                                        @foreach ($menus as $menu)
+                                                            <option value="{{ $menu->id }}" data-price="{{ $menu->price }}" data-discount="{{ optional($menu->price_promo)->price_promo }}" {{ is_array(old('menu_id')) && in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
+                                                                {{ $menu->name }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-3 col-md-4 col-3">
+                                            <div class="col-lg-4 col-md-4 col-4">
                                                 <div class="mb-3">
                                                     <label for="quantity" class="form-label">Quantity</label>
                                                     <input type="number" class="form-control menu-quantity @error('quantity') is-invalid @enderror" id="quantity" name="quantity[]" min="1" placeholder="Quantity.." value='@json(old("quantity"))' required>
@@ -105,6 +110,29 @@
                                                             {{ $message }}
                                                         </div>
                                                     @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-10 col-md-6 col-10">
+                                                <div class="mb-3">
+                                                    <label for="price" class="form-label">Harga</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="text" class="form-control price-input @error('price') is-invalid @enderror" id="price" name="sub_total[]" value="{{ number_format((int) old('price'), 0, ',', '.') }}" required readonly>
+                                                    </div>
+                                                    @error('price')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-2 col-md-2 col-2 text-md-center text-end">
+                                                <div class="mb-3">
+                                                    <button type="button" class="btn btn-transparent btn-remove-first-menu">
+                                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                                    </button>
                                                 </div>
                                             </div>
 
@@ -125,12 +153,13 @@
                                             </div>
                                         </div>
 
+                                        <hr class="mt-4">
+
                                         <div class="mb-3">
                                             <label for="sub_total" class="form-label">Sub Total</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">Rp</span>
-                                                <input type="text" class="form-control sub-total-input @error('sub_total') is-invalid @enderror" id="sub_total" name="sub_total[]" value="{{ number_format((int) old('sub_total'), 0, ',', '.') }}"
-                                                autocomplete="off" required>
+                                                <input type="text" class="form-control @error('sub_total') is-invalid @enderror" id="sub_total" name="sub_total" value="{{ number_format((int) old('sub_total'), 0, ',', '.') }}" required readonly>
                                             </div>
                                             @error('sub_total')
                                                 <div class="invalid-feedback">
@@ -185,6 +214,18 @@
 
                         <hr class="mt-4">
 
+                        <div class="mb-3">
+                            <label for="discount" class="form-label">Diskon</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="text" class="form-control @error('discount') is-invalid @enderror" id="discount" name="discount" value="{{ number_format((int) old('discount', 0), 0, ',', '.') }}" required readonly>
+                            </div>
+                            @error('discount')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
                         <div class="mb-3">
                             <label for="total_price" class="form-label">Total Harga</label>
                             <div class="input-group">

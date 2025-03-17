@@ -16,8 +16,7 @@ return new class extends Migration
             $table->foreignId('order_id');
             $table->foreignId('menu_id');
             $table->integer('quantity');
-            $table->float('sub_total');
-            $table->float('diskon')->default(0);
+            $table->decimal('price');
             $table->timestamps();
         });
     }

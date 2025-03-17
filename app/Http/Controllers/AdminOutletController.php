@@ -44,22 +44,11 @@ class AdminOutletController extends Controller
         // Validated
         $validatedData = $request->validate([
             'name' => 'required|max:32',
+            'outlet_code' => 'required|max:4',
             'phone' => 'required|min:12|max:18',
             'address' => 'required|max:128',
         ]);
 
-        // Generate Outlet Slug
-        $slug = Str::slug($request->name);
-
-        $existingSlugCount = Outlet::where('slug', 'LIKE', "$slug%")
-            ->where('id', $request->id)
-            ->count();
-
-        if($existingSlugCount > 0) {
-            $slug .= '-' . ($existingSlugCount + 1);
-        }
-
-        $validatedData['slug'] = $slug;
         $validatedData['phone'] = $formattedPhone;
 
         Outlet::create($validatedData);
@@ -130,10 +119,4 @@ class AdminOutletController extends Controller
         // Redirect to outlets
         return redirect('/dashboard/outlets')->with('success', 'Outlet berhasil dihapus!');
     }
-
-    // public function checkSlug(Request $request)
-    // {
-    //     $slug = SlugService::createSlug(Outlet::class, 'slug', $request->name);
-    //     return response()->json(['slug' => $slug]);
-    // }
 }
