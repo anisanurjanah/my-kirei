@@ -64,7 +64,12 @@ class AdminOutletController extends Controller
     {
         return view('dashboard.outlets.show', [
             'outlet' => $outlet,
-            'menus' => Menu::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
+            // 'menus' => Menu::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
+            'menus' => Menu::latest()->with(['stock', 'pricePromo' => function ($query) {
+                $query->where('promo_end_date', '>=', now());
+            }])->where('outlet_id', $outlet->id)
+            ->paginate(5)->withQueryString(),
+
             'users' => User::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
             'orders' => Order::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString()
         ]);

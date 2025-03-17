@@ -158,8 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const priceData = parseFloat(selectedOption.attr("data-price")) || 0;
                 const discountData = parseFloat(selectedOption.attr("data-discount")) || 0;
 
-                console.log("Price:", priceData, "Discount:", discountData);
-
                 const quantityInput = $(this).closest(".row").find(".menu-quantity");
                 const priceInput = $(this).closest(".row").find(".price-input");
 
@@ -172,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 total += price;
                 totalDiscount += discountTotal;
             });
-            console.log("Total Discount:", totalDiscount);
+
             // Insert discount
             $("#discount").val(totalDiscount.toLocaleString("id-ID"));
 
@@ -206,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     $("<label>").addClass("form-label").text("Quantity"),
                     $("<input>")
                         .addClass("form-control menu-quantity")
-                        .attr({ type: "number", name: "quantity[]", min: 1, placeholder: "Quantity..", required: true })
+                        .attr({ type: "number", name: "quantity[]", min: 1, value: "1", required: true })
                 )
             );
 
@@ -215,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .addClass("form-control price-input")
                 .attr({
                     type: "text",
-                    name: "sub_total[]",
+                    name: "price[]",
                     readonly: true
                 });
 
@@ -228,25 +226,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     )
                 )
             );
-
-            // Sub total
-            // const newSubTotalInput = $("<input>")
-            //     .addClass("form-control sub-total-input")
-            //     .attr({
-            //         type: "text",
-            //         name: "sub_total[]",
-            //         readonly: true
-            //     });
-
-            // const newSubTotalWrapper = $("<div>").addClass("col-lg-3 col-md-4 col-3 d-none").append(
-            //     $("<div>").addClass("mb-3").append(
-            //         $("<label>").addClass("form-label").text("Sub Total"),
-            //         $("<div>").addClass("input-group").append(
-            //             $("<span>").addClass("input-group-text").text("Rp"),
-            //             newSubTotalInput
-            //         )
-            //     )
-            // );
 
             // Delete
             const newDeleteWrapper = $("<div>").addClass("col-lg-2 col-md-2 col-2 text-md-center text-end").append(
@@ -275,9 +254,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         $(".btn-remove-first-menu").on("click", function() {
-            menuSelect.html('<option>Loading...</option>');
-            ("#quantity").val("Quantity..");
-            $("#price").val("0");
+            let parentRow = $(this).closest(".row");
+
+            parentRow.find(".first-menu").val("").change();
+            parentRow.find(".first-quantity").val("1");
+            parentRow.find(".first-price").val("0");
+
             updatePrice();
         });
 
@@ -287,7 +269,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         outletSelect.change(function () {
             let outletId = $(this).val();
-            let outletSlug = $(this).find(":selected").data("slug");
+            let outletCode = $(this).find(":selected").data("code");
 
             if (outletId > 0 ) {
                 $(".row-form").removeClass("d-none");
@@ -297,7 +279,7 @@ document.addEventListener("DOMContentLoaded", function () {
             menuSelect.html('<option>Loading...</option>');
 
             menuContainer.empty();
-            $("#quantity").val("Quantity..");
+            $("#quantity").val("1");
             $("#price").val("0");
             $("#sub_total").val("0");
             $("#discount").val("0");
@@ -306,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Fetch users
             $.ajax({
-                url: '/get-users/' + outletSlug,
+                url: '/get-users/' + outletCode,
                 type: 'GET',
                 success: function (data) {
                     let options = '<option value="" disabled selected>Pilih Staff</option>';
@@ -321,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Fetch menus
             $.ajax({
-                url: '/get-menus/' + outletSlug,
+                url: '/get-menus/' + outletCode,
                 type: 'GET',
                 success: function (data) {
                     let options = '<option value="" disabled selected>Pilih Menu</option>';
@@ -335,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         console.log(`Menu: ${menu.name}, Price: ${menu.price}, Discount: ${finalPrice}`);
 
-                        options += `<option value="${menu.id}" data-price="${menu.price} data-discount="${finalPrice}">${menu.name}</option>`;
+                        options += `<option value="${menu.id}" data-price="${menu.price}" data-discount="${finalPrice}">${menu.name}</option>`;
                     });
 
                     menuSelect.html(options);
@@ -347,7 +329,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        // $(document).on("change select2:select", ".menu-select", updatePrice);
+        $(document).on("change select2:select", ".menu-select", updatePrice);
         $(document).on("change input", ".menu-quantity", updatePrice);
 
         updatePrice();

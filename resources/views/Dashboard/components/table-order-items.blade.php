@@ -5,7 +5,7 @@
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">MENU <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">QUANTITY <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                <th scope="col" class="text-secondary w-25" style="font-size: 12px;">SUB TOTAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                <th scope="col" class="text-secondary w-25" style="font-size: 12px;">HARGA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -16,7 +16,7 @@
                         <td>{{ ($orderItems->currentPage() - 1) * $orderItems->perPage() + $loop->iteration }}</td>
                         <td>{{ $orderItem->menu->name }}</td>
                         <td>{{ $orderItem->quantity }}</td>
-                        <td>Rp. {{ number_format($orderItem->sub_total, 0, ',', '.') }}</td>
+                        <td>Rp. {{ number_format($orderItem->price, 0, ',', '.') }}</td>
                         <td class="text-center" style="width: 64px">
                             <div class="dropdown mx-auto">
                                 <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">

@@ -44,6 +44,7 @@ class AdminOrderController extends Controller
             'users' => User::all(),
             'menus' => Menu::with('pricePromo')->get(),
 
+            'orderTypes' => Order::ORDER_TYPES,
             'orderStatuses' => Order::ORDER_STATUSES,
             'paymentStatuses' => Order::PAYMENT_STATUSES
         ]);
@@ -58,9 +59,11 @@ class AdminOrderController extends Controller
 
         // Remove Price's Dot
         $request->merge([
-            'sub_total' => array_map(function($value) {
+            'price' => array_map(function($value) {
                 return (int) str_replace(['.', ','], ['', '.'], $value);
-            }, $request->sub_total),
+            }, $request->price),
+            'sub_total' => (int) str_replace(['.', ','], ['', '.'], $request->sub_total),
+            'discount' => (int) str_replace(['.', ','], ['', '.'], $request->discount),
             'total_price' => (int) str_replace(['.', ','], ['', '.'], $request->total_price),
         ]);
 
@@ -74,52 +77,48 @@ class AdminOrderController extends Controller
             'menu_id.*' => 'exists:menus,id',
             'quantity' => 'required|array',
             'quantity.*' => 'integer|min:1',
-            'sub_total' => 'required|array',
-            'sub_total.*' => 'integer|min:0',
+            'price' => 'required|array',
+            'price.*' => 'integer|min:0',
+            'sub_total' => 'required|integer|min:0',
+            'discount' => 'nullable|integer|min:0',
             'total_price' => 'required|integer|min:0',
             'order_status' => 'required|string|in:Selesai,Dibatalkan',
             'payment_status' => 'required|string|in:Lunas,Belum Lunas',
         ]);
 
-        if (count($validatedData['menu_id']) !== count($validatedData['quantity'])) {
-            return back()->withErrors(['quantity' => 'Jumlah menu dan quantity harus sesuai.'])->withInput();
-        }
-
-        // Generate Order Slug
+        // Generate Order Number
         $outlet = Outlet::find($request->outlet_id);
-        $formattedDate = Carbon::parse($request->order_date)->format('Ymd');
-        $customerName = $request->customer_name ? $request->customer_name : 'unknown';
+        $formattedDate = Carbon::parse($validatedData['order_date'])->format('Ymd');
+        $randomNumber = mt_rand(100000, 999999);
 
-        $slug = Str::slug($outlet->name) . '-' . $formattedDate . '-' . Str::slug($customerName);
+        $orderNumber = $formattedDate . Str::slug($outlet->outlet_code) . $randomNumber;
 
-        $existingSlugCount = Order::where('slug', 'LIKE', "$slug%")
-            ->where('outlet_id', $request->outlet_id)
-            ->count();
-
-        if($existingSlugCount > 0) {
-            $slug .= '-' . ($existingSlugCount + 1);
-        }
-
-        $validatedData['slug'] = $slug;
+        $validatedData['order_number'] = $orderNumber;
 
         // Insert Data
         $order = Order::create([
             'outlet_id' => $validatedData['outlet_id'],
             'customer_id' => $validatedData['customer_id'],
             'user_id' => $validatedData['user_id'],
+            'order_number' => $validatedData['order_number'],
             'order_date' => $validatedData['order_date'],
+            'sub_total' => $validatedData['sub_total'],
+            'discount' => $validatedData['discount'],
             'total_price' => $validatedData['total_price'],
             'order_status' => $validatedData['order_status'],
             'payment_status' => $validatedData['payment_status'],
-            'slug' => $validatedData['slug'],
         ]);
+
+        if (count($request->menu_id) !== count($request->quantity) || count($request->menu_id) !== count($request->price)) {
+            return redirect()->back()->withErrors(['menu_id' => 'Data menu, quantity, dan harga tidak valid.']);
+        }
 
         foreach ($request->menu_id as $index => $menuId) {
             OrderItem::create([
                 'order_id' => $order->id,
                 'menu_id' => $menuId,
                 'quantity' => $request->quantity[$index],
-                'sub_total' => $request->sub_total[$index],
+                'price' => $request->price[$index],
             ]);
         }
 
@@ -168,12 +167,15 @@ class AdminOrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        Order::destroy($order->id);
+
+        // Redirect to orders
+        return redirect('/dashboard/orders')->with('success', 'Pesanan berhasil dihapus!');
     }
 
-    public function getUsers($slug)
+    public function getUsers($outletCode)
     {
-        $outlet = Outlet::where('slug', $slug)->first();
+        $outlet = Outlet::where('outlet_code', $outletCode)->first();
 
         if (!$outlet) {
             return response()->json(['message' => 'Outlet tidak ditemukan'], 404);
@@ -183,9 +185,9 @@ class AdminOrderController extends Controller
         return response()->json($users);
     }
 
-    public function getMenus($slug)
+    public function getMenus($outletCode)
     {
-        $outlet = Outlet::where('slug', $slug)->first();
+        $outlet = Outlet::where('outlet_code', $outletCode)->first();
 
         if (!$outlet) {
             return response()->json(['message' => 'Outlet tidak ditemukan'], 404);
@@ -193,13 +195,7 @@ class AdminOrderController extends Controller
 
         $menus = Menu::with('pricePromo')
             ->where('outlet_id', $outlet->id)
-            ->get()
-            ->map(function ($menu) {
-                $menu->is_promo_active = $menu->pricePromo &&
-                    now()->between($menu->pricePromo->promo_start_date, $menu->pricePromo->promo_end_date);
-
-                return $menu;
-            });
+            ->get();
 
         return response()->json($menus);
     }

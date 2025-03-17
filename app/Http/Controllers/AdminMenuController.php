@@ -21,7 +21,11 @@ class AdminMenuController extends Controller
     public function index()
     {
         return view('dashboard.menus.index', [
-            'menus' => Menu::latest()->with(['stock', 'pricePromo'])->paginate(10)->withQueryString(),
+            // 'menus' => Menu::latest()->with(['stock', 'pricePromo'])->paginate(10)->withQueryString(),
+            'menus' => Menu::latest()->with(['stock', 'pricePromo' => function ($query) {
+                $query->where('promo_end_date', '>=', now());
+            }])->paginate(10)->withQueryString(),
+
             'outlets' => Outlet::all(),
             'emptyStock' => Stock::orderBy('current_stock', 'asc')->first(),
             'bestSellingMenu' => OrderItem::select('menu_id')
@@ -147,7 +151,7 @@ class AdminMenuController extends Controller
             'price' => str_replace('.', '', $request->price),
             'price_promo' => $request->price_promo !== null ? str_replace('.', '', $request->price_promo) : null,
         ]);
-        
+
         // Validated
         $validatedData = $request->validate([
             'outlet_id' => 'required|exists:outlets,id',

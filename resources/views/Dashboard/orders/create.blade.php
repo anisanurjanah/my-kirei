@@ -50,7 +50,7 @@
                                         <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
                                             <option value="" disabled selected>Pilih Outlet</option>
                                             @foreach ($outlets as $outlet)
-                                                <option value="{{ $outlet->id }}" data-slug="{{ $outlet->slug }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                                                <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
                                                     {{ $outlet->name }}
                                                 </option>
                                             @endforeach
@@ -79,21 +79,10 @@
                                             <div class="col-lg-8 col-md-6 col-8">
                                                 <div class="mb-3">
                                                     <label for="menu_id" class="form-label">Menu</label>
-                                                    <select class="form-select select2 menu-select" id="menu_id" name="menu_id[]" required>
+                                                    <select class="form-select select2 first-menu menu-select" id="menu_id" name="menu_id[]" required>
                                                         <option value="" disabled selected>Pilih Menu</option>
-                                                        {{-- @foreach ($menus as $menu)
-                                                            @php
-                                                                $finalPrice = $menu->price;
-                                                                if (optional($menu->price_promo)->price_promo) {
-                                                                    $finalPrice = $menu->price - $menu->price_promo->price_promo;
-                                                                }
-                                                            @endphp
-                                                            <option value="{{ $menu->id }}" data-price="{{ $finalPrice }}" {{ is_array(old('menu_id')) && in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
-                                                                {{ $menu->name }}
-                                                            </option>
-                                                        @endforeach --}}
                                                         @foreach ($menus as $menu)
-                                                            <option value="{{ $menu->id }}" data-price="{{ $menu->price }}" data-discount="{{ optional($menu->price_promo)->price_promo }}" {{ is_array(old('menu_id')) && in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
+                                                            <option value="{{ $menu->id }}" data-price="{{ $menu->price }}" data-discount="{{ optional($menu->price_promo)->price_promo ?? 0 }}" {{ is_array(old('menu_id')) && in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
                                                                 {{ $menu->name }}
                                                             </option>
                                                         @endforeach
@@ -104,7 +93,7 @@
                                             <div class="col-lg-4 col-md-4 col-4">
                                                 <div class="mb-3">
                                                     <label for="quantity" class="form-label">Quantity</label>
-                                                    <input type="number" class="form-control menu-quantity @error('quantity') is-invalid @enderror" id="quantity" name="quantity[]" min="1" placeholder="Quantity.." value='@json(old("quantity"))' required>
+                                                    <input type="number" class="form-control first-quantity menu-quantity @error('quantity') is-invalid @enderror" id="quantity" name="quantity[]" min="1" value="{{ old('quantity', 1) }}" required>
                                                     @error('quantity')
                                                         <div class="invalid-feedback">
                                                             {{ $message }}
@@ -118,7 +107,7 @@
                                                     <label for="price" class="form-label">Harga</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="text" class="form-control price-input @error('price') is-invalid @enderror" id="price" name="sub_total[]" value="{{ number_format((int) old('price'), 0, ',', '.') }}" required readonly>
+                                                        <input type="text" class="form-control first-price price-input @error('price') is-invalid @enderror" id="price" name="price[]" value="{{ number_format((int) old('price'), 0, ',', '.') }}" required readonly>
                                                     </div>
                                                     @error('price')
                                                         <div class="invalid-feedback">
@@ -204,7 +193,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="order_date" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control @error('order_date') is-invalid @enderror" id="order_date" name="order_date" value="{{ old('order_date') }}" required>
+                            <input type="datetime-local" class="form-control @error('order_date') is-invalid @enderror" id="order_date" name="order_date" value="{{ old('order_date', isset($order) ? $order->order_date->format('Y-m-d\TH:i') : '') }}" required>
                             @error('order_date')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -218,7 +207,7 @@
                             <label for="discount" class="form-label">Diskon</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input type="text" class="form-control @error('discount') is-invalid @enderror" id="discount" name="discount" value="{{ number_format((int) old('discount', 0), 0, ',', '.') }}" required readonly>
+                                <input type="text" class="form-control @error('discount') is-invalid @enderror" id="discount" name="discount" value="{{ number_format((int) old('discount', 0), 0, ',', '.') }}" readonly>
                             </div>
                             @error('discount')
                                 <div class="invalid-feedback">
@@ -237,6 +226,16 @@
                                     {{ $message }}
                                 </div>
                             @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="order_type" class="form-label">Tipe Pesanan</label>
+                            <select class="form-select" id="order_type" name="order_type" required>
+                                @foreach ($orderTypes as $key => $status)
+                                    <option value="{{ $key }}" {{ old('order_type') == $key ? 'selected' : '' }}>
+                                        {{ $status }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="order_status" class="form-label">Status Pesanan</label>

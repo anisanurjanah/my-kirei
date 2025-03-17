@@ -50,7 +50,7 @@
                                         <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
                                             <option value="" disabled selected>Pilih Outlet</option>
                                             @foreach ($outlets as $outlet)
-                                                <option value="{{ $outlet->id }}" data-slug="{{ $outlet->slug }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                                                <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
                                                     {{ $outlet->name }}
                                                 </option>
                                             @endforeach
