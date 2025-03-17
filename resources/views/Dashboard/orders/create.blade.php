@@ -85,11 +85,11 @@
                                                             @php
                                                                 $finalPrice = $menu->price;
                                                                 if (optional($menu->price_promo)->price_promo) {
-                                                                    $finalPrice = $menu->price - $menu->price_promo->price_promo; // Dikurangi diskon
+                                                                    $finalPrice = $menu->price - $menu->price_promo->price_promo;
                                                                 }
                                                             @endphp
                                                             <option value="{{ $menu->id }}" data-price="{{ $finalPrice }}" {{ is_array(old('menu_id')) && in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
-                                                                {{ $menu->name }} - Rp{{ number_format($finalPrice, 0, ',', '.') }}
+                                                                {{ $menu->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -144,7 +144,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-md-6">
                     <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
                         <div class="mb-3">
@@ -160,7 +160,7 @@
                         </div>
                         <div id="customer_name_wrapper" class="mb-3 d-none">
                             <label for="customer_name" class="form-label">Nama Pelanggan</label>
-                            <input type="text" class="form-control" id="customer_name" name="customer_name" readonly>
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" value="{{ old('customer_name') }}" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="user_id" class="form-label">Staff</label>

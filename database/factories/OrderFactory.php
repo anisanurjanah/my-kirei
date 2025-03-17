@@ -27,7 +27,7 @@ class OrderFactory extends Factory
 
         return [
             'outlet_id' => mt_rand(1, 5),
-            'customer_id' => mt_rand(1, 20),
+            'customer_id' => mt_rand(1, 10),
             'user_id' => mt_rand(2, 11),
             'order_date' => $orderDate,
             'total_price' => fake()->randomFloat(2, 10000, 1000000),

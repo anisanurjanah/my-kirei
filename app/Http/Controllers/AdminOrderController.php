@@ -145,7 +145,16 @@ class AdminOrderController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        return view('dashboard.orders.edit', [
+            'order' => $order,
+            'outlets' => Outlet::all(),
+            'customers' => Customer::latest()->get(),
+            'users' => User::all(),
+            'menus' => Menu::with('pricePromo')->get(),
+
+            'orderStatuses' => Order::ORDER_STATUSES,
+            'paymentStatuses' => Order::PAYMENT_STATUSES
+        ]);
     }
 
     /**

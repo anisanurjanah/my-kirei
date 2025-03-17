@@ -48,14 +48,13 @@ class AdminCustomerController extends Controller
         // Validated
         $validatedData = $request->validate([
             'name' => 'required|max:32',
-            'phone' => 'required|max:20',
+            'phone' => 'required|min:12|max:18',
         ]);
 
         // Generate username
         $username = Str::slug($request->name);
 
         $existingUsernameCount = Customer::where('username', 'LIKE', "$username%")
-            ->where('id', $request->id)
             ->count();
 
         if($existingUsernameCount > 0) {
@@ -98,7 +97,7 @@ class AdminCustomerController extends Controller
         // Validated
         $validatedData = $request->validate([
             'name' => 'required|max:32',
-            'phone' => 'required|max:20',
+            'phone' => 'required|min:12|max:18',
         ]);
 
         // Format phone number

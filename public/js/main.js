@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-    
+
     // Phone number formatting
     const phoneInput = document.getElementById("phone");
     if (phoneInput) {
@@ -310,6 +310,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
         updateSubTotal();
     });
+
+    // const addMenuBtn = document.getElementById("add-menu-btn");
+    // const menuContainer = document.getElementById("menu-container");
+    // const menuTemplate = document.getElementById("menu-template").innerHTML;
+
+    // // Tambah menu baru
+    // addMenuBtn.addEventListener("click", function () {
+    //     menuContainer.insertAdjacentHTML("beforeend", menuTemplate.replace(/TEMPLATE/g, Date.now()));
+    // });
+
+    // // Hapus menu yang ditambahkan
+    // menuContainer.addEventListener("click", function (event) {
+    //     if (event.target.closest(".btn-remove-menu")) {
+    //         event.target.closest(".order-item-row").remove();
+    //     }
+    // });
 
     // Show customer name
     $(document).ready(function () {
