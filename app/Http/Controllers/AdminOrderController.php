@@ -142,13 +142,15 @@ class AdminOrderController extends Controller
      */
     public function edit(Order $order)
     {
+        // dd($order->orderItems);
+
         return view('dashboard.orders.edit', [
             'order' => $order,
             'outlets' => Outlet::all(),
             'customers' => Customer::latest()->get(),
             'users' => User::all(),
             'menus' => Menu::with('pricePromo')->get(),
-
+            'orderTypes' => Order::ORDER_TYPES,
             'orderStatuses' => Order::ORDER_STATUSES,
             'paymentStatuses' => Order::PAYMENT_STATUSES
         ]);
@@ -159,7 +161,66 @@ class AdminOrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        //
+        // dd($request->all());
+
+        // Remove Price's Dot
+        $request->merge([
+            'price' => array_map(function($value) {
+                return (int) str_replace(['.', ','], ['', '.'], $value);
+            }, $request->price),
+            'sub_total' => (int) str_replace(['.', ','], ['', '.'], $request->sub_total),
+            'discount' => $request->discount ? (int) str_replace(['.', ','], ['', '.'], $request->discount) : null,
+            'total_price' => (int) str_replace(['.', ','], ['', '.'], $request->total_price),
+        ]);
+
+        // Validated
+        $validatedData = $request->validate([
+            'outlet_id' => 'required|exists:outlets,id',
+            'customer_id' => 'required|exists:customers,id',
+            'user_id' => 'required|exists:users,id',
+            'order_date' => 'required|date',
+            'menu_id' => 'required|array',
+            'menu_id.*' => 'exists:menus,id',
+            'quantity' => 'required|array',
+            'quantity.*' => 'integer|min:1',
+            'price' => 'required|array',
+            'price.*' => 'integer|min:0',
+            'sub_total' => 'required|integer|min:0',
+            'discount' => 'nullable|integer|min:0',
+            'total_price' => 'required|integer|min:0',
+            'order_status' => 'required|string|in:Selesai,Dibatalkan',
+            'payment_status' => 'required|string|in:Lunas,Belum Lunas',
+        ]);
+
+        // Insert Data
+        $order->update([
+            'outlet_id' => $validatedData['outlet_id'],
+            'customer_id' => $validatedData['customer_id'],
+            'user_id' => $validatedData['user_id'],
+            'order_date' => $validatedData['order_date'],
+            'sub_total' => $validatedData['sub_total'],
+            'discount' => $validatedData['discount'],
+            'total_price' => $validatedData['total_price'],
+            'order_status' => $validatedData['order_status'],
+            'payment_status' => $validatedData['payment_status'],
+        ]);
+
+        if (count($request->menu_id) !== count($request->quantity) || count($request->menu_id) !== count($request->price)) {
+            return redirect()->back()->withErrors(['menu_id' => 'Data menu, quantity, dan harga tidak valid.']);
+        }
+
+        $order->orderItems()->delete();
+        foreach ($request->menu_id as $index => $menuId) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'menu_id' => $menuId,
+                'quantity' => $request->quantity[$index],
+                'price' => $request->price[$index],
+            ]);
+        }
+
+        // Redirect to orders
+        return redirect('/dashboard/orders')->with('success', 'Pesanan berhasil diperbarui!');
     }
 
     /**

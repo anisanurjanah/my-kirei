@@ -9,7 +9,7 @@
                     <a href="/dashboard/orders" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
-                    Perbarui Pesanan {{ $order->slug }}
+                    Perbarui Pesanan {{ $order->order_number }}
                 </h1>
 
                 <nav aria-label="breadcrumb">
@@ -24,7 +24,7 @@
                                 Pesanan
                             </a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ $order->slug }}/li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $order->order_number }}</li>
                     </ol>
                 </nav>
             </div>
@@ -33,9 +33,12 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/orders/{{ $order->slug }}">
+        <form method="post" action="/dashboard/orders/{{ $order->order_number }}">
             @method('PUT')
             @csrf
+
+            <input type="hidden" id="selectedUserId" value="{{ old('selectedUserId', $order->user_id ?? '') }}">
+
             <div class="row p-2">
                 <div class="col-lg-12 mb-3 mb-md-0">
                     <div class="accordion accordion-flush">
@@ -51,7 +54,7 @@
                                         <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
                                             <option value="" disabled selected>Pilih Outlet</option>
                                             @foreach ($outlets as $outlet)
-                                                <option value="{{ $outlet->id }}" data-slug="{{ $outlet->slug }}" {{ old('outlet_id', $order->outlet_id) == $outlet->id ? 'selected' : '' }}>
+                                                <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id', $order->outlet_id) == $outlet->id ? 'selected' : '' }}>
                                                     {{ $outlet->name }}
                                                 </option>
                                             @endforeach
@@ -78,20 +81,18 @@
                                     <div class="accordion-body">
 
                                         @foreach($order->orderItems as $index => $orderItem)
+
+                                            <input type="hidden" class="selectedMenuId" value="{{ $orderItem->menu_id }}">
+                                            <input type="hidden" class="selectedQuantity" value="{{ $orderItem->quantity }}">
+
                                             <div class="row align-items-end mb-3">
-                                                <div class="col-lg-7 col-md-6 col-7">
+                                                <div class="col-lg-8 col-md-6 col-8">
                                                     <div class="mb-3">
                                                         <label for="menu_id_{{ $index }}" class="form-label">Menu</label>
-                                                        <select class="form-select select2 menu-select" id="menu_id_{{ $index }}" name="menu_id[]" required>
+                                                        <select class="form-select select2 {{ $index == 0 ? 'first-menu' : '' }} menu-select" id="menu_id[{{ $index }}]" name="menu_id[{{ $index }}]" required>
                                                             <option value="" disabled selected>Pilih Menu</option>
                                                             @foreach ($menus as $menu)
-                                                                @php
-                                                                    $finalPrice = $menu->price;
-                                                                    if (optional($menu->price_promo)->price_promo) {
-                                                                        $finalPrice = $menu->price - $menu->price_promo->price_promo;
-                                                                    }
-                                                                @endphp
-                                                                <option value="{{ $menu->id }}" data-price="{{ $finalPrice }}" {{ old("menu_id.$index", $orderItem->menu_id) == $menu->id ? 'selected' : '' }}>
+                                                                <option value="{{ $menu->id }}" data-price="{{ $menu->price }}" data-discount="{{ optional($menu->price_promo)->price_promo }}"  {{ old('menu_id.' . $index, $orderItem->menu_id) == $menu->id ? 'selected' : '' }}>
                                                                     {{ $menu->name }}
                                                                 </option>
                                                             @endforeach
@@ -99,11 +100,11 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-lg-3 col-md-4 col-3">
+                                                <div class="col-lg-4 col-md-4 col-4">
                                                     <div class="mb-3">
                                                         <label for="quantity_{{ $index }}" class="form-label">Quantity</label>
-                                                        <input type="number" class="form-control menu-quantity @error('quantity') is-invalid @enderror" id="quantity_{{ $index }}" name="quantity[]" min="1" placeholder="Quantity.." value='{{ old('quantity.$index', $orderItem->quantity) }}' required>
-                                                        @error('quantity.$index')
+                                                        <input type="number" class="form-control {{ $index == 0 ? 'first-quantity' : '' }} menu-quantity @error('quantity.' . $index) is-invalid @enderror" id="quantity[{{ $index }}]" name="quantity[{{ $index }}]" min="1" value='{{ old('quantity.' . $index, $orderItem->quantity) }}' required>
+                                                        @error('quantity.' . $index)
                                                             <div class="invalid-feedback">
                                                                 {{ $message }}
                                                             </div>
@@ -111,36 +112,46 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-lg-2 col-md-2 col-2 d-none text-md-center text-end">
+                                                <div class="col-lg-10 col-md-6 col-10">
                                                     <div class="mb-3">
-                                                        <button type="button" class="btn btn-transparent btn-remove-menu">
+                                                        <label for="price_{{ $index }}" class="form-label">Harga</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Rp</span>
+                                                            <input type="text" class="form-control {{ $index == 0 ? 'first-price' : '' }} price-input @error('price.' . $index) is-invalid @enderror" id="price[{{ $index }}]" name="price[{{ $index }}]" value="{{ number_format((int) old('price.' . $index, $orderItem->price), 0, ',', '.') }}" required readonly>
+                                                        </div>
+                                                        @error('price.' . $index)
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-2 col-md-2 col-2 text-md-center text-end">
+                                                    <div class="mb-3">
+                                                        <button type="button" class="btn btn-transparent {{ $index == 0 ? 'btn-remove-first-menu' : 'btn-remove-menu' }}">
                                                             <i class="bi bi-x-circle-fill text-danger"></i>
                                                         </button>
                                                     </div>
                                                 </div>
-
-                                                <div id="menu-container"></div>
-
-                                                <div class="col-12 d-none text-end mb-3" id="add-menu-btn-container">
-                                                    <button type="button" class="btn btn-danger" id="add-menu-btn">
-                                                        <i class="bi bi-plus-circle-fill me-2"></i>Tambah Menu
-                                                    </button>
-                                                </div>
                                             </div>
                                         @endforeach
+
+                                        <div id="menu-container"></div>
+
+                                        <div class="col-12 d-none text-end mb-3" id="add-menu-btn-container">
+                                            <button type="button" class="btn btn-danger" id="add-menu-btn">
+                                                <i class="bi bi-plus-circle-fill me-2"></i>Tambah Menu
+                                            </button>
+                                        </div>
+
+                                        <hr class="mt-4">
 
                                         <div class="mb-3">
                                             <label for="sub_total" class="form-label">Sub Total</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">Rp</span>
-                                                @php
-                                                    $finalPrice = $menu->price;
-                                                    if (optional($menu->price_promo)->price_promo) {
-                                                        $finalPrice = $menu->price - $menu->price_promo->price_promo;
-                                                    }
-                                                @endphp
-                                                <input type="text" class="form-control sub-total-input @error('sub_total') is-invalid @enderror" id="sub_total" name="sub_total[]" value="{{ number_format((int) old('sub_total', $orderItem->quantity * $finalPrice), 0, ',', '.') }}"
-                                                autocomplete="off" required>
+                                                <input type="text" class="form-control @error('sub_total') is-invalid @enderror" id="sub_total" name="sub_total" value="{{ number_format((int) old('sub_total', $order->sub_total), 0, ',', '.') }}" required readonly>
                                             </div>
                                             @error('sub_total')
                                                 <div class="invalid-feedback">
@@ -150,45 +161,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="menu-template" class="d-none">
-                    <div class="row align-items-end mb-3 order-item-row">
-                        <div class="col-lg-7 col-md-6 col-7">
-                            <div class="mb-3">
-                                <label for="menu_id_TEMPLATE" class="form-label">Menu</label>
-                                <select class="form-select select2 menu-select" name="menu_id[]" required>
-                                    <option value="" disabled selected>Pilih Menu</option>
-                                    @foreach ($menus as $menu)
-                                        @php
-                                            $finalPrice = $menu->price;
-                                            if (optional($menu->price_promo)->price_promo) {
-                                                $finalPrice = $menu->price - $menu->price_promo->price_promo;
-                                            }
-                                        @endphp
-                                        <option value="{{ $menu->id }}" data-price="{{ $finalPrice }}">
-                                            {{ $menu->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-4 col-3">
-                            <div class="mb-3">
-                                <label for="quantity_TEMPLATE" class="form-label">Quantity</label>
-                                <input type="number" class="form-control menu-quantity" name="quantity[]" min="1" placeholder="Quantity.." required>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-2 col-md-2 col-2 text-md-center text-end">
-                            <div class="mb-3">
-                                <button type="button" class="btn btn-transparent btn-remove-menu">
-                                    <i class="bi bi-x-circle-fill text-danger"></i>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -224,7 +196,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="order_date" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control @error('order_date') is-invalid @enderror" id="order_date" name="order_date" value="{{ old('order_date', $order->order_date) }}" required>
+                            <input type="datetime-local" class="form-control @error('order_date') is-invalid @enderror" id="order_date" name="order_date" value="{{ old('order_date', $order->order_date) }}" required>
                             @error('order_date')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -235,16 +207,38 @@
                         <hr class="mt-4">
 
                         <div class="mb-3">
+                            <label for="discount" class="form-label">Diskon</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="text" class="form-control @error('discount') is-invalid @enderror" id="discount" name="discount" value="{{ old('discount') !== null ? number_format((int) old('discount'), 0, ',', '.') : number_format((int) $order->discount, 0, ',', '.') }}">
+                            </div>
+                            @error('discount')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
                             <label for="total_price" class="form-label">Total Harga</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input type="text" class="form-control @error('total_price') is-invalid @enderror" id="total_price" name="total_price" value="{{ number_format((int) old('total_price', $order->total_price, 0), 0, ',', '.') }}" required readonly>
+                                <input type="text" class="form-control @error('total_price') is-invalid @enderror" id="total_price" name="total_price" value="{{ number_format((int) old('total_price', $order->total_price), 0, ',', '.') }}" required readonly>
                             </div>
                             @error('total_price')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                             @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="order_type" class="form-label">Tipe Pesanan</label>
+                            <select class="form-select" id="order_type" name="order_type" required>
+                                @foreach ($orderTypes as $key => $status)
+                                    <option value="{{ $key }}" {{ old('order_type', $order->order_type) == $key ? 'selected' : '' }}>
+                                        {{ $status }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="order_status" class="form-label">Status Pesanan</label>

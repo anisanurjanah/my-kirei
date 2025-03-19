@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formatPrice(document.getElementById("price"));
     formatPrice(document.getElementById("price_promo"));
     formatPrice(document.getElementById("sub_total"));
+    formatPrice(document.getElementById("discount"));
     formatPrice(document.getElementById("total_price"));
 
     // MODALS
@@ -149,6 +150,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        if ($(".menu-select").length > 0) {
+            $("#add-menu-btn-container").removeClass("d-none");
+        }
+
         function updatePrice() {
             let total = 0;
             let totalDiscount = 0;
@@ -157,6 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const selectedOption = $(this).find("option:selected");
                 const priceData = parseFloat(selectedOption.attr("data-price")) || 0;
                 const discountData = parseFloat(selectedOption.attr("data-discount")) || 0;
+                // const discountData = parseFloat(selectedOption.data("discount")) || 0;
 
                 const quantityInput = $(this).closest(".row").find(".menu-quantity");
                 const priceInput = $(this).closest(".row").find(".price-input");
@@ -174,11 +180,11 @@ document.addEventListener("DOMContentLoaded", function () {
             // Insert discount
             $("#discount").val(totalDiscount.toLocaleString("id-ID"));
 
-            const totalPrice = total - totalDiscount;
+             const totalPrice = total - totalDiscount;
 
-            // Insert total
-            $("#sub_total").val(total.toLocaleString("id-ID"));
-            $("#total_price").val(totalPrice.toLocaleString("id-ID"));
+             // Insert total
+             $("#sub_total").val(total.toLocaleString("id-ID"));
+             $("#total_price").val(totalPrice.toLocaleString("id-ID"));
         }
 
         function addMenuRow() {
@@ -263,23 +269,119 @@ document.addEventListener("DOMContentLoaded", function () {
             updatePrice();
         });
 
-        $("#add-menu-btn").on("click", addMenuRow);
+        $(document).on("click", ".btn-remove-menu", function () {
+            $(this).closest(".row").remove();
+            updatePrice();
+        });
+
+        $(document).on("click", "#add-menu-btn", function() {
+            addMenuRow();
+            $(".menu-select").last().val("").trigger("change");
+        });
+
         menuSelect.on("change", toggleAddButton);
         quantityInput.on("input", toggleAddButton);
 
+        // Selected outlet
+        if (outletSelect.val()) {
+            console.log("Outlet terpilih:", outletSelect.val(), "Kode:", outletSelect.find(":selected").data("code"));
+
+            let outletCode = outletSelect.find(":selected").data("code");
+            let selectedUserId = $("#selectedUserId").val();
+
+            userSelect.each(function () {
+                $(this).html('<option value="" disabled selected>Pilih Staff</option>');
+            });
+
+            $(".menu-select").each(function () {
+                $(this).html('<option value="" disabled selected>Pilih Menu</option>');
+            });
+
+            menuContainer.empty();
+            $(".menu-quantity").val("1");
+            $("#price").val("0");
+            $("#sub_total").val("0");
+            $("#discount").val("0");
+            $("#total_price").val("0");
+            addMenuBtnContainer.addClass("d-none");
+
+            // Fetch users
+            $.ajax({
+                url: '/get-users/' + outletCode,
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" disabled selected>Pilih Staff</option>';
+
+                    data.forEach(user => {
+                        let isSelected = user.id == selectedUserId ? "selected" : "";
+                        options += `<option value="${user.id}" ${isSelected}>${user.name}</option>`;
+                    });
+
+                    userSelect.html(options);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching users:", error);
+                }
+            });
+
+            // Fetch menus
+            $.ajax({
+                url: '/get-menus/' + outletCode,
+                type: 'GET',
+                success: function (data) {
+                    $(".menu-select").each(function (index) {
+
+                        let menuSelect = $(this);
+                        let selectedMenuId = $(".selectedMenuId").eq(index).val() || "";
+                        let selectedQuantity = $(".selectedQuantity").eq(index).val();
+
+                        let options = '<option value="" disabled>Pilih Menu</option>';
+                        data.forEach(menu => {
+                            let finalPrice = menu.price_promo?.price_promo || 0;
+                            let isSelected = (menu.id == selectedMenuId && selectedMenuId !== "") ? "selected" : "";
+
+                            options += `<option value="${menu.id}" data-price="${menu.price}" data-discount="${finalPrice}" ${isSelected}>${menu.name}</option>`;
+                        });
+
+                        menuSelect.html(options).trigger("change");
+                        menuSelect.select2({ theme: "bootstrap-5", width: "100%" });
+
+                        menuOptions = options;
+
+                        $(".menu-quantity").eq(index).val(selectedQuantity);
+                    });
+
+                    if ($(".selectedMenuId").length > 0) {
+                        $("#add-menu-btn-container").removeClass("d-none");
+                    }
+
+                    updatePrice();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching menus:", error);
+                }
+            });
+        }
+
+        // Select outlet
         outletSelect.change(function () {
-            let outletId = $(this).val();
-            let outletCode = $(this).find(":selected").data("code");
+            let outletId = outletSelect.val();
+            let outletCode = outletSelect.find(":selected").data("code");
 
             if (outletId > 0 ) {
                 $(".row-form").removeClass("d-none");
             }
 
-            userSelect.html('<option>Loading...</option>');
-            menuSelect.html('<option>Loading...</option>');
+            userSelect.each(function () {
+                $(this).html('<option value="" disabled selected>Pilih Staff</option>');
+            });
+
+            $(".menu-select").each(function () {
+                $(this).html('<option value="" disabled selected>Pilih Menu</option>');
+            });
 
             menuContainer.empty();
-            $("#quantity").val("1");
+            $(".menu-quantity").val("1");
             $("#price").val("0");
             $("#sub_total").val("0");
             $("#discount").val("0");
@@ -298,6 +400,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
 
                     userSelect.html(options);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching users:", error);
                 }
             });
 
@@ -315,16 +420,17 @@ document.addEventListener("DOMContentLoaded", function () {
                             finalPrice = menu.price_promo.price_promo;
                         }
 
-                        console.log(`Menu: ${menu.name}, Price: ${menu.price}, Discount: ${finalPrice}`);
-
                         options += `<option value="${menu.id}" data-price="${menu.price}" data-discount="${finalPrice}">${menu.name}</option>`;
                     });
 
-                    menuSelect.html(options);
-                    menuSelect.select2("destroy").html(options).select2({ theme: "bootstrap-5", width: "100%" });
+                    menuSelect.html(options).trigger("change");
+                    menuSelect.html(options).select2({ theme: "bootstrap-5", width: "100%" });
 
                     menuOptions = options;
                     updatePrice();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching menus:", error);
                 }
             });
         });
@@ -351,3 +457,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+

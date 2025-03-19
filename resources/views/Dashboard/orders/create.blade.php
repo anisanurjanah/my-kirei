@@ -82,7 +82,7 @@
                                                     <select class="form-select select2 first-menu menu-select" id="menu_id" name="menu_id[]" required>
                                                         <option value="" disabled selected>Pilih Menu</option>
                                                         @foreach ($menus as $menu)
-                                                            <option value="{{ $menu->id }}" data-price="{{ $menu->price }}" data-discount="{{ optional($menu->price_promo)->price_promo ?? 0 }}" {{ is_array(old('menu_id')) && in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
+                                                            <option value="{{ $menu->id }}" data-price="{{ $menu->price }}" data-discount="{{ optional($menu->price_promo)->price_promo }}" {{ is_array(old('menu_id')) && in_array($menu->id, old('menu_id', [])) ? 'selected' : '' }}>
                                                                 {{ $menu->name }}
                                                             </option>
                                                         @endforeach
