@@ -33,7 +33,7 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/menus" enctype="multipart/form-data">
+        <form method="post" action="/dashboard/menus" enctype="multipart/form-data" data-page="create-menu">
             @csrf
             <div class="row p-2">
                 <div class="col-lg-12 mb-3 mb-md-0">

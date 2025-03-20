@@ -49,6 +49,7 @@
 
     <!-- JS -->
     <script src="/js/main.js"></script>
+    <script src="/js/order.js"></script>
     <script src="/js/dashboard.js"></script>
 
 </body>

@@ -33,7 +33,7 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/orders">
+        <form method="post" action="/dashboard/orders" data-page="create-order">
             @csrf
             <div class="row p-2">
                 <div class="col-lg-12 mb-3 mb-md-0">
@@ -47,7 +47,7 @@
                             <div id="outlet" class="accordion-collapse collapse show">
                                 <div class="accordion-body">
                                     <div class="mb-3">
-                                        <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
+                                        <select class="form-select select2 outlet-order" id="outlet_id" name="outlet_id" required autofocus>
                                             <option value="" disabled selected>Pilih Outlet</option>
                                             @foreach ($outlets as $outlet)
                                                 <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
@@ -65,7 +65,7 @@
 
             <div class="row p-2">
                 <div class="col-md-6 mb-3 mb-md-0">
-                    <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="order-form {{ $errors->any() ? '' : 'd-none' }}">
                         <div class="accordion accordion-flush">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -164,7 +164,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="order-form {{ $errors->any() ? '' : 'd-none' }}">
                         <div class="mb-3">
                             <label for="customer_id" class="form-label">No. Telepon Pelanggan</label>
                             <select class="form-select select2" id="customer_id" name="customer_id" required>

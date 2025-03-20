@@ -4,6 +4,7 @@
             <tr>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                <th scope="col" class="text-secondary" style="font-size: 12px;">KODE <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">PHONE <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">ADDRESS <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col"></th>
@@ -15,6 +16,7 @@
                     <tr>
                         <td>{{ ($outlets->currentPage() - 1) * $outlets->perPage() + $loop->iteration }}</td>
                         <td>{{ $outlet->name }}</td>
+                        <td>{{ $outlet->outlet_code }}</td>
                         <td>{{ $outlet->phone }}</td>
                         <td>{{ $outlet->address }}</td>
                         <td class="text-center" style="width: 64px">

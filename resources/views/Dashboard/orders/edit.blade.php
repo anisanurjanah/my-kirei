@@ -51,7 +51,7 @@
                             <div id="outlet" class="accordion-collapse collapse show">
                                 <div class="accordion-body">
                                     <div class="mb-3">
-                                        <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
+                                        <select class="form-select select2 outlet-order" id="outlet_id" name="outlet_id" required autofocus>
                                             <option value="" disabled selected>Pilih Outlet</option>
                                             @foreach ($outlets as $outlet)
                                                 <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id', $order->outlet_id) == $outlet->id ? 'selected' : '' }}>

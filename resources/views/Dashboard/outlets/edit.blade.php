@@ -47,6 +47,15 @@
                     @enderror
                 </div>
                 <div class="mb-3">
+                    <label for="outlet_code" class="form-label">Kode</label>
+                    <input type="text" class="form-control @error('outlet_code') is-invalid @enderror" id="outlet_code" name="outlet_code" placeholder="Kode outlet.." value="{{ old('outlet_code', $outlet->outlet_code) }}" autocomplete="off" required>
+                    @error('outlet_code')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="mb-3">
                     <label for="phone" class="form-label">No. Telepon</label>
                     <div class="input-group">
                         <span class="input-group-text">(+62)</span>

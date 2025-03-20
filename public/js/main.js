@@ -1,460 +1,136 @@
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
 
-    // Price format
-    function formatPrice(input) {
-        if (input) {
-            input.addEventListener("input", function () {
-                let value = this.value.replace(/\./g, "").replace(/\D/g, "");
-                this.value = value ? parseInt(value, 10).toLocaleString("id-ID") : "";
-            });
-        }
-    }
+    // Selected outlet in menu and user
+    $("#outlet_id").change(function () {
+        let outletId = $("#outlet_id").val();
 
-    // Insert price format
-    formatPrice(document.getElementById("price"));
-    formatPrice(document.getElementById("price_promo"));
-    formatPrice(document.getElementById("sub_total"));
-    formatPrice(document.getElementById("discount"));
-    formatPrice(document.getElementById("total_price"));
-
-    // MODALS
-    $(document).ready(function () {
-        $('.modal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var actionType = button.data('action');
-            var itemName = button.data('bs-name');
-            var itemUrl = button.data('bs-url');
-
-            $('#modalItemName').text(itemName || "Nama Tidak Ditemukan");
-            $('#modalForm').attr('action', itemUrl || "#");
-
-            if (actionType === 'delete') {
-                $('#modalTitle').text("Konfirmasi Hapus");
-                $('#modalMessage').text("Apakah kamu yakin ingin menghapus ");
-                $('#modalSubmitButton').text("Hapus").addClass('btn-danger');
-            } else if (actionType === 'reset') {
-                $('#modalTitle').text("Konfirmasi Hapus Stok");
-                $('#modalMessage').text("Apakah kamu yakin ingin menghapus stok pada menu ");
-                $('#modalSubmitButton').text("Hapus").addClass('btn-danger');
-            }
-        });
-
-        $('.modal').on('shown.bs.modal', function () {
-            var priceInput = $(this).find("#price_promo");
-            if (priceInput.length) {
-                formatPrice(priceInput);
-            }
-        });
-    });
-
-    // Phone number formatting
-    const phoneInput = document.getElementById("phone");
-    if (phoneInput) {
-        phoneInput.addEventListener("input", function () {
-            let value = phoneInput.value.replace(/\D/g, "");
-
-            if (value.startsWith("0")) {
-                value = value.substring(1);
-            }
-
-            value = value.replace(/^(\d{3})(\d{4})?(\d{4})?/, function(match, p1, p2, p3) {
-                let formatted = p1;
-                if (p2) formatted += "-" + p2;
-                if (p3) formatted += "-" + p3;
-
-                return formatted;
-            });
-
-            phoneInput.value = value;
-        });
-    }
-
-    // Image preview
-    function previewImage() {
-        const image = document.querySelector("#image");
-        const imgPreview = document.querySelector(".img-preview");
-
-        if (image.files.length > 0) {
-            const oFReader = new FileReader();
-            oFReader.readAsDataURL(image.files[0]);
-
-            oFReader.onload = function (oFREvent) {
-                imgPreview.style.display = "block";
-                imgPreview.src = oFREvent.target.result;
-            };
-        }
-    }
-
-    const imageInput = document.getElementById("image");
-    if (imageInput) {
-        imageInput.addEventListener("change", previewImage);
-    }
-
-    // Menu promotion
-    $(document).ready(function () {
-        var $pricePromoInput = $("#price_promo");
-        var $promoDates = $("#promo_dates");
-
-        function togglePromoDates() {
-            var pricePromoValue = $pricePromoInput.val();
-            if (pricePromoValue) {
-                pricePromoValue = pricePromoValue.replace(/\./g, '');
-            } else {
-                pricePromoValue = "0";
-            }
-
-            if ($.trim(pricePromoValue) !== "" && pricePromoValue !== "0") {
-                $promoDates.removeClass("d-none");
-            } else {
-                $promoDates.addClass("d-none");
-            }
-        }
-
-        if ($pricePromoInput.length) {
-            togglePromoDates();
-            $pricePromoInput.on("input", togglePromoDates);
+        if (outletId > 0 ) {
+            $(".row-form").removeClass("d-none");
         }
     });
 
-    // Select2
-    $(document).ready(function() {
-        $('.select2').select2({
-            theme: 'bootstrap-5',
-            width: '100%'
+    // Price format in modals
+    $('.modal').on('shown.bs.modal', function () {
+        let priceInput = $(this).find("#price_promo");
+
+        priceInput.off("input").on("input", function () {
+            formatPrice($(this));
         });
     });
 
-    // Add menu in order
-    $(document).ready(function () {
-        const menuSelect = $("#menu_id");
-        const quantityInput = $("#quantity");
-        const addMenuBtnContainer = $("#add-menu-btn-container");
-        const menuContainer = $("#menu-container");
-
-        const outletSelect = $("#outlet_id");
-        const userSelect = $("#user_id");
-
-        let menuOptions = menuSelect.html();
-
-        // Select2 menu
-        menuSelect.select2({
-            theme: "bootstrap-5",
-            width: "100%"
-        });
-
-        function toggleAddButton() {
-            if (menuSelect.val() && quantityInput.val() > 0) {
-                addMenuBtnContainer.removeClass("d-none");
-            } else {
-                addMenuBtnContainer.addClass("d-none");
-            }
-        }
-
-        if ($(".menu-select").length > 0) {
-            $("#add-menu-btn-container").removeClass("d-none");
-        }
-
-        function updatePrice() {
-            let total = 0;
-            let totalDiscount = 0;
-
-            $(".menu-select").each(function () {
-                const selectedOption = $(this).find("option:selected");
-                const priceData = parseFloat(selectedOption.attr("data-price")) || 0;
-                const discountData = parseFloat(selectedOption.attr("data-discount")) || 0;
-                // const discountData = parseFloat(selectedOption.data("discount")) || 0;
-
-                const quantityInput = $(this).closest(".row").find(".menu-quantity");
-                const priceInput = $(this).closest(".row").find(".price-input");
-
-                const quantity = parseInt(quantityInput.val()) || 1;
-                const price = priceData * quantity;
-                const discountTotal = discountData * quantity;
-
-                priceInput.val(price.toLocaleString("id-ID"));
-
-                total += price;
-                totalDiscount += discountTotal;
-            });
-
-            // Insert discount
-            $("#discount").val(totalDiscount.toLocaleString("id-ID"));
-
-             const totalPrice = total - totalDiscount;
-
-             // Insert total
-             $("#sub_total").val(total.toLocaleString("id-ID"));
-             $("#total_price").val(totalPrice.toLocaleString("id-ID"));
-        }
-
-        function addMenuRow() {
-            const newMenuRow = $("<div>").addClass("row align-items-end mb-3");
-
-            // Menu
-            const newSelect = $("<select>")
-                .addClass("form-select select2 menu-select")
-                .attr({ name: "menu_id[]", required: true })
-                .css("width", "100%")
-                .html(menuOptions);
-
-            const newSelectWrapper = $("<div>").addClass("col-lg-8 col-md-6 col-8").append(
-                $("<div>").addClass("mb-3").append(
-                    $("<label>").addClass("form-label").text("Menu"),
-                    newSelect
-                )
-            );
-
-            // Quantity
-            const newQuantityWrapper = $("<div>").addClass("col-lg-4 col-md-4 col-4").append(
-                $("<div>").addClass("mb-3").append(
-                    $("<label>").addClass("form-label").text("Quantity"),
-                    $("<input>")
-                        .addClass("form-control menu-quantity")
-                        .attr({ type: "number", name: "quantity[]", min: 1, value: "1", required: true })
-                )
-            );
-
-            // Price
-            const newPriceInput = $("<input>")
-                .addClass("form-control price-input")
-                .attr({
-                    type: "text",
-                    name: "price[]",
-                    readonly: true
-                });
-
-            const newPriceWrapper = $("<div>").addClass("col-lg-10 col-md-6 col-10").append(
-                $("<div>").addClass("mb-3").append(
-                    $("<label>").addClass("form-label").text("Harga"),
-                    $("<div>").addClass("input-group").append(
-                        $("<span>").addClass("input-group-text").text("Rp"),
-                        newPriceInput
-                    )
-                )
-            );
-
-            // Delete
-            const newDeleteWrapper = $("<div>").addClass("col-lg-2 col-md-2 col-2 text-md-center text-end").append(
-                $("<div>").addClass("mb-3").append(
-                    $("<button>")
-                        .addClass("btn btn-transparent btn-remove-menu")
-                        .attr("type", "button")
-                        .append($("<i>").addClass("bi bi-x-circle-fill text-danger"))
-                )
-            );
-
-            newMenuRow.append(newSelectWrapper, newQuantityWrapper, newPriceWrapper, newDeleteWrapper);
-            menuContainer.append(newMenuRow);
-
-            newSelect.select2({ theme: "bootstrap-5", width: "100%" });
-
-            newSelectWrapper.find("select").on("change select2:select", updatePrice);
-            newQuantityWrapper.find("input").on("change input", updatePrice);
-
-            newDeleteWrapper.find(".btn-remove-menu").on("click", function () {
-                newMenuRow.remove();
-                updatePrice();
-            });
-
-            updatePrice();
-        }
-
-        $(".btn-remove-first-menu").on("click", function() {
-            let parentRow = $(this).closest(".row");
-
-            parentRow.find(".first-menu").val("").change();
-            parentRow.find(".first-quantity").val("1");
-            parentRow.find(".first-price").val("0");
-
-            updatePrice();
-        });
-
-        $(document).on("click", ".btn-remove-menu", function () {
-            $(this).closest(".row").remove();
-            updatePrice();
-        });
-
-        $(document).on("click", "#add-menu-btn", function() {
-            addMenuRow();
-            $(".menu-select").last().val("").trigger("change");
-        });
-
-        menuSelect.on("change", toggleAddButton);
-        quantityInput.on("input", toggleAddButton);
-
-        // Selected outlet
-        if (outletSelect.val()) {
-            console.log("Outlet terpilih:", outletSelect.val(), "Kode:", outletSelect.find(":selected").data("code"));
-
-            let outletCode = outletSelect.find(":selected").data("code");
-            let selectedUserId = $("#selectedUserId").val();
-
-            userSelect.each(function () {
-                $(this).html('<option value="" disabled selected>Pilih Staff</option>');
-            });
-
-            $(".menu-select").each(function () {
-                $(this).html('<option value="" disabled selected>Pilih Menu</option>');
-            });
-
-            menuContainer.empty();
-            $(".menu-quantity").val("1");
-            $("#price").val("0");
-            $("#sub_total").val("0");
-            $("#discount").val("0");
-            $("#total_price").val("0");
-            addMenuBtnContainer.addClass("d-none");
-
-            // Fetch users
-            $.ajax({
-                url: '/get-users/' + outletCode,
-                type: 'GET',
-                success: function (data) {
-                    let options = '<option value="" disabled selected>Pilih Staff</option>';
-
-                    data.forEach(user => {
-                        let isSelected = user.id == selectedUserId ? "selected" : "";
-                        options += `<option value="${user.id}" ${isSelected}>${user.name}</option>`;
-                    });
-
-                    userSelect.html(options);
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching users:", error);
-                }
-            });
-
-            // Fetch menus
-            $.ajax({
-                url: '/get-menus/' + outletCode,
-                type: 'GET',
-                success: function (data) {
-                    $(".menu-select").each(function (index) {
-
-                        let menuSelect = $(this);
-                        let selectedMenuId = $(".selectedMenuId").eq(index).val() || "";
-                        let selectedQuantity = $(".selectedQuantity").eq(index).val();
-
-                        let options = '<option value="" disabled>Pilih Menu</option>';
-                        data.forEach(menu => {
-                            let finalPrice = menu.price_promo?.price_promo || 0;
-                            let isSelected = (menu.id == selectedMenuId && selectedMenuId !== "") ? "selected" : "";
-
-                            options += `<option value="${menu.id}" data-price="${menu.price}" data-discount="${finalPrice}" ${isSelected}>${menu.name}</option>`;
-                        });
-
-                        menuSelect.html(options).trigger("change");
-                        menuSelect.select2({ theme: "bootstrap-5", width: "100%" });
-
-                        menuOptions = options;
-
-                        $(".menu-quantity").eq(index).val(selectedQuantity);
-                    });
-
-                    if ($(".selectedMenuId").length > 0) {
-                        $("#add-menu-btn-container").removeClass("d-none");
-                    }
-
-                    updatePrice();
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching menus:", error);
-                }
-            });
-        }
-
-        // Select outlet
-        outletSelect.change(function () {
-            let outletId = outletSelect.val();
-            let outletCode = outletSelect.find(":selected").data("code");
-
-            if (outletId > 0 ) {
-                $(".row-form").removeClass("d-none");
-            }
-
-            userSelect.each(function () {
-                $(this).html('<option value="" disabled selected>Pilih Staff</option>');
-            });
-
-            $(".menu-select").each(function () {
-                $(this).html('<option value="" disabled selected>Pilih Menu</option>');
-            });
-
-            menuContainer.empty();
-            $(".menu-quantity").val("1");
-            $("#price").val("0");
-            $("#sub_total").val("0");
-            $("#discount").val("0");
-            $("#total_price").val("0");
-            addMenuBtnContainer.addClass("d-none");
-
-            // Fetch users
-            $.ajax({
-                url: '/get-users/' + outletCode,
-                type: 'GET',
-                success: function (data) {
-                    let options = '<option value="" disabled selected>Pilih Staff</option>';
-
-                    data.forEach(user => {
-                        options += `<option value="${user.id}">${user.name}</option>`;
-                    });
-
-                    userSelect.html(options);
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching users:", error);
-                }
-            });
-
-            // Fetch menus
-            $.ajax({
-                url: '/get-menus/' + outletCode,
-                type: 'GET',
-                success: function (data) {
-                    let options = '<option value="" disabled selected>Pilih Menu</option>';
-
-                    data.forEach(menu => {
-                        let finalPrice = 0;
-
-                        if (menu.price_promo && menu.price_promo.price_promo) {
-                            finalPrice = menu.price_promo.price_promo;
-                        }
-
-                        options += `<option value="${menu.id}" data-price="${menu.price}" data-discount="${finalPrice}">${menu.name}</option>`;
-                    });
-
-                    menuSelect.html(options).trigger("change");
-                    menuSelect.html(options).select2({ theme: "bootstrap-5", width: "100%" });
-
-                    menuOptions = options;
-                    updatePrice();
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching menus:", error);
-                }
-            });
-        });
-
-        $(document).on("change select2:select", ".menu-select", updatePrice);
-        $(document).on("change input", ".menu-quantity", updatePrice);
-
-        updatePrice();
+    // Set price format
+    $("#price, #price_promo, #sub_total, #discount, #total_price").each(function () {
+        formatPrice($(this));
     });
 
-    // Show customer name
-    $(document).ready(function () {
-        $("#customer_id").change(function () {
-            let selectedOption = $(this).find("option:selected");
-            let customerName = selectedOption.data("name");
+    setupDeleteModals()
+    setupPhoneFormatting();
+    setupPromoVisibility();
+    setupSelect2();
 
-            if (customerName) {
-                $("#customer_name").val(customerName);
-                $("#customer_name_wrapper").removeClass("d-none");
-            } else {
-                $("#customer_name_wrapper").addClass("d-none");
-            }
-        });
-    });
+    previewImage();
+    $("#image").on("change", previewImage);
 
 });
 
+// Price format
+function formatPrice(input) {
+    input.on("input", function () {
+        let value = $(this).val().replace(/\./g, "").replace(/\D/g, "");
+        $(this).val(value ? parseInt(value, 10).toLocaleString("id-ID") : "");
+    });
+}
+
+// Delete modals
+function setupDeleteModals() {
+    $('.modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var actionType = button.data('action');
+        var itemName = button.data('bs-name');
+        var itemUrl = button.data('bs-url');
+
+        $('#modalItemName').text(itemName || "Nama Tidak Ditemukan");
+        $('#modalForm').attr('action', itemUrl || "#");
+
+        if (actionType === 'delete') {
+            $('#modalTitle').text("Konfirmasi Hapus");
+            $('#modalMessage').text("Apakah kamu yakin ingin menghapus ");
+            $('#modalSubmitButton').removeClass().addClass('btn btn-danger');
+        } else if (actionType === 'reset') {
+            $('#modalTitle').text("Konfirmasi Hapus Stok");
+            $('#modalMessage').text("Apakah kamu yakin ingin menghapus stok pada menu ");
+            $('#modalSubmitButton').removeClass().addClass('btn btn-danger');
+        }
+    });
+}
+
+// Phone number formatting
+function setupPhoneFormatting() {
+    const phoneInput = document.getElementById("phone");
+    if (phoneInput) {
+        phoneInput.removeEventListener("input", formatPhone);
+        phoneInput.addEventListener("input", formatPhone);
+    }
+}
+
+function formatPhone() {
+    let value = this.value.replace(/\D/g, "");
+    if (value.startsWith("0")) value = value.substring(1);
+    value = value.replace(/^(\d{3})(\d{4})?(\d{4})?/, (match, p1, p2, p3) => {
+        return [p1, p2, p3].filter(Boolean).join("-");
+    });
+    this.value = value;
+}
+
+// Image preview
+function previewImage() {
+    const image = document.querySelector("#image");
+    const imgPreview = document.querySelector(".img-preview");
+
+    if (!image || !imgPreview) return;
+
+    if (image.files.length > 0) {
+        const oFReader = new FileReader();
+        oFReader.readAsDataURL(image.files[0]);
+        oFReader.onload = function (oFREvent) {
+            imgPreview.style.display = "block";
+            imgPreview.src = oFREvent.target.result;
+        };
+    }
+}
+
+// Menu promotion
+function setupPromoVisibility() {
+    var $pricePromoInput = $("#price_promo");
+    var $promoDates = $("#promo_dates");
+    var $startDate = $("#promo_start_date");
+    var $endDate = $("#promo_end_date");
+
+    function togglePromoDates() {
+        var pricePromoValue = $pricePromoInput.val().replace(/\./g, '') || "0";
+        var isPromoActive = pricePromoValue !== "0";
+
+        $promoDates.toggleClass("d-none", !isPromoActive);
+
+        if (isPromoActive) {
+            $startDate.attr("required", "required");
+            $endDate.attr("required", "required");
+        } else {
+            $startDate.removeAttr("required");
+            $endDate.removeAttr("required");
+        }
+    }
+
+    if ($pricePromoInput.length) {
+        togglePromoDates();
+        $pricePromoInput.on("input", togglePromoDates);
+    }
+}
+
+// Select2
+function setupSelect2() {
+    $('.select2').select2({
+        theme: 'bootstrap-5',
+        width: '100%'
+    });
+}

@@ -40,6 +40,7 @@ class AdminOutletController extends Controller
         $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
 
         $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+        $formattedCode = Str::upper($request->outlet_code);
 
         // Validated
         $validatedData = $request->validate([
@@ -50,6 +51,7 @@ class AdminOutletController extends Controller
         ]);
 
         $validatedData['phone'] = $formattedPhone;
+        $validatedData['outlet_code'] = $formattedCode;
 
         Outlet::create($validatedData);
 
@@ -91,12 +93,17 @@ class AdminOutletController extends Controller
      */
     public function update(Request $request, Outlet $outlet)
     {
+        $formattedCode = Str::upper($request->outlet_code);
+
         // Validated
         $validatedData = $request->validate([
             'name' => 'required|max:32',
+            'outlet_code' => 'required|max:4',
             'phone' => 'required|min:12|max:18',
             'address' => 'required|max:128',
         ]);
+
+        $validatedData['outlet_code'] = $formattedCode;
 
         // Format phone number
         if ($request->filled('phone')) {
