@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('prices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('menu_id')->unique();
-            $table->float('price_promo')->nullable();
+            $table->decimal('price_promo')->nullable();
             $table->date('promo_start_date')->nullable();
             $table->date('promo_end_date')->nullable();
             $table->timestamps();

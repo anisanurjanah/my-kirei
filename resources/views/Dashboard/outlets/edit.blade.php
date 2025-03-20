@@ -9,7 +9,7 @@
                     <a href="/dashboard/outlets" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
-                    Tambah Outlet Baru
+                    Perbarui Outlet {{ $outlet->name }}
                 </h1>
 
                 <nav aria-label="breadcrumb">
@@ -24,7 +24,7 @@
                                 Outlet
                             </a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Tambah Outlet</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $outlet->name }}</li>
                     </ol>
                 </nav>
             </div>
@@ -33,12 +33,13 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/outlets">
+        <form method="post" action="/dashboard/outlets/{{ $outlet->outlet_code }}">
+            @method('PUT')
             @csrf
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="name" class="form-label">Nama</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama outlet.." value="{{ old('name') }}" autocomplete="off" required autofocus>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama outlet.." value="{{ old('name', $outlet->name) }}" autocomplete="off" required autofocus>
                     @error('name')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -47,7 +48,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="outlet_code" class="form-label">Kode</label>
-                    <input type="text" class="form-control @error('outlet_code') is-invalid @enderror" id="outlet_code" name="outlet_code" placeholder="Kode outlet.." value="{{ old('outlet_code') }}" autocomplete="off" required>
+                    <input type="text" class="form-control @error('outlet_code') is-invalid @enderror" id="outlet_code" name="outlet_code" placeholder="Kode outlet.." value="{{ old('outlet_code', $outlet->outlet_code) }}" autocomplete="off" required>
                     @error('outlet_code')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -58,7 +59,7 @@
                     <label for="phone" class="form-label">No. Telepon</label>
                     <div class="input-group">
                         <span class="input-group-text">(+62)</span>
-                        <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" autocomplete="off" required>
+                        <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $formatted_phone) }}" autocomplete="off" required>
                     </div>
                     @error('phone')
                         <div class="invalid-feedback">
@@ -68,7 +69,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">Alamat</label>
-                    <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" rows="1" placeholder="Alamat outlet.." required>{{ old('address') }}</textarea>
+                    <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" rows="1" placeholder="Alamat outlet.." required>{{ old('address', $outlet->address) }}</textarea>
                     @error('address')
                         <div class="invalid-feedback">
                             {{ $message }}

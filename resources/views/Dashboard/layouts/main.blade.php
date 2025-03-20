@@ -31,6 +31,7 @@
 
             <main class="col-md-9 ms-sm-auto col-lg-10">
                 @yield('container')
+                @include('dashboard.components.modal-delete')
                 {{-- @livewireScripts --}}
 
                 @include('dashboard.layouts.footer')
@@ -48,6 +49,7 @@
 
     <!-- JS -->
     <script src="/js/main.js"></script>
+    <script src="/js/order.js"></script>
     <script src="/js/dashboard.js"></script>
 
 </body>

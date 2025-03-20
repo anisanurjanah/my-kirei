@@ -23,15 +23,17 @@ Route::get('/dashboard', function() {
 // ->middleware('auth');
 
 Route::resource('/dashboard/users', AdminUserController::class);
+
 Route::resource('/dashboard/customers', AdminCustomerController::class);
+
 Route::resource('/dashboard/outlets', AdminOutletController::class);
 Route::resource('/dashboard/menus', AdminMenuController::class);
 Route::resource('/dashboard/stocks', AdminStockController::class);
 Route::resource('/dashboard/prices', AdminPriceController::class);
 
 Route::resource('/dashboard/orders', AdminOrderController::class);
-Route::get('/get-users/{slug}', [AdminOrderController::class, 'getUsers']);
-Route::get('/get-menus/{slug}', [AdminOrderController::class, 'getMenus']);
+Route::get('/get-users/{outletCode}', [AdminOrderController::class, 'getUsers']);
+Route::get('/get-menus/{outletCode}', [AdminOrderController::class, 'getMenus']);
 
 Route::resource('/dashboard/orderitems', AdminOrderItemController::class);
 

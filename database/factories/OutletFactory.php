@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Outlet>
@@ -16,9 +17,11 @@ class OutletFactory extends Factory
      */
     public function definition(): array
     {
+        $name = fake()->word();
+
         return [
-            'name' => fake()->word(),
-            'slug' => fake()->slug(mt_rand(1, 2)),
+            'name' => $name,
+            'outlet_code' => strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $name), 0, 4)),
             'phone' => fake()->phoneNumber(),
             'address' => fake()->address(),
         ];

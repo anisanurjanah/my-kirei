@@ -21,7 +21,7 @@ class MenuFactory extends Factory
             'slug' => fake()->slug(mt_rand(3, 6)),
             'description' => fake()->paragraph(),
             'price' => fake()->randomFloat(1, 10000, 50000),
-            'image' => fake()->imageUrl(640, 480, 'food', true),
+            'image' => asset('img/dimsum-placeholder.jpg'),
             'outlet_id' => mt_rand(1, 5)
         ];
     }

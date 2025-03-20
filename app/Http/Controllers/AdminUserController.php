@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Outlet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
 {
@@ -30,7 +32,7 @@ class AdminUserController extends Controller
     {
         return view('dashboard.users.create', [
             'outlets' => Outlet::all(),
-            'userRoles' => User::USER_ROLES,
+            'userRoles' => User::USER_ROLES
         ]);
     }
 
@@ -51,7 +53,7 @@ class AdminUserController extends Controller
             'outlet_id' => 'required|exists:outlets,id',
             'name' => 'required|max:32',
             'email' => 'required|email:dns',
-            'phone' => 'required|max:20',
+            'phone' => 'required|min:12|max:18',
             'username' => 'required|max:16',
             'password' => 'required|max:8',
             'role' => 'required|string|in:Kasir,Produksi',
@@ -61,14 +63,14 @@ class AdminUserController extends Controller
 
         User::create($validatedData);
 
-        // Redirect to user
+        // Redirect to users
         return redirect('/dashboard/users')->with('success', 'Pengguna berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
         //
     }
@@ -76,24 +78,62 @@ class AdminUserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
+        return view('dashboard.users.edit', [
+            'user' => $user,
+            'outlets' => Outlet::all(),
+            'userRoles' => User::USER_ROLES,
+            'formatted_phone' => formatPhone($user->phone)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $validatedData = $request->validate([
+            'outlet_id' => 'required|exists:outlets,id',
+            'name' => 'required|max:32',
+            'email' => 'required|email:dns',
+            'phone' => 'required|min:12|max:18',
+            'username' => 'required|max:16',
+            'password' => 'required|max:8',
+            'role' => 'required|string|in:Kasir,Produksi',
+        ]);
+
+        // Format phone number
+        if ($request->filled('phone')) {
+            $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
+            $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+
+            $validatedData['phone'] = $formattedPhone;
+        } else {
+            $validatedData['phone'] = $user->phone;
+        }
+
+        // Password
+        if ($request->filled('password')) {
+            $validatedData['password'] = Hash::make($request->password);
+        } else {
+            unset($validatedData['password']);
+        }
+
+        $user->update($validatedData);
+
+        // Redirect to users
+        return redirect('/dashboard/users')->with('success', 'Pengguna berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        User::destroy($user->id);
+
+        // Redirect to users
+        return redirect('/dashboard/users')->with('success', 'Pengguna berhasil dihapus!');
     }
 }

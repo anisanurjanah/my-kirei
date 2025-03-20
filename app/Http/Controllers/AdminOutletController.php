@@ -40,31 +40,22 @@ class AdminOutletController extends Controller
         $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
 
         $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+        $formattedCode = Str::upper($request->outlet_code);
 
         // Validated
         $validatedData = $request->validate([
             'name' => 'required|max:32',
-            'phone' => 'required|max:20',
+            'outlet_code' => 'required|max:4',
+            'phone' => 'required|min:12|max:18',
             'address' => 'required|max:128',
         ]);
 
-        // Generate Outlet Slug
-        $slug = Str::slug($request->name);
-
-        $existingSlugCount = Outlet::where('slug', 'LIKE', "$slug%")
-            ->where('id', $request->id)
-            ->count();
-
-        if($existingSlugCount > 0) {
-            $slug .= '-' . ($existingSlugCount + 1);
-        }
-
-        $validatedData['slug'] = $slug;
         $validatedData['phone'] = $formattedPhone;
+        $validatedData['outlet_code'] = $formattedCode;
 
         Outlet::create($validatedData);
 
-        // Redirect to outlet
+        // Redirect to outlets
         return redirect('/dashboard/outlets')->with('success', 'Outlet berhasil ditambahkan!');
     }
 
@@ -75,7 +66,12 @@ class AdminOutletController extends Controller
     {
         return view('dashboard.outlets.show', [
             'outlet' => $outlet,
-            'menus' => Menu::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
+            // 'menus' => Menu::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
+            'menus' => Menu::latest()->with(['stock', 'pricePromo' => function ($query) {
+                $query->where('promo_end_date', '>=', now());
+            }])->where('outlet_id', $outlet->id)
+            ->paginate(5)->withQueryString(),
+
             'users' => User::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString(),
             'orders' => Order::latest()->where('outlet_id', $outlet->id)->paginate(5)->withQueryString()
         ]);
@@ -84,30 +80,55 @@ class AdminOutletController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Outlet $outlet)
     {
-        //
+        return view('dashboard.outlets.edit', [
+            'outlet' => $outlet,
+            'formatted_phone' => formatPhone($outlet->phone)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Outlet $outlet)
     {
-        //
+        $formattedCode = Str::upper($request->outlet_code);
+
+        // Validated
+        $validatedData = $request->validate([
+            'name' => 'required|max:32',
+            'outlet_code' => 'required|max:4',
+            'phone' => 'required|min:12|max:18',
+            'address' => 'required|max:128',
+        ]);
+
+        $validatedData['outlet_code'] = $formattedCode;
+
+        // Format phone number
+        if ($request->filled('phone')) {
+            $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
+            $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+
+            $validatedData['phone'] = $formattedPhone;
+        } else {
+            $validatedData['phone'] = $outlet->phone;
+        }
+
+        $outlet->update($validatedData);
+
+        // Redirect to outlets
+        return redirect('/dashboard/outlets')->with('success', 'Outlet berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Outlet $outlet)
     {
-        //
-    }
+        Outlet::destroy($outlet->id);
 
-    // public function checkSlug(Request $request)
-    // {
-    //     $slug = SlugService::createSlug(Outlet::class, 'slug', $request->name);
-    //     return response()->json(['slug' => $slug]);
-    // }
+        // Redirect to outlets
+        return redirect('/dashboard/outlets')->with('success', 'Outlet berhasil dihapus!');
+    }
 }

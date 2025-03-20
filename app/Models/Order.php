@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Outlet;
 use App\Models\Customer;
 use App\Models\OrderItem;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -31,15 +30,20 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function orderItem()
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }
 
     public function getRouteKeyName()
     {
-        return 'slug';
+        return 'order_number';
     }
+
+    const ORDER_TYPES = [
+        'Dine In' => 'Dine In',
+        'Take Away' => 'Take Away',
+    ];
 
     const ORDER_STATUSES = [
         'Selesai' => 'Selesai',

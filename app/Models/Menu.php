@@ -29,7 +29,7 @@ class Menu extends Model
         return $this->hasOne(Price::class);
     }
 
-    public function orderItem()
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }

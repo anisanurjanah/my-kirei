@@ -9,7 +9,7 @@
                     <a href="/dashboard/orders" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
-                    {{ $order->slug }}
+                    {{ Str::upper($order->order_number) }}
                 </h1>
 
                 <nav aria-label="breadcrumb">
@@ -24,7 +24,7 @@
                                 Pesanan
                             </a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ $order->slug }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ Str::upper($order->order_number) }}</li>
                     </ol>
                 </nav>
             </div>

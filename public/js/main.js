@@ -1,282 +1,136 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Price Format
-    function formatPrice(input) {
-        if (input) {
-            input.addEventListener("input", function () {
-                let value = this.value.replace(/\./g, "").replace(/\D/g, "");
-                this.value = value ? parseInt(value, 10).toLocaleString("id-ID") : "";
-            });
+$(document).ready(function () {
+
+    // Selected outlet in menu and user
+    $("#outlet_id").change(function () {
+        let outletId = $("#outlet_id").val();
+
+        if (outletId > 0 ) {
+            $(".row-form").removeClass("d-none");
         }
-    }
+    });
 
-    formatPrice(document.getElementById("price"));
-    formatPrice(document.getElementById("price_promo"));
-    formatPrice(document.getElementById("sub_total"));
-    formatPrice(document.getElementById("total_price"));
+    // Price format in modals
+    $('.modal').on('shown.bs.modal', function () {
+        let priceInput = $(this).find("#price_promo");
 
-    // Price Format in Modals
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('shown.bs.modal', function () {
-            formatPrice(document.getElementById("price_promo"));
-
-            let stockInput = this.querySelector("#stock");
-
-            if (stockInput) {
-                stockInput.focus();
-            }
+        priceInput.off("input").on("input", function () {
+            formatPrice($(this));
         });
     });
 
-    // Phone Number Formatting
+    // Set price format
+    $("#price, #price_promo, #sub_total, #discount, #total_price").each(function () {
+        formatPrice($(this));
+    });
+
+    setupDeleteModals()
+    setupPhoneFormatting();
+    setupPromoVisibility();
+    setupSelect2();
+
+    previewImage();
+    $("#image").on("change", previewImage);
+
+});
+
+// Price format
+function formatPrice(input) {
+    input.on("input", function () {
+        let value = $(this).val().replace(/\./g, "").replace(/\D/g, "");
+        $(this).val(value ? parseInt(value, 10).toLocaleString("id-ID") : "");
+    });
+}
+
+// Delete modals
+function setupDeleteModals() {
+    $('.modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var actionType = button.data('action');
+        var itemName = button.data('bs-name');
+        var itemUrl = button.data('bs-url');
+
+        $('#modalItemName').text(itemName || "Nama Tidak Ditemukan");
+        $('#modalForm').attr('action', itemUrl || "#");
+
+        if (actionType === 'delete') {
+            $('#modalTitle').text("Konfirmasi Hapus");
+            $('#modalMessage').text("Apakah kamu yakin ingin menghapus ");
+            $('#modalSubmitButton').removeClass().addClass('btn btn-danger');
+        } else if (actionType === 'reset') {
+            $('#modalTitle').text("Konfirmasi Hapus Stok");
+            $('#modalMessage').text("Apakah kamu yakin ingin menghapus stok pada menu ");
+            $('#modalSubmitButton').removeClass().addClass('btn btn-danger');
+        }
+    });
+}
+
+// Phone number formatting
+function setupPhoneFormatting() {
     const phoneInput = document.getElementById("phone");
     if (phoneInput) {
-        phoneInput.addEventListener("input", function () {
-            let value = phoneInput.value.replace(/\D/g, "");
+        phoneInput.removeEventListener("input", formatPhone);
+        phoneInput.addEventListener("input", formatPhone);
+    }
+}
 
-            if (value.startsWith("0")) {
-                value = value.substring(1);
-            }
+function formatPhone() {
+    let value = this.value.replace(/\D/g, "");
+    if (value.startsWith("0")) value = value.substring(1);
+    value = value.replace(/^(\d{3})(\d{4})?(\d{4})?/, (match, p1, p2, p3) => {
+        return [p1, p2, p3].filter(Boolean).join("-");
+    });
+    this.value = value;
+}
 
-            value = value.replace(/^(\d{3})(\d{4})?(\d{4})?/, function(match, p1, p2, p3) {
-                let formatted = p1;
-                if (p2) formatted += "-" + p2;
-                if (p3) formatted += "-" + p3;
+// Image preview
+function previewImage() {
+    const image = document.querySelector("#image");
+    const imgPreview = document.querySelector(".img-preview");
 
-                return formatted;
-            });
+    if (!image || !imgPreview) return;
 
-            phoneInput.value = value;
-        });
+    if (image.files.length > 0) {
+        const oFReader = new FileReader();
+        oFReader.readAsDataURL(image.files[0]);
+        oFReader.onload = function (oFREvent) {
+            imgPreview.style.display = "block";
+            imgPreview.src = oFREvent.target.result;
+        };
+    }
+}
+
+// Menu promotion
+function setupPromoVisibility() {
+    var $pricePromoInput = $("#price_promo");
+    var $promoDates = $("#promo_dates");
+    var $startDate = $("#promo_start_date");
+    var $endDate = $("#promo_end_date");
+
+    function togglePromoDates() {
+        var pricePromoValue = $pricePromoInput.val().replace(/\./g, '') || "0";
+        var isPromoActive = pricePromoValue !== "0";
+
+        $promoDates.toggleClass("d-none", !isPromoActive);
+
+        if (isPromoActive) {
+            $startDate.attr("required", "required");
+            $endDate.attr("required", "required");
+        } else {
+            $startDate.removeAttr("required");
+            $endDate.removeAttr("required");
+        }
     }
 
-    // Image Preview
-    function previewImage() {
-        const image = document.querySelector("#image");
-        const imgPreview = document.querySelector(".img-preview");
-
-        if (image.files.length > 0) {
-            const oFReader = new FileReader();
-            oFReader.readAsDataURL(image.files[0]);
-
-            oFReader.onload = function (oFREvent) {
-                imgPreview.style.display = "block";
-                imgPreview.src = oFREvent.target.result;
-            };
-        }
+    if ($pricePromoInput.length) {
+        togglePromoDates();
+        $pricePromoInput.on("input", togglePromoDates);
     }
+}
 
-    const imageInput = document.getElementById("image");
-    if (imageInput) {
-        imageInput.addEventListener("change", previewImage);
-    }
-
-    // Select2
-    $(document).ready(function() {
-        $('.select2').select2({
-            theme: 'bootstrap-5',
-            width: '100%'
-        });
+// Select2
+function setupSelect2() {
+    $('.select2').select2({
+        theme: 'bootstrap-5',
+        width: '100%'
     });
-
-    // Add menu in order
-    $(document).ready(function () {
-        const menuSelect = $("#menu_id");
-        const quantityInput = $("#quantity");
-        const addMenuBtnContainer = $("#add-menu-btn-container");
-        const menuContainer = $("#menu-container");
-
-        const outletSelect = $("#outlet_id");
-        const userSelect = $("#user_id");
-
-        let menuOptions = menuSelect.html();
-
-        // Select2 menu
-        menuSelect.select2({
-            theme: "bootstrap-5",
-            width: "100%"
-        });
-
-        function toggleAddButton() {
-            if (menuSelect.val() && quantityInput.val() > 0) {
-                addMenuBtnContainer.removeClass("d-none");
-            } else {
-                addMenuBtnContainer.addClass("d-none");
-            }
-        }
-
-        function updateSubTotal() {
-            let total = 0;
-
-            $(".menu-select").each(function () {
-                const selectedOption = $(this).find("option:selected");
-                const price = parseFloat(selectedOption.attr("data-price")) || 0;
-                const quantityInput = $(this).closest(".row").find(".menu-quantity");
-                const subtotalInput = $(this).closest(".row").find(".sub-total-input");
-
-                const quantity = parseInt(quantityInput.val()) || 1;
-                const subtotal = price * quantity;
-
-                subtotalInput.val(subtotal.toLocaleString("id-ID"));
-                total += subtotal;
-            });
-
-            // Insert total
-            $("#sub_total").val(total.toLocaleString("id-ID"));
-            $("#total_price").val(total.toLocaleString("id-ID"));
-        }
-
-
-        function addMenuRow() {
-            const newMenuRow = $("<div>").addClass("row align-items-end mb-3");
-
-            // Menu
-            const newSelect = $("<select>")
-                .addClass("form-select select2 menu-select")
-                .attr({ name: "menu_id[]", required: true })
-                .css("width", "100%")
-                .html(menuOptions);
-
-            const newSelectWrapper = $("<div>").addClass("col-lg-7 col-md-6 col-7").append(
-                $("<div>").addClass("mb-3").append(
-                    $("<label>").addClass("form-label").text("Menu"),
-                    newSelect
-                )
-            );
-
-            // Quantity
-            const newQuantityWrapper = $("<div>").addClass("col-lg-3 col-md-4 col-3").append(
-                $("<div>").addClass("mb-3").append(
-                    $("<label>").addClass("form-label").text("Quantity"),
-                    $("<input>")
-                        .addClass("form-control menu-quantity")
-                        .attr({ type: "number", name: "quantity[]", min: 1, placeholder: "Quantity..", required: true })
-                )
-            );
-
-            // Sub Total
-            const newSubTotalInput = $("<input>")
-                .addClass("form-control sub-total-input")
-                .attr({
-                    type: "text",
-                    name: "sub_total[]",
-                    readonly: true
-                });
-
-            const newSubTotalWrapper = $("<div>").addClass("col-lg-3 col-md-4 col-3 d-none").append(
-                $("<div>").addClass("mb-3").append(
-                    $("<label>").addClass("form-label").text("Sub Total"),
-                    $("<div>").addClass("input-group").append(
-                        $("<span>").addClass("input-group-text").text("Rp"),
-                        newSubTotalInput
-                    )
-                )
-            );
-
-            // Delete
-            const newDeleteWrapper = $("<div>").addClass("col-lg-2 col-md-2 col-2 text-md-center text-end").append(
-                $("<div>").addClass("mb-3").append(
-                    $("<button>")
-                        .addClass("btn btn-transparent btn-remove-menu")
-                        .attr("type", "button")
-                        .append($("<i>").addClass("bi bi-x-circle-fill text-danger"))
-                )
-            );
-
-            newMenuRow.append(newSelectWrapper, newQuantityWrapper, newSubTotalWrapper, newDeleteWrapper);
-            menuContainer.append(newMenuRow);
-
-            newSelect.select2({ theme: "bootstrap-5", width: "100%" });
-
-            newSelectWrapper.find("select").on("change select2:select", updateSubTotal);
-            newQuantityWrapper.find("input").on("change input", updateSubTotal);
-
-            newDeleteWrapper.find(".btn-remove-menu").on("click", function () {
-                newMenuRow.remove();
-                updateSubTotal();
-            });
-
-            updateSubTotal();
-        }
-
-        $("#add-menu-btn").on("click", addMenuRow);
-        menuSelect.on("change", toggleAddButton);
-        quantityInput.on("input", toggleAddButton);
-
-        outletSelect.change(function () {
-            let outletId = $(this).val();
-            let outletSlug = $(this).find(":selected").data("slug");
-
-            if (outletId > 0 ) {
-                $(".row-form").removeClass("d-none");
-            }
-
-            userSelect.html('<option>Loading...</option>');
-            menuSelect.html('<option>Loading...</option>');
-
-            menuContainer.empty();
-            $("#quantity").val("Quantity..");
-            $("#sub_total").val("0");
-            $("#total_price").val("0");
-            addMenuBtnContainer.addClass("d-none");
-
-            // Fetch Users
-            $.ajax({
-                url: '/get-users/' + outletSlug,
-                type: 'GET',
-                success: function (data) {
-                    let options = '<option value="" disabled selected>Pilih Staff</option>';
-
-                    data.forEach(user => {
-                        options += `<option value="${user.id}">${user.name}</option>`;
-                    });
-
-                    userSelect.html(options);
-                }
-            });
-
-            // Fetch Menus
-            $.ajax({
-                url: '/get-menus/' + outletSlug,
-                type: 'GET',
-                success: function (data) {
-                    let options = '<option value="" disabled selected>Pilih Menu</option>';
-
-                    data.forEach(menu => {
-                        let finalPrice = menu.price;
-
-                        if (menu.price_promo && menu.price_promo.price_promo) {
-                            finalPrice = menu.price - menu.price_promo.price_promo;
-                        }
-
-                        options += `<option value="${menu.id}" data-price="${finalPrice}">${menu.name}</option>`;
-                    });
-
-                    menuSelect.html(options);
-                    menuSelect.select2("destroy").html(options).select2({ theme: "bootstrap-5", width: "100%" });
-
-                    menuOptions = options;
-                    updateSubTotal();
-                }
-            });
-        });
-
-        // $(document).on("change select2:select", ".menu-select", updateSubTotal);
-        $(document).on("change input", ".menu-quantity", updateSubTotal);
-
-        updateSubTotal();
-    });
-
-    $(document).ready(function () {
-        $("#customer_id").change(function () {
-            let selectedOption = $(this).find("option:selected");
-            let customerName = selectedOption.data("name");
-
-            if (customerName) {
-                $("#customer_name").val(customerName);
-                $("#customer_name_wrapper").removeClass("d-none");
-            } else {
-                $("#customer_name_wrapper").addClass("d-none");
-            }
-        });
-    });
-});
+}

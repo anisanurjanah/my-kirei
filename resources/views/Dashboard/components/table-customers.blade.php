@@ -22,20 +22,21 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="#{{ Str::slug($customer->name) }}" data-bs-toggle="modal">
-                                            <i class="bi bi-eye mx-2" style="font-size: 16px"></i> Lihat
+                                        <a class="dropdown-item" href="#{{ $customer->username }}" data-bs-toggle="modal">
+                                            <i class="bi bi-eye mx-2" style="font-size: 16px"></i>Lihat
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/customers/edit">
-                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
+                                        <a class="dropdown-item" href="/dashboard/customers/{{ $customer->username }}/edit">
+                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Perbarui
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/customers/delete">
+                                        <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                            data-bs-url="/dashboard/customers/{{ $customer->username }}" data-bs-name="{{ $customer->name }}" data-action="delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
-                                        </a>
+                                        </button>
                                     </li>
                                 </ul>
                             </div>

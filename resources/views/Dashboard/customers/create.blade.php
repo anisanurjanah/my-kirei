@@ -34,8 +34,8 @@
     <div class="row px-md-2 py-3">
 
         <form method="post" action="/dashboard/customers">
+            @csrf
             <div class="col-md-6">
-                @csrf
                 <div class="mb-3">
                     <label for="name" class="form-label">Nama</label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama pelanggan.." value="{{ old('name') }}" autocomplete="off" required autofocus>

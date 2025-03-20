@@ -4,6 +4,7 @@
             <tr>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                <th scope="col" class="text-secondary" style="font-size: 12px;">KODE <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">PHONE <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">ADDRESS <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col"></th>
@@ -15,6 +16,7 @@
                     <tr>
                         <td>{{ ($outlets->currentPage() - 1) * $outlets->perPage() + $loop->iteration }}</td>
                         <td>{{ $outlet->name }}</td>
+                        <td>{{ $outlet->outlet_code }}</td>
                         <td>{{ $outlet->phone }}</td>
                         <td>{{ $outlet->address }}</td>
                         <td class="text-center" style="width: 64px">
@@ -24,20 +26,21 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/outlets/{{ $outlet->slug }}">
+                                        <a class="dropdown-item" href="/dashboard/outlets/{{ Str::lower($outlet->outlet_code) }}">
                                             <i class="bi bi-eye mx-2" style="font-size: 16px"></i>Lihat
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/outlets/edit">
-                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
+                                        <a class="dropdown-item" href="/dashboard/outlets/{{ Str::lower($outlet->outlet_code) }}/edit">
+                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Perbarui
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/outlets/delete">
+                                        <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                            data-bs-url="/dashboard/outlets/{{ $outlet->outlet_code }}" data-bs-name="{{ $outlet->name }}" data-action="delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
-                                        </a>
+                                        </button>
                                     </li>
                                 </ul>
                             </div>

@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Menu;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,10 +17,10 @@ class OrderItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_id' => mt_rand(16, 20),
+            'order_id' => mt_rand(1, 10),
             'menu_id' => mt_rand(1, 25),
             'quantity' => mt_rand(1, 10),
-            'sub_total' => fake()->randomFloat(2, 10000, 50000),
+            'price' => fake()->randomFloat(2, 10000, 50000),
         ];
     }
 }

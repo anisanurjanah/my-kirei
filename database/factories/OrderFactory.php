@@ -22,18 +22,23 @@ class OrderFactory extends Factory
     {
 
         $outlet = Outlet::inRandomOrder()->first();
-        $customer = Customer::inRandomOrder()->first();
-        $orderDate = Carbon::now()->format('Y-m-d');
+
+        $subTotal = fake()->randomFloat(2, 10000, 1000000);
+        $discount = fake()->randomFloat(2, 100, min(10000, $subTotal));
+        $totalPrice = $subTotal - $discount;
 
         return [
             'outlet_id' => mt_rand(1, 5),
-            'customer_id' => mt_rand(1, 20),
+            'customer_id' => mt_rand(1, 10),
             'user_id' => mt_rand(2, 11),
-            'order_date' => $orderDate,
-            'total_price' => fake()->randomFloat(2, 10000, 1000000),
+            'order_number' => now()->format('Ymd') . $outlet->outlet_code . mt_rand(100000, 999999),
+            'order_date' => now()->toDateTimeString(),
+            'sub_total' => $subTotal,
+            'discount' => $discount,
+            'total_price' => $totalPrice,
+            'order_type' => fake()->randomElement(['Dine In', 'Take Away']),
             'order_status' => fake()->randomElement(['Selesai', 'Dibatalkan']),
             'payment_status' => fake()->randomElement(['Lunas', 'Belum Lunas']),
-            'slug' => Str::slug($outlet->name . '-' . $orderDate . '-' . $customer->name),
         ];
     }
 }

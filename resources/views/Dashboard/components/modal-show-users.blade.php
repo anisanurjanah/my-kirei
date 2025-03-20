@@ -17,7 +17,7 @@
                             <div class="d-flex justify-content-between">
                                 <h5 class="card-title mb-0">Outlet</h5>
 
-                                <a href="/dashboard/outlets/{{ $user->outlet->slug }}" class="text-decoration-none text-black">
+                                <a href="/dashboard/outlets/{{ Str::lower($user->outlet->outlet_code) }}" class="text-decoration-none text-black">
                                     <i class="bi bi-eye mx-2" style="font-size: 16px"></i>
                                 </a>
                             </div>

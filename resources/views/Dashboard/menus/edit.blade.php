@@ -9,7 +9,7 @@
                     <a href="/dashboard/menus" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
-                    Tambah Menu Baru
+                    Perbarui Menu {{ $menu->name }}
                 </h1>
 
                 <nav aria-label="breadcrumb">
@@ -24,7 +24,7 @@
                                 Menu
                             </a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Tambah Menu</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $menu->name }}</li>
                     </ol>
                 </nav>
             </div>
@@ -33,7 +33,8 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/menus" enctype="multipart/form-data" data-page="create-menu">
+        <form method="post" action="/dashboard/menus/{{ $menu->slug }}" enctype="multipart/form-data">
+            @method('PUT')
             @csrf
             <div class="row p-2">
                 <div class="col-lg-12 mb-3 mb-md-0">
@@ -50,7 +51,7 @@
                                         <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
                                             <option value="" disabled selected>Pilih Outlet</option>
                                             @foreach ($outlets as $outlet)
-                                                <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                                                <option value="{{ $outlet->id }}" data-slug="{{ $outlet->slug }}" {{ old('outlet_id', $menu->outlet_id) == $outlet->id ? 'selected' : '' }}>
                                                     {{ $outlet->name }}
                                                 </option>
                                             @endforeach
@@ -65,10 +66,10 @@
 
             <div class="row p-2">
                 <div class="col-md-6">
-                    <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="row-form">
                         <div class="mb-3">
                             <label for="name" class="form-label">Nama</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama menu.." value="{{ old('name') }}" autocomplete="off" required autofocus>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama menu.." value="{{ old('name', $menu->name) }}" autocomplete="off" required autofocus>
                             @error('name')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -77,7 +78,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="description" class="form-label">Deskripsi</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="1" placeholder="Deskripsi menu.." required>{{ old('description') }}</textarea>
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="1" placeholder="Deskripsi menu.." required>{{ old('description', $menu->description) }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -86,8 +87,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="image" class="form-label">Gambar</label>
-                            <img class="img-preview img-fluid mb-3 col-sm-5">
-                            <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" onchange="previewImage()">
+                            <input type="hidden" name="oldImage" value="{{ $menu->image }}">
+                            @if ($menu->image && file_exists(storage_path('app/public/' . $menu->image)))
+                                <img src="{{ asset('storage/' . $menu->image) }}" class="img-preview img-fluid mb-3 col-sm-5 d-block" alt="{{ $menu->name }}">
+                            @else
+                                <img src="{{ asset('img/dimsum-placeholder.jpg') }}" class="img-preview img-fluid mb-3 col-sm-5 d-block" alt="{{ $menu->name }}">
+                            @endif
+                            <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image">
                             @error('image')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -98,12 +104,12 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="row-form">
                         <div class="mb-3">
                             <label for="price" class="form-label">Harga</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input type="text" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ number_format((int) old('price', 0), 0, ',', '.') }}" autocomplete="off" required>
+                                <input type="text" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ number_format((int) old('price', $menu->price), 0, ',', '.') }}" autocomplete="off" required>
                             </div>
                             @error('price')
                                 <div class="invalid-feedback">
@@ -114,7 +120,7 @@
                         <div class="mb-3">
                             <label for="stock" class="form-label">Stok</label>
                             <div class="input-group">
-                                <input type="number" class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" min="0" placeholder="Stok menu.." value="{{ old('stock') }}" required>
+                                <input type="number" class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" min="0" placeholder="Stok menu.." value="{{ old('stock', $menu->stock->current_stock) }}" required>
                             </div>
                             @error('stock')
                                 <div class="invalid-feedback">
@@ -126,7 +132,7 @@
                             <label for="price_promo" class="form-label">Potongan Harga</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input type="text" class="form-control @error('price_promo') is-invalid @enderror" id="price_promo" name="price_promo" value="{{ number_format((int) old('price_promo', 0), 0, ',', '.') }}" autocomplete="off">
+                                <input type="text" class="form-control @error('price_promo') is-invalid @enderror" id="price_promo" name="price_promo" value="{{ number_format((int) old('price_promo', optional($menu->pricePromo)->price_promo), 0, ',', '.') }}" autocomplete="off">
                             </div>
                             @error('price_promo')
                                 <div class="invalid-feedback">
@@ -137,7 +143,7 @@
                         <div id="promo_dates" class="d-none">
                             <div class="mb-3">
                                 <label for="promo_start_date" class="form-label">Waktu Mulai</label>
-                                <input type="date" class="form-control @error('promo_start_date') is-invalid @enderror" id="promo_start_date" name="promo_start_date" value="{{ old('promo_start_date') }}">
+                                <input type="date" class="form-control @error('promo_start_date') is-invalid @enderror" id="promo_start_date" name="promo_start_date" value="{{ old('promo_start_date', optional($menu->pricePromo)->promo_start_date) }}" required>
                                 @error('promo_start_date')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -146,7 +152,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="promo_end_date" class="form-label">Waktu Selesai</label>
-                                <input type="date" class="form-control @error('promo_end_date') is-invalid @enderror" id="promo_end_date" name="promo_end_date" value="{{ old('promo_end_date') }}">
+                                <input type="date" class="form-control @error('promo_end_date') is-invalid @enderror" id="promo_end_date" name="promo_end_date" value="{{ old('promo_end_date', optional($menu->pricePromo)->promo_end_date) }}" required>
                                 @error('promo_end_date')
                                     <div class="invalid-feedback">
                                         {{ $message }}

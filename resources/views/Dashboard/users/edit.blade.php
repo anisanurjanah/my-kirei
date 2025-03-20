@@ -9,7 +9,7 @@
                     <a href="/dashboard/users" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
-                    Tambah Pengguna Baru
+                    Perbarui Pengguna {{ $user->name }}
                 </h1>
 
                 <nav aria-label="breadcrumb">
@@ -24,7 +24,7 @@
                                 Pengguna
                             </a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Tambah Pengguna</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $user->name }}</li>
                     </ol>
                 </nav>
             </div>
@@ -33,7 +33,8 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/users" data-page="create-user">
+        <form method="post" action="/dashboard/users/{{ $user->username }}">
+            @method('PUT')
             @csrf
             <div class="row p-2">
                 <div class="col-lg-12 mb-3 mb-md-0">
@@ -50,7 +51,7 @@
                                         <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
                                             <option value="" disabled selected>Pilih Outlet</option>
                                             @foreach ($outlets as $outlet)
-                                                <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                                                <option value="{{ $outlet->id }}" data-slug="{{ $outlet->slug }}" {{ old('outlet_id', $user->outlet_id) == $outlet->id ? 'selected' : '' }}>
                                                     {{ $outlet->name }}
                                                 </option>
                                             @endforeach
@@ -65,10 +66,10 @@
 
             <div class="row p-2">
                 <div class="col-md-6">
-                    <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="row-form">
                         <div class="mb-3">
                             <label for="name" class="form-label">Nama</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama pengguna.." value="{{ old('name') }}" autocomplete="off" required>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama pengguna.." value="{{ old('name', $user->name) }}" autocomplete="off" required>
                             @error('name')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -77,7 +78,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email.." value="{{ old('email') }}" autocomplete="off" required>
+                            <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email.." value="{{ old('email', $user->email) }}" autocomplete="off" required>
                             @error('email')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -88,7 +89,7 @@
                             <label for="phone" class="form-label">No. Telepon</label>
                             <div class="input-group">
                                 <span class="input-group-text">(+62)</span>
-                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" autocomplete="off" required>
+                                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $formatted_phone) }}" autocomplete="off" required>
                             </div>
                             @error('phone')
                                 <div class="invalid-feedback">
@@ -100,10 +101,10 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="row-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="row-form">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username" placeholder="Username.." value="{{ old('username') }}" autocomplete="off" required>
+                            <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username" placeholder="Username.." value="{{ old('username', $user->username) }}" autocomplete="off" required>
                             @error('username')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -112,7 +113,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password.." value="{{ old('password') }}" autocomplete="off" required>
+                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password.." value="{{ old('password', $user->password) }}" autocomplete="off" required>
                             @error('password')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -123,7 +124,7 @@
                             <label for="role" class="form-label">Role</label>
                             <select class="form-select" id="role" name="role" required>
                                 @foreach ($userRoles as $key => $status)
-                                    <option value="{{ $key }}" {{ old('role') == $key ? 'selected' : '' }}>
+                                    <option value="{{ $key }}" {{ old('role', $user->role) == $key ? 'selected' : '' }}>
                                         {{ $status }}
                                     </option>
                                 @endforeach

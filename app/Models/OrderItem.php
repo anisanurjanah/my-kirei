@@ -25,6 +25,6 @@ class OrderItem extends Model
 
     public function getOrderSlugAttribute()
     {
-        return $this->order->slug;
+        return $this->order->order_number;
     }
 }

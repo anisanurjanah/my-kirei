@@ -48,15 +48,16 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/menus/edit">
-                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
+                                        <a class="dropdown-item" href="/dashboard/menus/{{ $menu->slug }}/edit">
+                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Perbarui
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/menus/delete">
+                                         <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                            data-bs-url="/dashboard/menus/{{ $menu->slug }}" data-bs-name="{{ $menu->name }}" data-action="delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
-                                        </a>
+                                        </button>
                                     </li>
                                 </ul>
                             </div>

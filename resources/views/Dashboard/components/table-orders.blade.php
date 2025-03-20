@@ -6,9 +6,10 @@
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TANGGAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                {{-- <th scope="col" class="text-secondary" style="font-size: 12px;">DISKON <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th> --}}
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PESANAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PEMBAYARAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                {{-- <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PEMBAYARAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th> --}}
                 <th scope="col" class="text-secondary" style="font-size: 12px;">STAFF <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col"></th>
             </tr>
@@ -21,9 +22,10 @@
                         <td>{{ $order->order_date }}</td>
                         <td>{{ $order->customer->name }}</td>
                         <td>{{ $order->outlet->name }}</td>
+                        {{-- <td>Rp. {{ number_format($order->discount, 0, ',', '.') }}</td> --}}
                         <td>Rp. {{ number_format($order->total_price, 0, ',', '.') }}</td>
                         <td>{{ $order->order_status }}</td>
-                        <td>{{ $order->payment_status }}</td>
+                        {{-- <td>{{ $order->payment_status }}</td> --}}
                         <td>{{ $order->user->name }}</td>
                         <td class="text-center" style="width: 64px">
                             <div class="dropdown mx-auto">
@@ -32,20 +34,21 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/orders/{{ $order->slug }}">
+                                        <a class="dropdown-item" href="/dashboard/orders/{{ Str::lower($order->order_number) }}">
                                             <i class="bi bi-eye mx-2" style="font-size: 16px"></i>Lihat
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/orders/edit">
-                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Ubah
+                                        <a class="dropdown-item" href="/dashboard/orders/{{ Str::lower($order->order_number) }}/edit">
+                                            <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Perbarui
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/orders/delete">
+                                        <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                            data-bs-url="/dashboard/orders/{{ $order->order_number }}" data-bs-name="{{ $order->order_number }}" data-action="delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
-                                        </a>
+                                        </button>
                                     </li>
                                 </ul>
                             </div>

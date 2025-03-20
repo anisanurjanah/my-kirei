@@ -42,6 +42,11 @@
                             <td>{{ $outlet->name }}</td>
                         </tr>
                         <tr>
+                            <th scope="row">Kode</th>
+                            <td>:</td>
+                            <td>{{ $outlet->outlet_code }}</td>
+                        </tr>
+                        <tr>
                             <th scope="row">No. Telepon</th>
                             <td>:</td>
                             <td>{{ $outlet->phone }}</td>
