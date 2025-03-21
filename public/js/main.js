@@ -75,7 +75,9 @@ function setupPhoneFormatting() {
 
 function formatPhone() {
     let value = this.value.replace(/\D/g, "");
-    if (value.startsWith("0")) value = value.substring(1);
+    value = value.replace(/^62/, "");
+    value = value.replace(/^0/, "");
+
     value = value.replace(/^(\d{3})(\d{4})?(\d{4})?/, (match, p1, p2, p3) => {
         return [p1, p2, p3].filter(Boolean).join("-");
     });

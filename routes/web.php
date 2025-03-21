@@ -10,10 +10,18 @@ use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminOutletController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminOrderItemController;
+use App\Http\Controllers\API\AuthController;
 
 Route::get('/', function () {
     return view('home');
 });
+
+// Route::post('/register', [AuthController::class, 'register']);
+// Route::post('/{outlet_code}/login', [AuthController::class, 'login']);
+
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::post('/logout', [AuthController::class, 'logout']);
+// });
 
 Route::get('/dashboard/login', [AdminLoginController::class, 'index'])->name('login')->middleware('guest');
 

@@ -43,7 +43,8 @@ class AdminCustomerController extends Controller
         // Remove Phone's Strip
         $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
 
-        $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+        // $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+        $formattedPhone = '+62' . $phoneNumber;
 
         // Validated
         $validatedData = $request->validate([
@@ -103,7 +104,8 @@ class AdminCustomerController extends Controller
         // Format phone number
         if ($request->filled('phone')) {
             $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
-            $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+            // $formattedPhone = '(+62) ' . substr($phoneNumber, 0, 3) . ' ' . substr($phoneNumber, 3, 4) . ' ' . substr($phoneNumber, 7);
+            $formattedPhone = '+62' . $phoneNumber;
 
             $validatedData['phone'] = $formattedPhone;
         } else {
