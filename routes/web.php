@@ -12,17 +12,13 @@ use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminOrderItemController;
 use App\Http\Controllers\API\AuthController;
 
+// VIEWS
 Route::get('/', function () {
-    return view('home');
+    return inertia('Home');
 });
 
-// Route::post('/register', [AuthController::class, 'register']);
-// Route::post('/{outlet_code}/login', [AuthController::class, 'login']);
 
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::post('/logout', [AuthController::class, 'logout']);
-// });
-
+// DASHBOARD
 Route::get('/dashboard/login', [AdminLoginController::class, 'index'])->name('login')->middleware('guest');
 
 Route::get('/dashboard', function() {
