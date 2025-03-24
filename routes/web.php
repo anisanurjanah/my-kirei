@@ -10,11 +10,18 @@ use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminOutletController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminOrderItemController;
-use App\Http\Controllers\API\AuthController;
 
 // VIEWS
 Route::get('/', function () {
     return inertia('Home');
+});
+
+Route::get('/login', function () {
+    return inertia('Login');
+});
+
+Route::get('/register', function () {
+    return inertia('Register');
 });
 
 

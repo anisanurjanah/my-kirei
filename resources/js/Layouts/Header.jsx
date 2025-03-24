@@ -1,13 +1,15 @@
+import { Link } from "@inertiajs/react";
+
 export default function Header({ handleScroll }) {
     return (
         <>
-            <header className="bg-white shadow-md sticky top-0 z-50">
+            <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-between">
                         <div className="md:flex md:items-center md:gap-12">
-                            <a className="block text-[#C60E2A]" href="/">
-                                <span className="text-xl font-bold">KIREI SUM</span>
-                            </a>
+                            <Link className="block text-black text-2xl font-bold" href="/">
+                                KIREI <span className="text-[#C60E2A]">SUM</span>
+                            </Link>
                         </div>
 
                         <div className="hidden md:block">
@@ -36,7 +38,7 @@ export default function Header({ handleScroll }) {
                             <div className="sm:flex sm:gap-4">
                                 <a
                                     className="rounded-md bg-[#C60E2A] px-5 py-2.5 text-sm font-medium text-white shadow-sm"
-                                    href="#"
+                                    href="/login"
                                 >
                                     Login
                                 </a>
@@ -44,7 +46,7 @@ export default function Header({ handleScroll }) {
                                 <div className="hidden sm:flex">
                                     <a
                                         className="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-[#C60E2A]"
-                                        href="#"
+                                        href="/register"
                                     >
                                     Register
                                     </a>
