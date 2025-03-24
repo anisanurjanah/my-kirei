@@ -29,6 +29,17 @@ class AuthController extends Controller
         $formattedPhone = $phoneNumber;
         // $formattedPhone = '(+62) ' . substr($phoneNumber, 2, 3) . ' ' . substr($phoneNumber, 5, 4) . ' ' . substr($phoneNumber, 9);
 
+        // Check if phone number already exists in the database
+        $existingCustomer = Customer::where('phone', $formattedPhone)->first();
+        if ($existingCustomer) {
+            return response()->json([
+                'message' => 'Duplicate entry',
+                'errors' => [
+                    'phone' => ['Nomor telepon sudah terdaftar, silakan masukkan nomor lain.']
+                ]
+            ], 400);
+        }
+
         // Generate username
         $username = Str::slug($request->name);
 

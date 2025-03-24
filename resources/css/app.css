@@ -17,3 +17,8 @@ html, body {
     width: 100%;
     overflow-x: hidden;
 }
+
+/* button {
+    disabled:bg-slate-400;
+    disabled:cursor-wait;
+} */

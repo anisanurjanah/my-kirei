@@ -1,13 +1,32 @@
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
+import { useState, useContext, useEffect } from "react";
+
+import { AuthContext } from "@/Context/AuthContext";
+
 import Jumbotron from "@/Layouts/Jumbotron";
 import Footer from "@/Layouts/Footer";
+import SuccessAlert from "@/Components/AlertSuccess";
 
 export default function Login() {
-    const { component } = usePage()
+    const [alert, setAlert] = useState(null);
+
+    useEffect(() => {
+        const savedAlert = localStorage.getItem("alert");
+        if (savedAlert) {
+            const alertData = JSON.parse(savedAlert);
+            setAlert(alertData);
+
+            localStorage.removeItem("alert");
+        }
+    }, []);
+
+    const handleAlertClose = () => {
+        setAlert(null);
+    };
 
     return (
         <>
-            <Head title={component} />
+            <Head title="Login" />
 
             <header className="bg-white fixed top-0 left-0 w-full z-50">
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
@@ -24,6 +43,16 @@ export default function Login() {
             <Jumbotron />
 
                 <main className="max-w-screen-lg mx-auto">
+
+                    <div className="flex justify-center py-4">
+                        {alert?.type === "success" && (
+                            <SuccessAlert
+                                message={{ title: "Pendaftaran berhasil", body: alert.message }}
+                                onClose={handleAlertClose}
+                            />
+                        )}
+                    </div>
+
                     <form>
                         <div className="flex justify-center">
                             <div className="flex items-center w-84 bg-gray-100 border border-gray-300 rounded-md">
@@ -44,7 +73,7 @@ export default function Login() {
 
                         <div className="pt-4">
                             <div className="flex justify-center pb-8 border-b border-b-gray-300">
-                                <a href="#" className="group flex items-center justify-center w-48 gap-2 rounded-lg border border-[#C60E2A] bg-[#C60E2A] px-4 py-2">
+                                <a href="/menu-page" className="group flex items-center justify-center w-48 gap-2 rounded-lg border border-[#C60E2A] bg-[#C60E2A] px-4 py-2">
                                     <span className="font-medium text-white">
                                         Jelajahi
                                     </span>
@@ -54,6 +83,15 @@ export default function Login() {
                                     </svg>
                                 </a>
                             </div>
+                        </div>
+
+                        <div className="flex justify-center pt-4">
+                            <p className="text-sm text-gray-600">
+                                Belum memiliki akun?{" "}
+                                <a href="/register" className="font-medium text-[#C60E2A] hover:text-[#C60E2A]">
+                                    Daftar sekarang
+                                </a>
+                            </p>
                         </div>
                     </form>
                 </main>
