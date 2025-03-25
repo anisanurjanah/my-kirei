@@ -1,6 +1,11 @@
 import { Link } from "@inertiajs/react";
+import { useState } from "react";
+
+import OutletList from "@/Components/OutletList";
 
 export default function Header({ handleScroll }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
         <>
             <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
@@ -16,19 +21,19 @@ export default function Header({ handleScroll }) {
                             <nav aria-label="Global">
                                 <ul className="flex items-center gap-16 text-sm">
                                     <li>
-                                        <button onClick={() => handleScroll('about')} className="text-gray-500 transition hover:text-gray-500/75">Tentang</button>
+                                        <button onClick={() => handleScroll('about')} className="text-gray-500 transition hover:text-gray-500/75 cursor-pointer">Tentang</button>
                                     </li>
 
                                     <li>
-                                        <button onClick={() => handleScroll('menu')} className="text-gray-500 transition hover:text-gray-500/75">Menu</button>
+                                        <button onClick={() => handleScroll('menu')} className="text-gray-500 transition hover:text-gray-500/75 cursor-pointer">Menu</button>
                                     </li>
 
                                     <li>
-                                        <button onClick={() => handleScroll('location')} className="text-gray-500 transition hover:text-gray-500/75">Lokasi</button>
+                                        <button onClick={() => handleScroll('location')} className="text-gray-500 transition hover:text-gray-500/75 cursor-pointer">Lokasi</button>
                                     </li>
 
                                     <li>
-                                        <button onClick={() => handleScroll('contact')} className="text-gray-500 transition hover:text-gray-500/75">Kontak</button>
+                                        <button onClick={() => handleScroll('contact')} className="text-gray-500 transition hover:text-gray-500/75 cursor-pointer">Kontak</button>
                                     </li>
                                 </ul>
                             </nav>
@@ -36,21 +41,17 @@ export default function Header({ handleScroll }) {
 
                         <div className="flex items-center gap-4">
                             <div className="sm:flex sm:gap-4">
-                                <a
-                                    className="rounded-md bg-[#C60E2A] px-5 py-2.5 text-sm font-medium text-white shadow-sm"
-                                    href="/login"
+                                <button
+                                    className="rounded-md bg-[#C60E2A] px-5 py-2.5 text-sm font-medium text-white shadow-sm cursor-pointer"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setIsModalOpen(true);
+                                    }}
                                 >
-                                    Login
-                                </a>
+                                    Masuk
+                                </button>
 
-                                <div className="hidden sm:flex">
-                                    <a
-                                        className="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-[#C60E2A]"
-                                        href="/register"
-                                    >
-                                    Register
-                                    </a>
-                                </div>
+                                {isModalOpen && <OutletList onClose={() => setIsModalOpen(false)} />}
                             </div>
 
                             <div className="block md:hidden">

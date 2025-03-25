@@ -9,25 +9,18 @@ use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(Request $request, $outlet_code)
     {
         // Remove Phone's Strip
         $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
+
+        $formattedPhone = '+62' . $phoneNumber;
 
         // Validated
         $request->validate([
             'name' => 'required|max:32',
             'phone' => 'required|min:12|max:18',
         ]);
-
-        if (Str::startsWith($phoneNumber, '62')) {
-            $phoneNumber = "+{$phoneNumber}";
-        } elseif (Str::startsWith($phoneNumber, '0')) {
-            $phoneNumber = "+62" . substr($phoneNumber, 1);
-        }
-
-        $formattedPhone = $phoneNumber;
-        // $formattedPhone = '(+62) ' . substr($phoneNumber, 2, 3) . ' ' . substr($phoneNumber, 5, 4) . ' ' . substr($phoneNumber, 9);
 
         // Check if phone number already exists in the database
         $existingCustomer = Customer::where('phone', $formattedPhone)->first();
@@ -61,39 +54,50 @@ class AuthController extends Controller
         $token = $customer->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Registrasi berhasil',
+            'message' => 'Successfully registered',
             'token' => $token,
+            'outlet_code' => $outlet_code,
             'customer' => $customer
         ]);
     }
 
     public function login(Request $request, $outlet_code)
     {
+        // Remove Phone's Strip
         $phoneNumber = preg_replace('/[^\d+]/', '', $request->phone);
 
+        $formattedPhone = '+62' . $phoneNumber;
+
         $request->validate([
-            'phone' => 'required|regex:/^(\+62|0)[0-9]{9,16}$/',
+            'phone' => 'required|min:10|max:14',
         ]);
 
-        $customer = Customer::where('phone', $phoneNumber)->first();
+        // Check if phone number in the database
+        $customer = Customer::where('phone', $formattedPhone)->first();
         if (!$customer) {
-            return response()->json(['message' => 'Nomor telepon tidak ditemukan'], 404);
+            return response()->json([
+                'message' => 'Not found',
+                'errors' => [
+                    'phone' => ['Nomor telepon tidak terdaftar.']
+                ]
+            ], 400);
         }
 
+        // Create token
         $token = $customer->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Login berhasil',
+            'message' => 'Successfully logged in',
             'token' => $token,
+            'outlet_code' => $outlet_code,
             'customer' => $customer,
-            'outlet_code' => $outlet_code
         ]);
     }
 
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Berhasil keluar']);
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
     public function customer(Request $request)

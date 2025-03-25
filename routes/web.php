@@ -16,20 +16,21 @@ Route::get('/', function () {
     return inertia('Home');
 });
 
-Route::get('/login', function () {
-    return inertia('Login');
+Route::get('/{outlet_code}/login', function ($outlet_code) {
+    return inertia('Login', ['outlet_code' => $outlet_code]);
 });
 
-Route::get('/register', function () {
-    return inertia('Register');
+Route::get('/{outlet_code}/register', function ($outlet_code) {
+    return inertia('Register', ['outlet_code' => $outlet_code]);
 });
 
-Route::get('/menu-page', function () {
+Route::get('/{outlet_code}/menu-page', function () {
     return inertia('MenuPage');
 });
 
+
 // DASHBOARD
-Route::get('/dashboard/login', [AdminLoginController::class, 'index'])->name('login')->middleware('guest');
+// Route::get('/dashboard/login', [AdminLoginController::class, 'index'])->name('login')->middleware('guest');
 
 Route::get('/dashboard', function() {
     return view('dashboard.index');

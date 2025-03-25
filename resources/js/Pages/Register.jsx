@@ -1,14 +1,17 @@
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { useState, useContext } from "react";
 
 import { AuthContext } from "@/Context/AuthContext";
 
 import Jumbotron from "@/Layouts/Jumbotron";
 import Footer from "@/Layouts/Footer";
+
 import ErrorAlert from "@/Components/AlertError";
 
 export default function Register() {
     const { register, alert, errors  } = useContext(AuthContext);
+    const { outlet_code } = usePage().props;
+    const outletCode = outlet_code;
 
     const [data, setData] = useState({
         name: "",
@@ -18,12 +21,24 @@ export default function Register() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = { name: data.name, phone: data.phone };
-        register(formData);
+        register(outletCode, formData);
+    };
+
+    const handlePhoneChange = (e) => {
+        let formattedValue = e.target.value.replace(/\D/g, "");
+        formattedValue = formattedValue.replace(/^62/, "");
+        formattedValue = formattedValue.replace(/^0/, "");
+
+        formattedValue = formattedValue.replace(/^(\d{3})(\d{4})?(\d{4})?/, (match, p1, p2, p3) => {
+            return [p1, p2, p3].filter(Boolean).join("-");
+        });
+
+        setData({ ...data, phone: formattedValue });
     };
 
     return (
         <>
-            <Head title="Register" />
+            <Head title={`Daftar - ${outletCode.toUpperCase()}`} />
 
             <header className="bg-white fixed top-0 left-0 w-full z-50">
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
@@ -82,7 +97,7 @@ export default function Register() {
                                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-r-md text-gray-700 focus:text-gray-700 focus:border-gray-300 focus:ring-1 focus:ring-gray-300 outline-none sm:text-sm"
                                     placeholder="Masukkan nomor telepon Anda"
                                     value={data.phone}
-                                    onChange={(e) => setData({ ...data, phone: e.target.value })}
+                                    onChange={handlePhoneChange}
                                     autoComplete="off"
                                     required
                                 />
@@ -95,7 +110,7 @@ export default function Register() {
 
                         <div className="pt-4">
                             <div className="flex justify-center pb-8 border-b border-b-gray-300">
-                                <button type="submit" className="group flex items-center justify-center w-48 gap-2 rounded-lg border border-[#C60E2A] bg-[#C60E2A] px-4 py-2 cursor-pointer">
+                                <button type="submit" className="flex items-center justify-center w-84 rounded-lg border border-[#C60E2A] bg-[#C60E2A] py-2 cursor-pointer">
                                     <span className="font-medium text-white">
                                         Daftar
                                     </span>
@@ -106,8 +121,8 @@ export default function Register() {
                         <div className="flex justify-center pt-4">
                             <p className="text-sm text-gray-600">
                                 Sudah memiliki akun?{" "}
-                                <a href="/login" className="font-medium text-[#C60E2A] hover:text-[#C60E2A]">
-                                    Login disini
+                                <a href={`/${outletCode}/login`} className="font-medium text-[#C60E2A] hover:text-[#C60E2A]">
+                                    Masuk disini
                                 </a>
                             </p>
                         </div>

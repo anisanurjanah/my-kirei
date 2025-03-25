@@ -1,7 +1,7 @@
 import { Inertia } from '@inertiajs/inertia';
-import { createContext, useState } from "react";
+import { createContext, useState } from 'react';
 
-import axios from "axios";
+import axios from 'axios';
 
 export const AuthContext = createContext();
 
@@ -14,11 +14,12 @@ export function AuthProvider({ children }) {
         return savedAlert ? JSON.parse(savedAlert) : null;
     });
 
-    const register = async (formData) => {
+    const register = async (outletCode, data) => {
         try {
-            const res = await axios.post("http://my-kirei.test/api/register", formData);
+            const res = await axios.post(`http://my-kirei.test/api/${outletCode}/register`, data);
             setToken(res.data.token);
             localStorage.setItem("token", res.data.token);
+
             setUser(res.data.customer);
             setErrors({});
 
@@ -28,7 +29,7 @@ export function AuthProvider({ children }) {
             localStorage.setItem("alert", JSON.stringify(alertData));
 
             setTimeout(() => {
-                Inertia.visit("/login");
+                Inertia.visit(`/${outletCode}/login`);
             }, 2000);
         } catch (error) {
             if (error.response?.data?.message === "Duplicate entry") {
@@ -42,8 +43,31 @@ export function AuthProvider({ children }) {
         }
     };
 
+    const login = async (outletCode, data) => {
+        try {
+            const res = await axios.post(`http://my-kirei.test/api/${outletCode}/login`, data);
+            setToken(res.data.token);
+            localStorage.setItem("token", res.data.token);
+
+            setUser(res.data.customer);
+            setErrors({});
+
+            setTimeout(() => {
+                Inertia.visit(`/${outletCode}/menu-page`);
+            }, 2000);
+        } catch (error) {
+            if (error.response.data?.message === "Not found") {
+                setErrors(error.response.data.errors);
+            } else if (error.response.data?.errors) {
+                setErrors(error.response.data.errors);
+            } else {
+                setAlert({ message: error.response.data?.message || "Terjadi kesalahan", type: "error" });
+            }
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, token, register, alert, errors }}>
+        <AuthContext.Provider value={{ user, token, register, login, alert, errors }}>
             {children}
         </AuthContext.Provider>
     );

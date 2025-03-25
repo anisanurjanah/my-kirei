@@ -4,6 +4,7 @@ import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
 
 import { AuthProvider } from "@/Context/AuthContext";
+import { OutletProvider } from "@/Context/OutletContext";
 
 createInertiaApp({
     resolve: name => {
@@ -13,9 +14,11 @@ createInertiaApp({
     setup({ el, App, props }) {
         // createRoot(el).render(<App {...props} />)
         createRoot(el).render(
-            <AuthProvider>
-                <App {...props} />
-            </AuthProvider>
+            <OutletProvider>
+                <AuthProvider>
+                    <App {...props} />
+                </AuthProvider>
+            </OutletProvider>
         );
     },
     progress: {
