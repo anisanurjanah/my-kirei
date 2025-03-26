@@ -20,7 +20,7 @@
                     <tr>
                         <td>{{ ($orders->currentPage() - 1) * $orders->perPage() + $loop->iteration }}</td>
                         <td>{{ $order->order_date }}</td>
-                        <td>{{ $order->customer->name }}</td>
+                        <td>{{ $order->customer->name ?? "Name" }}</td>
                         <td>{{ $order->outlet->name }}</td>
                         {{-- <td>Rp. {{ number_format($order->discount, 0, ',', '.') }}</td> --}}
                         <td>Rp. {{ number_format($order->total_price, 0, ',', '.') }}</td>

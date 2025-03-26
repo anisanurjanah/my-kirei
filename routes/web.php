@@ -12,10 +12,10 @@ use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminOrderItemController;
 
 Route::get('/', function () {
-    return view('home');
+    return inertia('Home');
 });
 
-Route::get('/dashboard/login', [AdminLoginController::class, 'index'])->name('login')->middleware('guest');
+// Route::get('/dashboard/login', [AdminLoginController::class, 'index'])->name('login')->middleware('guest');
 
 Route::get('/dashboard', function() {
     return view('dashboard.index');
