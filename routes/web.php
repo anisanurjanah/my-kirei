@@ -11,10 +11,25 @@ use App\Http\Controllers\AdminOutletController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminOrderItemController;
 
+// VIEWS
 Route::get('/', function () {
     return inertia('Home');
 });
 
+Route::get('/login', function () {
+    return inertia('Login');
+});
+
+Route::get('/register', function () {
+    return inertia('Register');
+});
+
+Route::get('/menu-page', function () {
+    return inertia('MenuPage');
+});
+
+
+// DASHBOARD
 // Route::get('/dashboard/login', [AdminLoginController::class, 'index'])->name('login')->middleware('guest');
 
 Route::get('/dashboard', function() {

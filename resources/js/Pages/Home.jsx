@@ -1,7 +1,8 @@
 import { Head, usePage } from "@inertiajs/react";
 
-import Header from "@/Components/Header";
-import Jumbotron from "@/Components/Jumbotron";
+import Header from "@/Layouts/Header";
+import Jumbotron from "@/Layouts/Jumbotron";
+import Footer from "@/Layouts/Footer";
 
 export default function Home() {
     const { component } = usePage()
@@ -20,20 +21,29 @@ export default function Home() {
             <Header handleScroll={handleScroll} />
             <Jumbotron />
 
-            <main className="w-4/5 mx-auto p-8">
-                <div id="about" className="h-screen flex items-center justify-center bg-blue-100">
-                    <h2>Tentang Kirei Sum</h2>
-                </div>
-                <div id="menu" className="h-screen flex items-center justify-center bg-green-100">
-                    <h2>Menu</h2>
-                </div>
-                <div id="location" className="h-screen flex items-center justify-center bg-yellow-100">
-                    <h2>Lokasi</h2>
-                </div>
-                <div id="contact" className="h-screen flex items-center justify-center bg-red-100">
-                    <h2>Kontak</h2>
-                </div>
-            </main>
+                <main className="max-w-screen-lg mx-auto">
+                    <section id="about" className="h-screen flex flex-col justify-center items-center bg-blue-100 text-center">
+                        <h2 className="text-4xl font-bold">Tentang Kirei Sum</h2>
+                        <p className="text-gray-700 mt-4">Kirei Sum adalah tempat terbaik untuk menikmati hidangan lezat.</p>
+                    </section>
+
+                    <section id="menu" className="h-screen flex flex-col justify-center items-center bg-green-100 text-center">
+                        <h2 className="text-4xl font-bold">Menu</h2>
+                        <p className="text-gray-700 mt-4">Kami menyajikan berbagai pilihan makanan berkualitas tinggi.</p>
+                    </section>
+
+                    <section id="location" className="h-screen flex flex-col justify-center items-center bg-yellow-100 text-center">
+                        <h2 className="text-4xl font-bold">Lokasi</h2>
+                        <p className="text-gray-700 mt-4">Temukan kami di berbagai lokasi strategis.</p>
+                    </section>
+
+                    <section id="contact" className="h-screen flex flex-col justify-center items-center bg-red-100 text-center">
+                        <h2 className="text-4xl font-bold">Kontak</h2>
+                        <p className="text-gray-700 mt-4">Hubungi kami untuk reservasi atau informasi lebih lanjut.</p>
+                    </section>
+                </main>
+
+            <Footer />
         </>
     )
 }
