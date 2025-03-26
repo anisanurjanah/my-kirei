@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OutletController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminLoginController;
@@ -12,21 +15,15 @@ use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminOrderItemController;
 
 // VIEWS
-Route::get('/', function () {
-    return inertia('Home');
-});
+Route::get('/', [OutletController::class, 'index']);
 
-Route::get('/login', function () {
-    return inertia('Login');
-});
+Route::get('/{outlet_code}/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/{outlet_code}/login', [AuthController::class, 'login']);
 
-Route::get('/register', function () {
-    return inertia('Register');
-});
+Route::get('/{outlet_code}/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/{outlet_code}/register', [AuthController::class, 'register']);
 
-Route::get('/menu-page', function () {
-    return inertia('MenuPage');
-});
+Route::get('/{outlet_code}/menu-page', [MenuController::class, 'index'])->name('menu-page');
 
 
 // DASHBOARD

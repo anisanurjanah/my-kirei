@@ -50,7 +50,7 @@ export default function Header({ handleScroll }) {
                                 >
                                     Masuk
                                 </button>
-                                
+
                                 {isModalOpen && <OutletList onClose={() => setIsModalOpen(false)} />}
                             </div>
 

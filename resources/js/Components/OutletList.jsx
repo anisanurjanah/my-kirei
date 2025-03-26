@@ -1,17 +1,14 @@
-import { Inertia } from '@inertiajs/inertia';
-import { useContext, useEffect } from "react";
+import { Inertia } from "@inertiajs/inertia";
+import { usePage } from "@inertiajs/react";
 import { XCircle, Store } from "lucide-react";
 
 export default function OutletList({ onClose }) {
-    // const { outlet: outlets, outlets: fetchOutlets } = useContext(OutletContext);
+    const { props } = usePage();
+    const outlets = props.outlets;
 
-    // useEffect(() => {
-    //     fetchOutlets();
-    // }, []);
-
-    // const handleLogin = (outlet_code) => {
-    //     Inertia.visit(`/${outlet_code}/login`);
-    // };
+    const handleLogin = (outlet_code) => {
+        Inertia.visit(`/${outlet_code}/login`);
+    };
 
     return (
         <>
