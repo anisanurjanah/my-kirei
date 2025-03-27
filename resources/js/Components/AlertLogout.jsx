@@ -7,7 +7,7 @@ export default function LogoutAlert({ title, message, onClose, onConfirm }) {
 
     return (
         <>
-            <div role="alert" className="w-full max-w-sm md:max-w-sm lg:max-w-sm m-8 md:mx-auto rounded-md border border-gray-300 bg-white p-4 shadow-sm">
+            <div role="alert" className="w-full max-w-sm md:max-w-sm m-8 md:mx-auto rounded-md border border-gray-300 bg-white p-4 shadow-sm">
                 <div className="flex gap-4">
                     <div className="flex-1">
                         <strong className="font-medium text-gray-900">{title}</strong>

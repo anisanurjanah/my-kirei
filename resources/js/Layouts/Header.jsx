@@ -12,7 +12,7 @@ export default function Header({ handleScroll }) {
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-between">
                         <div className="md:flex md:items-center md:gap-12">
-                            <Link className="block text-black text-2xl font-bold" href="/">
+                            <Link className="block text-[#333] text-2xl md:text-3xl font-bold" href="/">
                                 KIREI <span className="text-[#C60E2A]">SUM</span>
                             </Link>
                         </div>
@@ -42,7 +42,7 @@ export default function Header({ handleScroll }) {
                         <div className="flex items-center gap-4">
                             <div className="sm:flex sm:gap-4">
                                 <button
-                                    className="rounded-md bg-[#C60E2A] px-5 py-2.5 text-sm font-medium text-white shadow-sm cursor-pointer"
+                                    className="rounded-md bg-[#C60E2A] px-3 md:px-5 py-1.5 md:py-2.5 text-sm font-medium text-white shadow-sm cursor-pointer"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         setIsModalOpen(true);

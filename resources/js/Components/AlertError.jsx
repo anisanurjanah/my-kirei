@@ -1,7 +1,7 @@
 export default function ErrorAlert({ message }) {
     return (
         <>
-            <div role="alert" className="border-s-4 border-red-700 bg-red-50 p-4 w-84">
+            <div role="alert" className="border-s-4 border-red-700 bg-red-50 p-4 w-72 md:w-84">
                 <div className="flex items-center gap-2 text-red-700">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5">
                         <path
