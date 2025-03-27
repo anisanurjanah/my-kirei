@@ -4,14 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use Inertia\Inertia;
+use App\Models\Outlet;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class MenuController extends Controller
 {
     public function index($outlet_code)
     {
+        $outlet = Outlet::where('outlet_code', $outlet_code)->first();
+
+        dd(Auth::user());
         return Inertia::render('MenuPage', [
+            'menus' => Menu::with(['stock', 'pricePromo'])
+            ->where('outlet_id', $outlet->id)
+            ->get(),
             'outlet_code' => $outlet_code,
+            'user' => Auth::user(),
         ]);
     }
 }

@@ -52,7 +52,7 @@ export default function Login() {
         <>
             <Head title={`Masuk - ${outletCode.toUpperCase()}`} />
 
-            <header className="bg-white fixed top-0 left-0 w-full z-50">
+            <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-center">
                         <div className="md:flex md:items-center md:gap-12">

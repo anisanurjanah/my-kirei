@@ -75,8 +75,9 @@ class AuthController extends Controller
         }
 
         Auth::login($customer);
+        session()->regenerate();
 
-        return redirect("/{$outlet_code}/menu-page")->with('success', 'Selamat datang di Kirei Sum');
+        return redirect("/{$outlet_code}/menu-page")->with('success', 'Selamat datang di Kirei Sum,');
     }
 
     public function logout(Request $request)
