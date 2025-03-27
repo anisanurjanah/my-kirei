@@ -21,11 +21,11 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/{outlet_code}/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/{outlet_code}/login', [AuthController::class, 'login']);
     Route::post('/{outlet_code}/register', [AuthController::class, 'register']);
-    Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
 
 Route::middleware(['auth.customer'])->group(function () {
     Route::get('/{outlet_code}/menu-page', [MenuController::class, 'index'])->name('menu-page');
+    Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
 
 

@@ -19,8 +19,8 @@ export default function SuccessAlert({ message, onClose }) {
                     </svg>
 
                     <div className="flex-1">
-                        <strong className="font-medium text-gray-900">{message?.title || "Perubahan disimpan"}</strong>
-                        <p className="mt-0.5 text-sm text-gray-700">{message?.body || "Perubahan kamu telah disimpan."}</p>
+                        <strong className="font-medium text-gray-900">{message?.title}</strong>
+                        <p className="mt-0.5 text-sm text-gray-700">{message?.body}</p>
                     </div>
 
                     <button

@@ -76,6 +76,13 @@ export default function Login() {
                             />
                         )}
 
+                        { flashMsg?.logout_success && (
+                            <SuccessAlert
+                                message={{ title: flashMsg.logout_success, body: "" }}
+                                onClose={dismissFlash}
+                            />
+                        )}
+
                         { flashMsg?.error && (
                             <ErrorAlert
                                 message={{ title: "Ups! Anda tidak dapat masuk", body: flashMsg.error }}

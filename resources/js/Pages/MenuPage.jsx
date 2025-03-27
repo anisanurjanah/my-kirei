@@ -1,21 +1,44 @@
-import { Head, usePage } from "@inertiajs/react";
-import { ReceiptText } from "lucide-react";
+import { Head, usePage, useForm } from "@inertiajs/react";
+import { useState } from "react";
+import { ReceiptText, ChevronDown, LogOut } from "lucide-react";
 
 import Footer from "@/Layouts/Footer";
 import WelcomeAnnouncement from "@/Components/AnnouncementWelcome";
 import WelcomeFlashMessage from "@/Helpers/WelcomeFlashMessage";
+import LogoutAlert from "@/Components/AlertLogout";
 
 export default function Home({ menus }) {
     const { props } = usePage();
+    const { post } = useForm();
 
     const outletCode = props.outlet_code;
     const customer = props.customer;
     const flash = props.flash;
 
     const {flashMsg, dismissFlash} = WelcomeFlashMessage(flash, customer)
+    const [isOpen, setIsOpen] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+
+    // Logout
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(`/${outletCode}/logout`);
+        setShowAlert(false);
+    };
 
     return (
         <>
+            {showAlert && (
+                <div className="fixed h-screen inset-0 flex items-center justify-center bg-transparent backdrop-blur-md animate-fade-in z-50">
+                    <LogoutAlert
+                        title="Konfirmasi Logout"
+                        message="Apakah Anda yakin ingin keluar?"
+                        onClose={() => setShowAlert(false)}
+                        onConfirm={handleSubmit}
+                    />
+                </div>
+            )}
+
             <Head title={`Menu - ${outletCode.toUpperCase()}`} />
 
             <main className="max-w-screen">
@@ -28,26 +51,41 @@ export default function Home({ menus }) {
                     />
                 )}
                 <div className="bg-white min-h-screen">
-                    <nav className="bg-white text-[#C60E2A] p-4 flex justify-between shadow-md">
-                        <h1 className="text-2xl font-bold mx-2 md:mx-4">
-                            <span className="text-black">KIREI</span> SUM
+                    <nav className="bg-white text-[#C60E2A] p-4 flex items-center justify-between shadow-md">
+                        <h1 className="text-2xl md:text-3xl font-bold mx-2 md:mx-4">
+                            <span className="text-[#333]">KIREI</span> SUM
                         </h1>
-                        <button className="bg-none mx-2 md:mx-4 rounded flex items-center">
-                            <ReceiptText />
-                        </button>
-
+                        <div className="relative flex items-center">
+                            <button
+                                className="bg-none mx-2 md:mx-4 rounded flex items-center space-x-4"
+                                onClick={() => setIsOpen(!isOpen)}
+                            >
+                                <ReceiptText />
+                                <ChevronDown />
+                            </button>
+                            {isOpen && (
+                                <div className="absolute right-0 top-full mt-2 w-32 bg-white border border-gray-200 rounded shadow-md">
+                                    <button
+                                        onClick={() => setShowAlert(true)}
+                                        className="block w-full px-4 py-2 text-left text-[#333] hover:bg-gray-100 cursor-pointer"
+                                    >
+                                        <span className="flex items-center"><LogOut className="me-2" size={16} />Keluar</span>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </nav>
 
                     <section className="max-w-screen-lg mx-auto p-4">
                         <div className="flex space-x-4 py-4 overflow-x-auto">
-                            <button className="bg-red-500 text-white px-4 py-2 rounded">For You</button>
-                            <button className="bg-gray-300 px-4 py-2 rounded">New Menu</button>
-                            <button className="bg-gray-300 px-4 py-2 rounded">Chizu Series</button>
+                            <button className="bg-red-500 text-white text-sm md:text-xl px-4 py-2 rounded">For You</button>
+                            <button className="bg-gray-300 px-4 py-2 text-[#333] text-sm md:text-xl rounded">New Menu</button>
+                            <button className="bg-gray-300 px-4 py-2 text-[#333] text-sm md:text-xl rounded">Chizu Series</button>
                         </div>
 
-                        <span className="flex items-center">
+                        <span className="flex items-center py-2">
                             <span className="shrink-0 pe-4">
-                                <h2 className="=md:text-3xl font-semibold">Rekomendasi Menu Untuk Kamu</h2>
+                                <h2 className="text-lg md:text-3xl text-[#333] font-semibold">Rekomendasi Menu Untuk Kamu</h2>
                             </span>
 
                             <span className="h-px flex-1 bg-gray-300"></span>
@@ -62,7 +100,7 @@ export default function Home({ menus }) {
                                         {menu.price_promo?.price_promo && menu.stock.current_stock != 0 && (
                                             <span
                                                 className="absolute -top-px -right-px rounded-tr-3xl rounded-bl-3xl bg-yellow-500
-                                                    p-2 md:px-6 md:py-4 text-xs md:text-base font-medium tracking-widest text-white uppercase"
+                                                    p-2 md:px-6 md:py-4 text-xs md:text-xl font-medium tracking-widest text-white uppercase"
                                             >
                                                 Hemat {Math.round(((menu.price - menu.price_promo.price_promo) / menu.price) * 100)}%
                                             </span>
@@ -78,21 +116,21 @@ export default function Home({ menus }) {
 
                                         {menu.stock.current_stock == 0 && (
                                             <div className="absolute inset-0 flex items-center justify-center">
-                                                <span className="text-white font-bold text-lg">Habis</span>
+                                                <span className="text-white font-bold text-md md:text-2xl uppercase">Habis</span>
                                             </div>
                                         )}
                                     </div>
 
                                     <div className="p-4 flex flex-col flex-grow">
                                         <div className="min-h-[48px] md:min-h-[84px] flex items-start">
-                                            <strong className="text-md md:text-xl font-medium text-gray-900">{menu.name}</strong>
+                                            <strong className="text-md md:text-2xl font-medium text-[#333]">{menu.name}</strong>
                                         </div>
 
-                                        <p className="mt-4 text-pretty text-gray-700">IDR {menu.price.toLocaleString()}</p>
+                                        <p className="mt-4 text-pretty text-gray-400 text-sm md:text-xl">IDR {menu.price.toLocaleString()}</p>
 
                                         <div className="mt-auto">
                                             <button
-                                                className={`mt-4 w-full block rounded-md border px-5 py-2 md:py-3 text-sm font-medium tracking-widest text-white uppercase transition-colors hover:bg-[#333333] hover:text-[#ffffff] cursor-pointer
+                                                className={`mt-4 w-full block rounded-md border px-5 py-2 md:py-3 text-sm md:text-xl font-medium tracking-widest text-white uppercase transition-colors hover:bg-[#333333] hover:text-[#ffffff] cursor-pointer
                                                     ${menu.stock.current_stock == 0 ? "border-[#333333] bg-[#333333] opacity-50 cursor-not-allowed pointer-events-none" : "border-[#C60E2A] bg-[#C60E2A]"}`}
                                             >
                                                 Tambah
