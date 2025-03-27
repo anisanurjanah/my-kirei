@@ -1,5 +1,5 @@
 import { Head, Link, usePage, useForm } from "@inertiajs/react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Jumbotron from "@/Layouts/Jumbotron";
 import Footer from "@/Layouts/Footer";
@@ -8,13 +8,13 @@ import ErrorAlert from "@/Components/AlertError";
 
 export default function Register() {
     const { props } = usePage();
-    const outletCode = props.outlet_code;
 
-    // Alert
+    const outletCode = props.outlet_code;
     const flash = props.flash;
+
     const [flashMsg, setFlashMsg] = useState(flash);
     useEffect(() => {
-        if (flash.success || flash.error) {
+        if (flash) {
             setFlashMsg(flash);
         }
     }, [flash]);
@@ -80,7 +80,7 @@ export default function Register() {
                                     id="name"
                                     name="name"
                                     className={`w-full px-4 py-3 bg-white border rounded-r-md text-gray-700 focus:text-gray-700 focus:ring-1 outline-none sm:text-sm
-                                        ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-300 focus:ring-gray-300'}`}
+                                        ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-300 focus:ring-gray-300'}`}
                                     placeholder="Masukkan nama lengkap Anda"
                                     value={data.name}
                                     onChange={(e) => setData({ ...data, name: e.target.value })}
@@ -120,7 +120,7 @@ export default function Register() {
 
                         <div className="pt-4">
                             <div className="flex justify-center pb-8 border-b border-b-gray-300">
-                                <button type="submit" className="group flex items-center justify-center w-48 gap-2 rounded-lg border border-[#C60E2A] bg-[#C60E2A] px-4 py-2 cursor-pointer">
+                                <button type="submit" className="group flex items-center justify-center w-84 gap-2 rounded-lg border border-[#C60E2A] bg-[#C60E2A] px-4 py-2 cursor-pointer">
                                     <span className="font-medium text-white">
                                         Daftar
                                     </span>

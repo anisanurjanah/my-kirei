@@ -23,8 +23,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
-        Inertia::share([
-            'user' => fn () => Auth::user(),
-        ]);
     }
 }

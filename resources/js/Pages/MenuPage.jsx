@@ -1,29 +1,18 @@
 import { Head, usePage } from "@inertiajs/react";
-import { useState, useEffect } from "react";
 import { ReceiptText } from "lucide-react";
 
 import Footer from "@/Layouts/Footer";
-
 import WelcomeAnnouncement from "@/Components/AnnouncementWelcome";
+import WelcomeFlashMessage from "@/Helpers/WelcomeFlashMessage";
 
 export default function Home({ menus }) {
     const { props } = usePage();
+
     const outletCode = props.outlet_code;
-
-    // Alert
+    const customer = props.customer;
     const flash = props.flash;
-    const [flashMsg, setFlashMsg] = useState(flash);
-    useEffect(() => {
-        if (flash.success || flash.error) {
-            setFlashMsg(flash);
-        }
-    }, [flash]);
 
-    const handleAlertClose = () => {
-        setFlashMsg(null);
-    };
-
-    console.log(props)
+    const {flashMsg, dismissFlash} = WelcomeFlashMessage(flash, customer)
 
     return (
         <>
@@ -31,12 +20,13 @@ export default function Home({ menus }) {
 
             <main className="max-w-screen">
 
-                <WelcomeAnnouncement
-                    message={{ title: flashMsg.success }}
-                    user="Anisa"
-                    onClose={handleAlertClose}
-                />
-
+                { flashMsg && (
+                    <WelcomeAnnouncement
+                        message={{ title: flashMsg }}
+                        customer={customer.name}
+                        onClose={dismissFlash}
+                    />
+                )}
                 <div className="bg-white min-h-screen">
                     <nav className="bg-white text-[#C60E2A] p-4 flex justify-between shadow-md">
                         <h1 className="text-2xl font-bold mx-2 md:mx-4">

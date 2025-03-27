@@ -15,15 +15,18 @@ use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminOrderItemController;
 
 // VIEWS
-Route::get('/', [OutletController::class, 'index']);
+Route::middleware(['guest'])->group(function () {
+    Route::get('/', [OutletController::class, 'index']);
+    Route::get('/{outlet_code}/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::get('/{outlet_code}/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/{outlet_code}/login', [AuthController::class, 'login']);
+    Route::post('/{outlet_code}/register', [AuthController::class, 'register']);
+    Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
+});
 
-Route::get('/{outlet_code}/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/{outlet_code}/login', [AuthController::class, 'login']);
-
-Route::get('/{outlet_code}/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/{outlet_code}/register', [AuthController::class, 'register']);
-
-Route::get('/{outlet_code}/menu-page', [MenuController::class, 'index'])->name('menu-page');
+Route::middleware(['auth.customer'])->group(function () {
+    Route::get('/{outlet_code}/menu-page', [MenuController::class, 'index'])->name('menu-page');
+});
 
 
 // DASHBOARD

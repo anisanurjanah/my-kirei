@@ -47,7 +47,7 @@ class AuthController extends Controller
             'phone' => $formattedPhone,
         ]);
 
-        Auth::login($customer);
+        Auth::guard('customer')->login($customer);
 
         return redirect("/{$outlet_code}/login")->with('success', 'Akun Anda berhasil didaftarkan!');
     }
@@ -70,23 +70,30 @@ class AuthController extends Controller
         ]);
 
         $customer = Customer::where('phone', $formattedPhone)->first();
-        if (!$customer) {
-            return redirect()->back()->with('error', 'Nomor telepon tidak terdaftar. Silakan daftarkan akun Anda untuk melanjutkan.');
+        if ($customer) {
+            Auth::guard('customer')->login($customer);
+            $request->session()->regenerate();
+
+            return redirect()->intended("/{$outlet_code}/menu-page")
+                ->with('success', "Selamat datang di Kirei Sum,")
+                ->with('customer', $customer->only(['id', 'name', 'phone']));
         }
 
-        Auth::login($customer);
-        session()->regenerate();
-
-        return redirect("/{$outlet_code}/menu-page")->with('success', 'Selamat datang di Kirei Sum,');
+        return redirect()->back()->with('error', 'Nomor telepon tidak terdaftar. Silakan daftarkan akun Anda untuk melanjutkan.');
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request, $outlet_code)
     {
-        $outlet_code = $request->route('outlet_code');
+        $customer = Auth::guard('customer')->user();
+        if ($customer) {
+            Auth::guard('customer')->logout();
 
-        Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        return redirect()->route('login', ['outlet_code' => $outlet_code])
-            ->with('success', 'Successfully logged out');
+            return redirect("/{$outlet_code}/login")->with('success', 'Anda berhasil keluar. Sampai jumpa!');
+        }
+
+        return redirect("/{$outlet_code}/login");
     }
 }

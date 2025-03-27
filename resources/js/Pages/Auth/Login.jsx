@@ -1,5 +1,5 @@
 import { Head, Link, usePage, useForm } from "@inertiajs/react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Jumbotron from "@/Layouts/Jumbotron";
 import Footer from "@/Layouts/Footer";
@@ -9,18 +9,18 @@ import SuccessAlert from "@/Components/AlertSuccess";
 
 export default function Login() {
     const { props } = usePage();
-    const outletCode = props.outlet_code;
 
-    // Alert
+    const outletCode = props.outlet_code;
     const flash = props.flash;
+
     const [flashMsg, setFlashMsg] = useState(flash);
     useEffect(() => {
-        if (flash.success || flash.error) {
+        if (flash) {
             setFlashMsg(flash);
         }
     }, [flash]);
 
-    const handleAlertClose = () => {
+    const dismissFlash = () => {
         setFlashMsg(null);
     };
 
@@ -72,11 +72,11 @@ export default function Login() {
                         { flashMsg?.success && (
                             <SuccessAlert
                                 message={{ title: flashMsg.success, body: "Pendaftaran akun Anda telah berhasil. Silakan masuk untuk melanjutkan." }}
-                                onClose={handleAlertClose}
+                                onClose={dismissFlash}
                             />
                         )}
 
-                        {flashMsg?.error && (
+                        { flashMsg?.error && (
                             <ErrorAlert
                                 message={{ title: "Ups! Anda tidak dapat masuk", body: flashMsg.error }}
                             />
