@@ -21,7 +21,7 @@ export default function Home() {
             <Header handleScroll={handleScroll} />
             <Jumbotron />
 
-                <main className="max-w-screen-lg mx-auto">
+                <main className="max-w-screen-lg mx-4 md:mx-auto">
                     <section id="about" className="h-screen flex flex-col justify-center items-center bg-blue-100 text-center">
                         <h2 className="text-4xl font-bold">Tentang Kirei Sum</h2>
                         <p className="text-gray-700 mt-4">Kirei Sum adalah tempat terbaik untuk menikmati hidangan lezat.</p>

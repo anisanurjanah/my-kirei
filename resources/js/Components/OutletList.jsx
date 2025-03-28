@@ -13,7 +13,7 @@ export default function OutletList({ onClose }) {
     return (
         <>
             <div className={`fixed inset-0 flex items-center justify-center bg-transparent backdrop-blur-md animate-fade-in`}>
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl m-4">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl mx-4">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-lg md:text-xl text-[#333] font-semibold">
                             Daftar Outlet <span className="text-[#C60E2A]">Kirei Sum</span>

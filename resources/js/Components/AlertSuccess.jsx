@@ -1,7 +1,7 @@
 export default function SuccessAlert({ message, onClose }) {
     return (
         <>
-            <div role="alert" className="rounded-md border border-gray-300 bg-white p-4 shadow-sm w-72 md:w-84">
+            <div role="alert" className="rounded-md border border-gray-300 bg-white p-4 shadow-sm">
                 <div className="flex items-start gap-4">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

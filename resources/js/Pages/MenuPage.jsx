@@ -2,19 +2,16 @@ import { Head, usePage, useForm } from "@inertiajs/react";
 import { useState } from "react";
 import { ReceiptText, ChevronDown, LogOut } from "lucide-react";
 
-import Footer from "@/Layouts/Footer";
+import Main from "@/Layouts/Main";
 import WelcomeAnnouncement from "@/Components/AnnouncementWelcome";
 import WelcomeFlashMessage from "@/Helpers/WelcomeFlashMessage";
 import LogoutAlert from "@/Components/AlertLogout";
 
 export default function Home({ menus }) {
-    const { props } = usePage();
+    const { outlet_code: outletCode, customer, flash } = usePage().props;
     const { post } = useForm();
 
-    const outletCode = props.outlet_code;
-    const customer = props.customer;
-    const flash = props.flash;
-
+    // Alert
     const {flashMsg, dismissFlash} = WelcomeFlashMessage(flash, customer)
     const [isOpen, setIsOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -41,48 +38,50 @@ export default function Home({ menus }) {
 
             <Head title={`Menu - ${outletCode.toUpperCase()}`} />
 
-            <main className="max-w-screen">
+            { flashMsg && (
+                <WelcomeAnnouncement
+                    message={{ title: flashMsg }}
+                    customer={customer.name}
+                    onClose={dismissFlash}
+                />
+            )}
 
-                { flashMsg && (
-                    <WelcomeAnnouncement
-                        message={{ title: flashMsg }}
-                        customer={customer.name}
-                        onClose={dismissFlash}
-                    />
-                )}
-                <div className="bg-white min-h-screen">
-                    <nav className="bg-white text-[#C60E2A] p-4 flex items-center justify-between shadow-md">
-                        <h1 className="text-2xl md:text-3xl font-bold mx-2 md:mx-4">
-                            <span className="text-[#333]">KIREI</span> SUM
-                        </h1>
-                        <div className="relative flex items-center">
+            <nav className="bg-white text-[#C60E2A] p-4 flex items-center justify-between shadow-md">
+                <h1 className="text-2xl md:text-3xl font-bold mx-2 md:mx-4">
+                    <span className="text-[#333]">KIREI</span> SUM
+                </h1>
+                <div className="relative flex items-center">
+                    <button
+                        className="bg-none mx-2 md:mx-4 rounded flex items-center space-x-4"
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        <ReceiptText />
+                        <ChevronDown />
+                    </button>
+                    {isOpen && (
+                        <div className="absolute right-0 top-full mt-2 w-32 bg-white border border-gray-200 rounded shadow-md">
                             <button
-                                className="bg-none mx-2 md:mx-4 rounded flex items-center space-x-4"
-                                onClick={() => setIsOpen(!isOpen)}
+                                onClick={() => setShowAlert(true)}
+                                className="block w-full px-4 py-2 text-left text-[#333] hover:bg-gray-100 cursor-pointer"
                             >
-                                <ReceiptText />
-                                <ChevronDown />
+                                <span className="flex items-center"><LogOut className="me-2" size={16} />Keluar</span>
                             </button>
-                            {isOpen && (
-                                <div className="absolute right-0 top-full mt-2 w-32 bg-white border border-gray-200 rounded shadow-md">
-                                    <button
-                                        onClick={() => setShowAlert(true)}
-                                        className="block w-full px-4 py-2 text-left text-[#333] hover:bg-gray-100 cursor-pointer"
-                                    >
-                                        <span className="flex items-center"><LogOut className="me-2" size={16} />Keluar</span>
-                                    </button>
-                                </div>
-                            )}
                         </div>
-                    </nav>
+                    )}
+                </div>
+            </nav>
 
-                    <section className="max-w-screen-lg mx-auto p-4">
-                        <div className="flex space-x-4 py-4 overflow-x-auto">
-                            <button className="bg-red-500 text-white text-sm md:text-xl px-4 py-2 rounded">For You</button>
-                            <button className="bg-gray-300 px-4 py-2 text-[#333] text-sm md:text-xl rounded">New Menu</button>
-                            <button className="bg-gray-300 px-4 py-2 text-[#333] text-sm md:text-xl rounded">Chizu Series</button>
-                        </div>
+            <Main>
+                <div className="flex justify-center bg-gray-200 w-full">
+                    <div className="flex space-x-4 py-4 overflow-x-auto">
+                        <button className="bg-red-500 text-white text-sm md:text-xl px-4 py-2 rounded">For You</button>
+                        <button className="bg-gray-300 px-4 py-2 text-[#333] text-sm md:text-xl rounded">New Menu</button>
+                        <button className="bg-gray-300 px-4 py-2 text-[#333] text-sm md:text-xl rounded">Chizu Series</button>
+                    </div>
+                </div>
 
+                <section className="max-w-screen-lg mx-auto p-4">
+                    <div className="bg-white w-full">
                         <span className="flex items-center py-2">
                             <span className="shrink-0 pe-4">
                                 <h2 className="text-lg md:text-3xl text-[#333] font-semibold">Rekomendasi Menu Untuk Kamu</h2>
@@ -140,11 +139,9 @@ export default function Home({ menus }) {
                                 </div>
                             ))}
                         </div>
-                    </section>
-                </div>
-            </main>
-
-            <Footer />
+                    </div>
+                </section>
+            </Main>
         </>
     )
 }

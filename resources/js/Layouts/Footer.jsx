@@ -4,7 +4,7 @@ export default function Header() {
     return (
         <>
             <footer className="bg-white">
-                <div className="mx-auto max-w-screen-xl px-4 py-4 md:py-8 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-screen-xl px-4 py-6 md:py-8 sm:px-6 lg:px-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
                         <div className="flex justify-center text-[#C60E2A]">
                             <Link className="block text-[#333] text-lg md:text-2xl font-bold" href="/">
