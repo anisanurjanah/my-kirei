@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\AdminMenuController;
@@ -17,14 +18,18 @@ use App\Http\Controllers\AdminOrderItemController;
 // VIEWS
 Route::middleware(['guest'])->group(function () {
     Route::get('/', [OutletController::class, 'index']);
+
     Route::get('/{outlet_code}/login', [AuthController::class, 'showLogin'])->name('login');
     Route::get('/{outlet_code}/register', [AuthController::class, 'showRegister'])->name('register');
+
     Route::post('/{outlet_code}/login', [AuthController::class, 'login']);
     Route::post('/{outlet_code}/register', [AuthController::class, 'register']);
 });
 
 Route::middleware(['auth.customer'])->group(function () {
     Route::get('/{outlet_code}/menu-page', [MenuController::class, 'index'])->name('menu-page');
+    Route::get('/{outlet_code}/cart-page', [CartController::class, 'index'])->name('cart-page');
+
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
 

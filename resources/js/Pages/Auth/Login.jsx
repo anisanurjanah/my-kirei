@@ -89,6 +89,7 @@ export default function Login() {
                 </div>
 
                 <form onSubmit={handleSubmit}>
+                    
                     <div className="flex justify-center mb-6 mx-8">
                         <div className="flex items-center w-full md:w-84 bg-gray-100 border border-gray-300 rounded-md">
                             <span className="inline-flex items-center px-3 md:px-4 text-gray-500 bg-gray-100">
@@ -133,6 +134,7 @@ export default function Login() {
                             </a>
                         </p>
                     </div>
+
                 </form>
             </Main>
         </>
