@@ -1,5 +1,5 @@
-import { Head, Link, usePage, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { Head, Link, usePage, useForm } from "@inertiajs/react";
 
 import Jumbotron from "@/Layouts/Jumbotron";
 import Main from "@/Layouts/Main";
@@ -61,81 +61,83 @@ export default function Register() {
             <Jumbotron />
 
             <Main>
-                <div className="flex justify-center mx-8 py-4">
-                    {flashMsg?.error && (
-                        <ErrorAlert
-                            message={{ title: "Ups! Akun Anda tidak dapat didaftarkan", body: flashMsg.error }}
-                        />
-                    )}
+                <section className="w-84 mx-auto flex flex-col items-center">
+                    <div className="flex justify-center md:w-84 mx-8 py-4">
+                        {flashMsg?.error && (
+                            <ErrorAlert
+                                message={{ title: "Ups! Akun Anda tidak dapat didaftarkan", body: flashMsg.error }}
+                            />
+                        )}
+                    </div>
+
+                    <form onSubmit={handleSubmit}>
+
+                        <div className="flex justify-center mb-6 mx-8">
+                            <div className="flex items-center w-full md:w-84 bg-gray-100 border border-gray-300 rounded-md">
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    className={`w-full px-4 py-2 md:py-3 bg-white border rounded-r-md text-gray-700 focus:text-gray-700 focus:ring-1 outline-none sm:text-sm
+                                        ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-300 focus:ring-gray-300'}`}
+                                    placeholder="Masukkan nama lengkap Anda"
+                                    value={data.name}
+                                    onChange={(e) => setData({ ...data, name: e.target.value })}
+                                    autoComplete="off"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        {errors.name &&
+                            <p className="text-red-500 text-center text-sm py-2">{errors.name}</p>
+                        }
+
+                        <div className="flex justify-center mb-6 mx-8">
+                            <div className="flex items-center w-full md:w-84 bg-gray-100 border border-gray-300 rounded-md">
+                                <span className="inline-flex items-center px-3 md:px-4 text-gray-500 bg-gray-100">
+                                    (+62)
+                                </span>
+                                <input
+                                    type="text"
+                                    id="phone"
+                                    name="phone"
+                                    className={`w-full px-4 py-2 md:py-3 bg-white border rounded-r-md text-gray-700 focus:text-gray-700 focus:ring-1 outline-none sm:text-sm
+                                        ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-300 focus:ring-gray-300'}`}
+                                    placeholder="Masukkan nomor telepon Anda"
+                                    value={data.phone}
+                                    onChange={handlePhoneChange}
+                                    autoComplete="off"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        {errors.phone &&
+                            <p className="text-red-500 text-center text-sm py-2">{errors.phone}</p>
+                        }
+
+                        <div className="flex justify-center mx-8">
+                            <button type="submit" className="group flex items-center justify-center w-full md:w-84 gap-2 rounded-lg border border-[#C60E2A] bg-[#C60E2A] px-4 py-2 cursor-pointer">
+                                <span className="font-medium text-white">
+                                    Daftar
+                                </span>
+                            </button>
+                        </div>
+
+                    </form>
+                </section>
+
+                <hr className="mt-8 mb-4 border border-gray-300" />
+
+                <div className="flex justify-center">
+                    <p className="text-sm text-gray-600">
+                        Sudah memiliki akun?{" "}
+                        <a href={`/${outletCode}/login`} className="font-medium text-[#C60E2A] hover:text-[#C60E2A]">
+                            Masuk disini
+                        </a>
+                    </p>
                 </div>
-
-                <form onSubmit={handleSubmit}>
-
-                    <div className="flex justify-center mb-6 mx-8">
-                        <div className="flex items-center w-full md:w-84 bg-gray-100 border border-gray-300 rounded-md">
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                className={`w-full px-4 py-2 md:py-3 bg-white border rounded-r-md text-gray-700 focus:text-gray-700 focus:ring-1 outline-none sm:text-sm
-                                    ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-300 focus:ring-gray-300'}`}
-                                placeholder="Masukkan nama lengkap Anda"
-                                value={data.name}
-                                onChange={(e) => setData({ ...data, name: e.target.value })}
-                                autoComplete="off"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    {errors.name &&
-                        <p className="text-red-500 text-center text-sm py-2">{errors.name}</p>
-                    }
-
-                    <div className="flex justify-center mb-6 mx-8">
-                        <div className="flex items-center w-full md:w-84 bg-gray-100 border border-gray-300 rounded-md">
-                            <span className="inline-flex items-center px-3 md:px-4 text-gray-500 bg-gray-100">
-                                (+62)
-                            </span>
-                            <input
-                                type="text"
-                                id="phone"
-                                name="phone"
-                                className={`w-full px-4 py-2 md:py-3 bg-white border rounded-r-md text-gray-700 focus:text-gray-700 focus:ring-1 outline-none sm:text-sm
-                                    ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-300 focus:ring-gray-300'}`}
-                                placeholder="Masukkan nomor telepon Anda"
-                                value={data.phone}
-                                onChange={handlePhoneChange}
-                                autoComplete="off"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    {errors.phone &&
-                        <p className="text-red-500 text-center text-sm py-2">{errors.phone}</p>
-                    }
-
-                    <div className="flex justify-center mx-8">
-                        <button type="submit" className="group flex items-center justify-center w-full md:w-84 gap-2 rounded-lg border border-[#C60E2A] bg-[#C60E2A] px-4 py-2 cursor-pointer">
-                            <span className="font-medium text-white">
-                                Daftar
-                            </span>
-                        </button>
-                    </div>
-
-                    <hr className="mt-8 mb-4 border border-gray-300" />
-
-                    <div className="flex justify-center">
-                        <p className="text-sm text-gray-600">
-                            Sudah memiliki akun?{" "}
-                            <a href={`/${outletCode}/login`} className="font-medium text-[#C60E2A] hover:text-[#C60E2A]">
-                                Masuk disini
-                            </a>
-                        </p>
-                    </div>
-                    
-                </form>
             </Main>
         </>
     )

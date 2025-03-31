@@ -1,5 +1,5 @@
-import { Head, usePage, useForm } from "@inertiajs/react";
 import { useState } from "react";
+import { Head, usePage, useForm } from "@inertiajs/react";
 import { CircleCheck, UtensilsCrossed, ShoppingBasket, ReceiptText, Trash2, Ticket } from "lucide-react";
 
 import Main from "@/Layouts/Main";
@@ -55,7 +55,7 @@ export default function CartPage({ menus }) {
                             <ReceiptText className="sm:hidden" />
                         </li>
                     </ol>
-                    
+
                 </section>
 
                 <section className="p-4">

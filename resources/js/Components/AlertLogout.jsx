@@ -16,7 +16,7 @@ export default function LogoutAlert({ title, message, onClose, onConfirm }) {
                         <div className="mt-8 flex justify-end items-end gap-2">
                             <button
                                 type="button"
-                                className="rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-[#333] hover:border-[#333] cursor-pointer"
+                                className="rounded border border-gray-300 px-3 py-1.5 text-sm font-medium text-[#333] cursor-pointer"
                                 onClick={() => {
                                     setIsVisible(false);
                                     if (onClose) onClose();

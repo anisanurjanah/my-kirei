@@ -1,6 +1,7 @@
-import { Head, usePage, useForm } from "@inertiajs/react";
 import { useState } from "react";
-import { ReceiptText, ChevronDown, LogOut } from "lucide-react";
+import { Inertia } from "@inertiajs/inertia";
+import { Head, usePage, useForm } from "@inertiajs/react";
+import { ReceiptText, ChevronDown, LogOut, ShoppingCart, ChevronRight } from "lucide-react";
 
 import Main from "@/Layouts/Main";
 
@@ -12,6 +13,33 @@ import WelcomeFlashMessage from "@/Helpers/WelcomeFlashMessage";
 export default function MenuPage({ menus }) {
     const { outlet_code: outletCode, customer, flash } = usePage().props;
     const { post } = useForm();
+
+    const [selectedMenus, setSelectedMenus] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    // const navigate = useNavigate();
+
+    // Add menu
+    const handleAddMenu = (menu) => {
+        if (menu.stock.current_stock === 0) return;
+
+        setSelectedMenus((prev) => [...prev, menu]);
+
+        setTotalPrice((prev) => {
+            const menuPrice = Number(menu.price) || 0;
+            const promoDiscount = Number(menu.price_promo?.price_promo) || 0;
+            const finalPrice = menuPrice - promoDiscount;
+
+            return prev + Math.max(finalPrice, 0);
+        });
+    };
+
+    const goToCart = () => {
+        sessionStorage.setItem("selectedMenus", JSON.stringify(selectedMenus));
+
+        Inertia.visit(`/${outletCode}/cart-page`, {
+            state: { totalPrice }
+        });
+    };
 
     // Alert
     const {flashMsg, dismissFlash} = WelcomeFlashMessage(flash, customer)
@@ -100,7 +128,7 @@ export default function MenuPage({ menus }) {
                             <span className="h-px flex-1 bg-gray-300"></span>
                         </span>
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                             {menus.map((menu) => (
                                 <div key={menu.id}
                                     className={`relative block border border-gray-100 transition animate-slide-up h-full
@@ -109,7 +137,7 @@ export default function MenuPage({ menus }) {
                                         {menu.price_promo?.price_promo && menu.stock.current_stock != 0 && (
                                             <span
                                                 className="absolute -top-px -right-px rounded-tr-3xl rounded-bl-3xl bg-yellow-500
-                                                    p-2 md:px-6 md:py-4 text-xs md:text-xl font-medium tracking-widest text-white uppercase"
+                                                    p-2 md:px-6 md:py-4 text-xs md:text-md font-medium tracking-widest text-white uppercase"
                                             >
                                                 Hemat {Math.round(((menu.price - menu.price_promo.price_promo) / menu.price) * 100)}%
                                             </span>
@@ -135,12 +163,17 @@ export default function MenuPage({ menus }) {
                                             <strong className="text-md md:text-2xl font-medium text-[#333]">{menu.name}</strong>
                                         </div>
 
-                                        <p className="mt-4 text-pretty text-gray-400 text-sm md:text-lg">IDR {menu.price.toLocaleString()}</p>
+                                        <p className="mt-4 text-pretty text-gray-400 text-sm md:text-lg">
+                                            IDR {menu.price_promo?.price_promo && menu.stock.current_stock !== 0
+                                                ? menu.price - menu.price_promo.price_promo
+                                                : menu.price.toLocaleString()}
+                                        </p>
 
                                         <div className="mt-auto">
                                             <button
-                                                className={`mt-4 w-full block rounded-md border py-2 text-sm md:text-lg font-medium tracking-widest text-white uppercase transition-colors hover:bg-[#333333] hover:text-[#ffffff] cursor-pointer
-                                                    ${menu.stock.current_stock == 0 ? "border-[#333333] bg-[#333333] opacity-50 cursor-not-allowed pointer-events-none" : "border-[#C60E2A] bg-[#C60E2A]"}`}
+                                                className={`mt-4 w-full block rounded-md border py-2 text-sm md:text-md font-medium tracking-widest text-white uppercase transition-colors hover:bg-[#333] hover:border-[#333] hover:text-[#ffffff] cursor-pointer
+                                                    ${menu.stock.current_stock == 0 ? "border-[#333] bg-[#333] opacity-50 cursor-not-allowed pointer-events-none" : "border-[#C60E2A] bg-[#C60E2A]"}`}
+                                                onClick={() => handleAddMenu(menu)}
                                             >
                                                 Tambah
                                             </button>
@@ -148,7 +181,21 @@ export default function MenuPage({ menus }) {
                                     </div>
                                 </div>
                             ))}
+
                         </div>
+
+                        {selectedMenus.length > 0 && (
+                            <div className="fixed bottom-0 bg-white p-4 shadow-md flex justify-center items-center">
+                                <button
+                                    className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#C60E2A] text-sm md:text-lg font-medium text-white px-4 py-2 rounded-md shadow-lg flex justify-between items-center gap-2 z-50 hover:bg-[#333333] hover:text-[#ffffff] cursor-pointer"
+                                    onClick={goToCart}
+                                >
+                                    <ShoppingCart size={20} />
+                                    <p className="me-4 md:me-8 text-md font-normal">IDR {totalPrice.toLocaleString()}</p>
+                                    Pesan Sekarang <ChevronRight size={16} />
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     <hr className="mt-4 border border-gray-300" />
