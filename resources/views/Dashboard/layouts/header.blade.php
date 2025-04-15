@@ -23,15 +23,22 @@
     <div class="dropdown ms-auto me-3 p-2">
         <a href="" class="d-flex align-items-center text-black text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
             <div class="d-flex flex-column align-items-start">
-                <span class="dropdown-toggle fs-6 fw-bold">OUTLET</span>
-                <small class="text-secondary" style="font-size: 10px;">ROLE</small>
+                <span class="dropdown-toggle fs-6 fw-bold">{{ auth()->user()->outlet->name }}</span>
+                <small class="text-secondary" style="font-size: 10px;">{{ auth()->user()->role }}</small>
             </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="#">Profile</a></li>
             <li><a class="dropdown-item" href="#">Settings</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Logout</a></li>
+            <li>
+                <form action="/logout" method="post">
+                    @csrf
+                    <button type="submit" class="dropdown-item">
+                        Logout
+                    </button>
+                </form>
+            </li>
         </ul>
     </div>
 </header>

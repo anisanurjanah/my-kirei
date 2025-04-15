@@ -11,15 +11,22 @@
                 <div class="dropdown text-center">
                     <a href="" class="d-flex align-items-center text-white text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="d-flex flex-column align-items-start">
-                            <span class="fs-6 fw-bold dropdown-toggle">Anisa Nurjanah</span>
-                            <small class="text-light" style="font-size: 10px;">anisanurjanah@example.com</small>
+                            <span class="fw-bold dropdown-toggle" style="font-size: 14px;">{{ auth()->user()->name }}</span>
+                            <small class="text-light" style="font-size: 10px;">{{ auth()->user()->email }}</small>
                         </div>
                     </a>
                     <ul class="dropdown-menu text-small shadow">
                         <li><a class="dropdown-item" href="#">Settings</a></li>
                         <li><a class="dropdown-item" href="#">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                        <li>
+                            <form action="/logout" method="post">
+                                @csrf
+                                <button type="submit" class="dropdown-item">
+                                    Sign out
+                                </button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>

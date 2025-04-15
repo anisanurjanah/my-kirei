@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\TrimStrings;
+use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\TrustProxies;
-use Illuminate\Foundation\Application;
 use App\Http\Middleware\AuthenticateCustomer;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -22,8 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
         ]);
         $middleware->alias([
+            'auth' => Authenticate::class,
             'auth.customer' => AuthenticateCustomer::class,
             'guest' => RedirectIfAuthenticated::class,
+            'role' => CheckRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
