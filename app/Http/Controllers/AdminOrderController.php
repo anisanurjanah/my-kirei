@@ -82,6 +82,7 @@ class AdminOrderController extends Controller
             'sub_total' => 'required|integer|min:0',
             'discount' => 'nullable|integer|min:0',
             'total_price' => 'required|integer|min:0',
+            'order_type' => 'required|string|in:Dine In,Take Away',
             'order_status' => 'required|string|in:Selesai,Dibatalkan',
             'payment_status' => 'required|string|in:Lunas,Belum Lunas',
         ]);
@@ -105,6 +106,7 @@ class AdminOrderController extends Controller
             'sub_total' => $validatedData['sub_total'],
             'discount' => $validatedData['discount'],
             'total_price' => $validatedData['total_price'],
+            'order_type' => $validatedData['order_type'],
             'order_status' => $validatedData['order_status'],
             'payment_status' => $validatedData['payment_status'],
         ]);
@@ -188,6 +190,7 @@ class AdminOrderController extends Controller
             'sub_total' => 'required|integer|min:0',
             'discount' => 'nullable|integer|min:0',
             'total_price' => 'required|integer|min:0',
+            'order_type' => 'required|string|in:Dine In,Take Away',
             'order_status' => 'required|string|in:Selesai,Dibatalkan',
             'payment_status' => 'required|string|in:Lunas,Belum Lunas',
         ]);
@@ -201,6 +204,7 @@ class AdminOrderController extends Controller
             'sub_total' => $validatedData['sub_total'],
             'discount' => $validatedData['discount'],
             'total_price' => $validatedData['total_price'],
+            'order_type' => $validatedData['order_type'],
             'order_status' => $validatedData['order_status'],
             'payment_status' => $validatedData['payment_status'],
         ]);

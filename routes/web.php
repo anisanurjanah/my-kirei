@@ -42,9 +42,7 @@ Route::post('/login', [AdminLoginController::class, 'authenticate']);
 Route::post('/logout', [AdminLoginController::class, 'logout'])->middleware('auth');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/{outlet}/dashboard', [DashboardController::class, 'index'])
-        ->where('outlet', '[a-zA-Z0-9-_]+');
-
+    // Administrator
     Route::get('/dashboard', [DashboardController::class, 'indexAdministrator']);
 
     Route::resource('/dashboard/users', AdminUserController::class);
@@ -58,4 +56,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/get-users/{outletCode}', [AdminOrderController::class, 'getUsers']);
     Route::get('/get-menus/{outletCode}', [AdminOrderController::class, 'getMenus']);
+
+    // Kasir, Produksi
+    Route::get('/{outlet_code}/dashboard', [DashboardController::class, 'index'])
+        ->where('outlet_code', '[a-zA-Z0-9-_]+');
+
+    Route::resource('/{outlet_code}/dashboard/menus', AdminMenuController::class);
+    Route::resource('/{outlet_code}/dashboard/stocks', AdminStockController::class);
+    Route::resource('/{outlet_code}/dashboard/prices', AdminPriceController::class);
+    Route::resource('/{outlet_code}/dashboard/orders', AdminOrderController::class);
+    Route::resource('/{outlet_code}/dashboard/orderitems', AdminOrderItemController::class);
 });
