@@ -3,8 +3,6 @@
 
     $user = auth()->user();
     $role = $user->role;
-    $isAdmin = $user->username === 'administrator';
-    // $dashboardUrl = $isAdmin ? '/dashboard' : '/' . Str::slug($user->outlet->outlet_code) . '/dashboard';
     $outletCode = strtolower(optional($user->outlet)->outlet_code ?? '');
 @endphp
 
@@ -64,7 +62,7 @@
                 </li>
             </ul>
 
-            @if ($isAdmin)
+            @if (auth()->user()->isAdministrator())
                 <hr class="my-3">
 
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mb-1 text-body-secondary text-uppercase">
@@ -162,7 +160,7 @@
                 </li>
             </ul>
 
-            @if(auth()->user()->role !== 'produksi')
+            @if(!auth()->user()->isProduksi())
                 <hr class="my-3">
 
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mb-1 text-body-secondary text-uppercase">

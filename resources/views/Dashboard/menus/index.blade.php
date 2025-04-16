@@ -79,8 +79,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-exclamation-diamond-fill text-warning h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h0 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($emptyStock->menu->name, 12, '...') }}</h0>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($emptyStock->menu->name, 12, '...') }}</h6>
+                                    <h0 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($emptyStock->name, 12, '...') }}</h0>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($emptyStock->name, 12, '...') }}</h6>
                                     <small class="card-text m-0">Stok Hampir Habis</small>
                                 </div>
                             </div>
@@ -97,13 +97,15 @@
                         <input type="text" class="form-control" placeholder="Cari menu.." style="font-size: 12px;">
                         <button class="btn btn-outline-secondary" type="button" id="search" name="search" style="font-size: 12px;">Cari</button>
                     </div>
-                    <select class="form-select w-25 ms-auto" name="outlet_id" style="font-size: 12px;">
-                        @foreach ($outlets as $outlet)
-                            <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
-                                Outlet: {{ $outlet->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    @if (auth()->user()->isAdministrator())
+                        <select class="form-select w-25 ms-auto" name="outlet_id" style="font-size: 12px;">
+                            @foreach ($outlets as $outlet)
+                                <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                                    Outlet: {{ $outlet->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @endif
                 </div>
 
                 @include('dashboard.components.table-menus')

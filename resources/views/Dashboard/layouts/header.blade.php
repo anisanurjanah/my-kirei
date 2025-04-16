@@ -23,8 +23,8 @@
     <div class="dropdown ms-auto me-3 p-2">
         <a href="" class="d-flex align-items-center text-black text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
             <div class="d-flex flex-column align-items-start">
-                <span class="dropdown-toggle fs-6 fw-bold">{{ auth()->user()->username === 'administrator' ? 'Administrator' : auth()->user()->outlet->name }}</span>
-                <small class="text-secondary" style="font-size: 10px;">{{ auth()->user()->username === 'administrator' ? 'My Kirei' : auth()->user()->role }}</small>
+                <span class="dropdown-toggle fs-6 fw-bold">{{ auth()->user()->isAdministrator() ? 'Administrator' : auth()->user()->outlet->name }}</span>
+                <small class="text-secondary" style="font-size: 10px;">{{ auth()->user()->isAdministrator() ? 'My Kirei' : auth()->user()->role }}</small>
             </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">

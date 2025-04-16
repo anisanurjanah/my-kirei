@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Menu;
+use App\Models\Price;
+use App\Models\Stock;
 use App\Models\Outlet;
 use App\Models\OrderItem;
-use App\Models\Stock;
-use App\Models\Price;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-// use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class AdminMenuController extends Controller
 {
@@ -20,26 +20,54 @@ class AdminMenuController extends Controller
      */
     public function index()
     {
-        return view('dashboard.menus.index', [
-            // 'menus' => Menu::latest()->with(['stock', 'pricePromo'])->paginate(10)->withQueryString(),
-            'menus' => Menu::latest()->with(['stock', 'pricePromo' => function ($query) {
-                $query->where('promo_end_date', '>=', now());
-            }])->paginate(10)->withQueryString(),
+        $user = Auth::guard('web')->user();
 
+        // Menus
+        $queryMenus = Menu::latest()->with(['stock', 'pricePromo' => function ($query) {
+            $query->where('promo_end_date', '>=', now());
+        }]);
+
+        if ($user->username !== 'administrator') {
+            $queryMenus->where('outlet_id', $user->outlet_id);
+        }
+
+        $menus = $queryMenus->paginate(10)->withQueryString();
+
+        // Best Selling
+        $bestSellingMenu = OrderItem::select('menu_id')
+            ->selectRaw('SUM(quantity) as total_sold')
+            ->groupBy('menu_id')
+            ->orderByDesc('total_sold')
+            ->with('menu')
+            ->first();
+
+        // Sold Today
+        $soldToday = OrderItem::whereHas('order', function ($query) {
+            $query->whereDate('created_at', Carbon::today());
+        })->sum('quantity');
+
+        // Sold This Month
+        $soldThisMonth = OrderItem::whereHas('order', function ($query) {
+            $query->whereMonth('created_at', Carbon::now()->month);
+        })->sum('quantity');
+
+        // Empty Stock
+        $emptyStock = (clone $queryMenus)
+            ->whereHas('stock')
+            ->with(['stock' => function ($query) {
+                $query->orderBy('current_stock', 'asc');
+            }])
+            ->get()
+            ->sortBy(fn ($menu) => $menu->stock?->current_stock)
+            ->first();
+
+        return view('dashboard.menus.index', [
+            'menus' => $menus,
             'outlets' => Outlet::all(),
-            'emptyStock' => Stock::orderBy('current_stock', 'asc')->first(),
-            'bestSellingMenu' => OrderItem::select('menu_id')
-                ->selectRaw('SUM(quantity) as total_sold')
-                ->groupBy('menu_id')
-                ->orderByDesc('total_sold')
-                ->with('menu')
-                ->first(),
-            'soldToday' => OrderItem::whereHas('order', function ($query) {
-                    $query->whereDate('created_at', Carbon::today());
-                })->sum('quantity'),
-            'soldThisMonth' => OrderItem::whereHas('order', function ($query) {
-                    $query->whereMonth('created_at', Carbon::now()->month);
-                })->sum('quantity')
+            'bestSellingMenu' => $bestSellingMenu,
+            'soldToday' => $soldToday,
+            'soldThisMonth' => $soldThisMonth,
+            'emptyStock' => $emptyStock,
         ]);
     }
 
@@ -217,10 +245,4 @@ class AdminMenuController extends Controller
         // Redirect to menus
         return redirect('/dashboard/menus')->with('success', 'Menu berhasil dihapus!');
     }
-
-    // public function checkSlug(Request $request)
-    // {
-    //     $slug = SlugService::createSlug(Menu::class, 'slug', $request->name);
-    //     return response()->json(['slug' => $slug]);
-    // }
 }

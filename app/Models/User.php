@@ -72,9 +72,7 @@ class User extends Authenticatable
 
     public function isAdministrator()
     {
-        return in_array($this->email, [
-            'admin@my-kirei.com',
-        ]);
+        return $this->username === 'administrator';
     }
 
     public function getRouteKeyName()

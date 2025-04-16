@@ -5,11 +5,12 @@
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TANGGAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                {{-- <th scope="col" class="text-secondary" style="font-size: 12px;">DISKON <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th> --}}
+                @if (auth()->user()->isAdministrator())
+                    <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                @endif
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PESANAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                {{-- <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PEMBAYARAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th> --}}
+                <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PEMBAYARAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">STAFF <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col"></th>
             </tr>
@@ -21,11 +22,12 @@
                         <td>{{ ($orders->currentPage() - 1) * $orders->perPage() + $loop->iteration }}</td>
                         <td>{{ $order->order_date }}</td>
                         <td>{{ $order->customer->name ?? "Name" }}</td>
-                        <td>{{ $order->outlet->name }}</td>
-                        {{-- <td>Rp. {{ number_format($order->discount, 0, ',', '.') }}</td> --}}
+                        @if (auth()->user()->isAdministrator())
+                            <td>{{ $order->outlet->name }}</td>
+                        @endif
                         <td>Rp. {{ number_format($order->total_price, 0, ',', '.') }}</td>
                         <td>{{ $order->order_status }}</td>
-                        {{-- <td>{{ $order->payment_status }}</td> --}}
+                        <td>{{ $order->payment_status }}</td>
                         <td>{{ $order->user->name }}</td>
                         <td class="text-center" style="width: 64px">
                             <div class="dropdown mx-auto">
