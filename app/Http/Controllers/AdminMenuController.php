@@ -84,7 +84,7 @@ class AdminMenuController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $outlet_code = null)
     {
         $today = now()->toDateString();
 
@@ -143,14 +143,17 @@ class AdminMenuController extends Controller
         ]);
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Menu berhasil ditambahkan!');
+        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+            ->with('success', 'Menu berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Menu $menu)
+    public function show($outlet_code = null, $menu)
     {
+        $menu = Menu::where('slug', $menu)->firstOrFail();
+
         return view('dashboard.menus.show', [
             'menu' => $menu
         ]);
@@ -159,8 +162,10 @@ class AdminMenuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Menu $menu)
+    public function edit($outlet_code = null, $menu)
     {
+        $menu = Menu::where('slug', $menu)->firstOrFail();
+
         return view('/dashboard.menus.edit', [
             'menu' => $menu,
             'outlets' => Outlet::all()
@@ -170,8 +175,9 @@ class AdminMenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Menu $menu)
+    public function update(Request $request, $outlet_code = null, $menu)
     {
+        $menu = Menu::where('slug', $menu)->firstOrFail();
         $today = now()->toDateString();
 
         // Remove Price's Dot
@@ -228,14 +234,17 @@ class AdminMenuController extends Controller
         }
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Menu berhasil diperbarui!');
+        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+            ->with('success', 'Menu berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Menu $menu)
+    public function destroy($outlet_code = null, $menu)
     {
+        $menu = Menu::where('slug', $menu)->firstOrFail();
+
         if($menu->image) {
             Storage::delete($menu->image);
         }
@@ -243,6 +252,7 @@ class AdminMenuController extends Controller
         Menu::destroy($menu->id);
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Menu berhasil dihapus!');
+        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+            ->with('success', 'Menu berhasil dihapus!');
     }
 }

@@ -1,6 +1,11 @@
 @php
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+
+$user = auth()->user();
+$role = $user->role;
+$outletCode = strtolower(optional($user->outlet)->outlet_code ?? '');
 
 @endphp
 
@@ -24,9 +29,11 @@ use Carbon\Carbon;
                 <div class="d-flex justify-content-between">
                     <h5 class="card-title mb-0">Outlet</h5>
 
-                    <a href="/dashboard/outlets/{{ Str::lower($menu->outlet->outlet_code) }}" class="text-decoration-none text-black">
-                        <i class="bi bi-eye mx-2" style="font-size: 16px"></i>
-                    </a>
+                    @if (auth()->user()->isAdministrator())
+                        <a href="/dashboard/outlets/{{ Str::lower($menu->outlet->outlet_code) }}" class="text-decoration-none text-black">
+                            <i class="bi bi-eye mx-2" style="font-size: 16px"></i>
+                        </a>
+                    @endif
                 </div>
                 <p class="card-text">{{ $menu->outlet->name }}</p>
 

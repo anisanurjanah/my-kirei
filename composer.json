@@ -32,8 +32,9 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/PhoneHelper.php",
-            "app/Helpers/MenuHelper.php"
+            "app/Helpers/MenuHelper.php",
+            "app/Helpers/ModulePathHelper.php",
+            "app/Helpers/PhoneHelper.php"
         ]
     },
     "autoload-dev": {

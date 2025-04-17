@@ -2,9 +2,7 @@
 
 namespace App\Providers;
 
-use Inertia\Inertia;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

@@ -1,9 +1,6 @@
 @php
-    use Illuminate\Support\Str;
-
     $user = auth()->user();
-    $role = $user->role;
-    $outletCode = strtolower(optional($user->outlet)->outlet_code ?? '');
+    $outletCode = strtolower(optional($user->outlet)->outlet_code);
 @endphp
 
 <div class="sidebar col-md-3 col-lg-2 p-0 d-flex flex-column" style="background-color: #C60E2A">
@@ -43,15 +40,15 @@
 
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    @if (in_array($role, ['kasir', 'produksi']) && $outletCode)
+                    @if (auth()->user()->isAdministrator())
                         <a
                             class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*/dashboard') || request()->is('dashboard') ? 'active' : '' }}"
-                            href="{{ url($outletCode . '/dashboard') }}"
+                            href="{{ url('/dashboard') }}"
                         >
                     @else
                         <a
                             class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*/dashboard') || request()->is('dashboard') ? 'active' : '' }}"
-                            href="{{ url('/dashboard') }}"
+                            href="{{ url($outletCode . '/dashboard') }}"
                         >
                     @endif
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-fill" viewBox="0 0 16 16">
@@ -114,15 +111,15 @@
 
             <ul class="nav flex-column mb-auto">
                 <li class="nav-item">
-                    @if (in_array($role, ['kasir', 'produksi']) && $outletCode)
+                    @if (auth()->user()->isAdministrator())
                         <a
                             class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*/dashboard/menus') || request()->is('dashboard/menus') ? 'active' : '' }}"
-                            href="{{ url($outletCode . '/dashboard/menus') }}"
+                            href="{{ url('/dashboard/menus') }}"
                         >
                     @else
                         <a
                             class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*/dashboard/menus') || request()->is('dashboard/menus') ? 'active' : '' }}"
-                            href="{{ url('/dashboard/menus') }}"
+                            href="{{ url($outletCode . '/dashboard/menus') }}"
                         >
                     @endif
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cup-fill" viewBox="0 0 16 16">
@@ -141,15 +138,15 @@
 
             <ul class="nav flex-column mb-auto">
                 <li class="nav-item">
-                    @if (in_array($role, ['kasir', 'produksi']) && $outletCode)
+                    @if (auth()->user()->isAdministrator())
                         <a
                             class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*/dashboard/orders') || request()->is('dashboard/orders') ? 'active' : '' }}"
-                            href="{{ url($outletCode . '/dashboard/orders') }}"
+                            href="{{ url('/dashboard/orders') }}"
                         >
                     @else
                         <a
                             class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*/dashboard/orders') || request()->is('dashboard/orders') ? 'active' : '' }}"
-                            href="{{ url('/dashboard/orders') }}"
+                            href="{{ url($outletCode . '/dashboard/orders') }}"
                         >
                     @endif
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
@@ -169,15 +166,15 @@
 
                 <ul class="nav flex-column mb-4">
                     <li class="nav-item">
-                        @if (in_array($role, ['kasir', 'produksi']) && $outletCode)
+                        @if (auth()->user()->isAdministrator())
                             <a
                                 class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*#') || request()->is('#') ? 'active' : '' }}"
-                                href="{{ url($outletCode . '#') }}"
+                                href="{{ url('#') }}"
                             >
                         @else
                             <a
                                 class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*#') || request()->is('#') ? 'active' : '' }}"
-                                href="{{ url('#') }}"
+                                href="{{ url($outletCode . '#') }}"
                             >
                         @endif
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">

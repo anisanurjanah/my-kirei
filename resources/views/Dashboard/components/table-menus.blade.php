@@ -45,19 +45,25 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/menus/{{ $menu->slug }}">
+                                        <a class="dropdown-item" href="{{ getModuleUrl('menus', $menu->slug) }}">
                                             <i class="bi bi-eye mx-2" style="font-size: 16px"></i>Lihat
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/menus/{{ $menu->slug }}/edit">
+                                        <a class="dropdown-item" href="{{ getModuleUrl('menus', $menu->slug, 'edit') }}">
                                             <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Perbarui
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                         <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmModal"
-                                            data-bs-url="/dashboard/menus/{{ $menu->slug }}" data-bs-name="{{ $menu->name }}" data-action="delete">
+                                         <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmModal"
+                                            data-bs-url="{{ getModuleUrl('menus', $menu->slug) }}"
+                                            data-bs-name="{{ $menu->name }}"
+                                            data-action="delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
                                         </button>
                                     </li>
