@@ -13,8 +13,8 @@
     width: 100%;
     margin: 0;
 	padding: 32px;
-    justify-content: center;  /* Pusatkan horizontal */
-    align-items: center;  /* Pusatkan vertikal */
+    justify-content: center;
+    align-items: center;
     min-height: 90vh;
 }
 

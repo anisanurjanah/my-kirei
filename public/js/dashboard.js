@@ -1,49 +1,64 @@
 /* globals Chart:false */
 
 (() => {
-  'use strict'
+    'use strict'
 
-  // Graphs
-  const ctx = document.getElementById('myChart')
-  // eslint-disable-next-line no-unused-vars
-  const myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday'
-      ],
-      datasets: [{
-        data: [
-          15339,
-          21345,
-          18483,
-          24003,
-          23489,
-          24092,
-          12034
-        ],
-        lineTension: 0,
-        backgroundColor: 'transparent',
-        borderColor: '#007bff',
-        borderWidth: 4,
-        pointBackgroundColor: '#007bff'
-      }]
-    },
-    options: {
-      plugins: {
-        legend: {
-          display: false
+    // Graphs
+    const ctx = document.getElementById('myChart')
+    if (!ctx) return;
+
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                label: 'Jumlah Menu Terjual (Hari Ini)',
+                data: chartData,
+                backgroundColor: '#C60E2A',
+                barThickness: 48,
+                borderRadius: 5,
+                borderSkipped: false,
+            }]
         },
-        tooltip: {
-          boxPadding: 3
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Menu Terjual'
+                    },
+                    // ticks: {
+                    //     stepSize: 20,
+                    // },
+                    grid: {
+                        drawBorder: false
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Outlet'
+                    },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 30
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    padding: 8
+                }
+            }
         }
-      }
-    }
-  })
+    })
 })()

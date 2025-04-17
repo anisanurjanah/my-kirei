@@ -26,7 +26,7 @@ class AdminOrderController extends Controller
         $queryOrders = Order::query();
 
         if ($user->username !== 'administrator') {
-            $users = User::where('outlet_id', $user->outlet_id)->get();
+            $user = User::where('outlet_id', $user->outlet_id)->get();
             $queryOrders->where('outlet_id', $user->outlet_id);
         }
 
@@ -52,7 +52,7 @@ class AdminOrderController extends Controller
         return view('dashboard.orders.index', [
             'orders' => $orders,
             'outlets' => Outlet::all(),
-            'users' => $users,
+            'users' => $user,
             'totalOrders' => $totalOrders,
             'totalTransactions' => $totalTransactions,
             'monthlyRevenue' => $monthlyRevenue,

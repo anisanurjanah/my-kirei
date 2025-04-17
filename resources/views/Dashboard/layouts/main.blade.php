@@ -45,10 +45,14 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- JS -->
+    <script src="/js/dashboard.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/order.js"></script>
-    <script src="/js/dashboard.js"></script>
+
+    @stack('scripts')
 
 </body>
 </html>

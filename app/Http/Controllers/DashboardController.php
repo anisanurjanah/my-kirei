@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Order;
 use App\Models\Outlet;
+use App\Models\OrderItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+Carbon::setLocale('id');
 
 class DashboardController extends Controller
 {
@@ -26,10 +32,25 @@ class DashboardController extends Controller
             }
         }
 
-        return view('dashboard.index', compact('outlet', 'user'));
+        // Chart data
+        $labels = [];
+        $data = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+            $labels[] = $date->format('D');
+
+            $total = Order::whereDate('created_at', $date)
+                ->where('outlet_id', $outlet->id)
+                ->sum('total_price');
+
+            $data[] = $total;
+        }
+
+        return view('dashboard.index', compact('outlet', 'user', 'labels', 'data'));
     }
 
-    public function indexAdministrator()
+    public function indexAdministrator(Request $request)
     {
         $user = Auth::guard('web')->user();
 
@@ -41,6 +62,31 @@ class DashboardController extends Controller
             abort(403, 'Akses tidak valid.');
         }
 
-        return view('dashboard.index', compact('user'));
+        // Formatted date
+        $todayFormatted = Carbon::now('Asia/Jakarta')->translatedFormat('l, d F Y, H:i') . ' WIB';
+
+        // Chart data
+        $labels = [];
+        $data = [];
+        $outlets = Outlet::all();
+        $today = Carbon::today();
+
+        foreach ($outlets as $outlet) {
+            $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($today, $outlet) {
+                    $query->where('outlet_id', $outlet->id)
+                          ->whereDate('created_at', $today);
+                })
+                ->sum('quantity');
+
+            $labels[] = $outlet->name;
+            $data[] = $jumlahMenu;
+        }
+
+        return view('dashboard.index', [
+            'user' => $user,
+            'labels' => $labels,
+            'data' => $data,
+            'todayFormatted' => $todayFormatted
+        ]);
     }
 }
