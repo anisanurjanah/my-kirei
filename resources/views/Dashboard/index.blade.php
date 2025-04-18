@@ -86,32 +86,106 @@
                     <small class="text-muted">
                         <i class="bi bi-calendar3 me-2"></i> {{ $todayFormatted }}
                     </small>
+                </div>
+            </div>
+        </div>
 
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3 me-2" viewBox="0 0 16 16">
-                                <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-                                <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-                            </svg>
-                            Minggu ini
-                        </button>
+        <div class="row py-3">
+            <div class="col-lg-12 mb-3 mb-md-0">
+                <div class="rounded-top-2 p-3">
+                    <div class="d-flex justify-content-end mb-3">
+                        <div class="btn-toolbar">
+                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-calendar3 me-2" viewBox="0 0 16 16">
+                                    <path
+                                        d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z" />
+                                    <path
+                                        d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                                </svg>
+                                Minggu ini
+                            </button>
+                        </div>
+                    </div>
+
+                    <script>
+                        window.chartLabels = @json($labels);
+                        window.chartData = @json($data);
+                    </script>
+
+                    <div class="chart-container">
+                        <canvas class="w-100" id="outletSalesChart" width="420" height="180"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script>
-            window.chartLabels = @json($labels);
-            window.chartData = @json($data);
-        </script>
+        <div class="row">
+            <div class="col-lg-8 mb-3 mb-md-0">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-4 p-3 bg-white">
+                    <h5 class="h5">Pesanan</h5>
 
-        <div class="row py-3">
-            <div class="col-lg-12">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-top-2 p-3 bg-white">
-                    <canvas class="my-4 w-100" id="myChart" width="420" height="128"></canvas>
+                    <a href="{{ getModuleUrl('orders', null, 'create') }}" class="text-decoration-none text-danger mb-3" style="font-size: 14px">
+                        <small><i class="bi bi-plus me-1"></i>Tambah Pesanan</small>
+                    </a>
                 </div>
+
+                <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
+                    <table id="table" class="table">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="text-secondary" style="font-size: 12px;">NO</th>
+                                <th scope="col" class="text-secondary" style="font-size: 12px;">TANGGAL</th>
+                                <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA</th>
+                                @if (auth()->user()->isAdministrator())
+                                    <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET</th>
+                                @endif
+                                <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL</th>
+                                <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PESANAN</th>
+                                <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PEMBAYARAN</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if ($latestOrders->isNotEmpty())
+                                @foreach ($latestOrders as $order)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $order->order_date }}</td>
+                                        <td>{{ $order->customer->name ?? "Name" }}</td>
+                                        @if (auth()->user()->isAdministrator())
+                                            <td>{{ $order->outlet->name }}</td>
+                                        @endif
+                                        <td>Rp. {{ number_format($order->total_price, 0, ',', '.') }}</td>
+                                        <td>{{ $order->order_status }}</td>
+                                        <td>{{ $order->payment_status }}</td>
+                                        <td class="text-center" style="width: 64px">
+                                            <div class="dropdown mx-auto">
+                                                <a href="{{ getModuleUrl('orders', strtolower($order->order_number)) }}" class="text-decoration-none text-black">
+                                                    <i class="bi bi-eye mx-2" style="font-size: 16px"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="9" class="text-center">Data tidak tersedia.</td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-end py-3">
+                    <a href="{{ getModuleBasePath('orders') }}" class="btn btn-sm btn-outline-danger">
+                        Lihat Semua <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+
             </div>
         </div>
+
     </div>
 
 

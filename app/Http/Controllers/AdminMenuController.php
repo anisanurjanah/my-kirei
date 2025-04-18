@@ -150,24 +150,30 @@ class AdminMenuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($outlet_code = null, $menu)
+    public function show($param1, $param2 = null)
     {
-        $menu = Menu::where('slug', $menu)->firstOrFail();
+        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+
+        $menu = Menu::where('slug', $slug)->firstOrFail();
 
         return view('dashboard.menus.show', [
-            'menu' => $menu
+            'menu' => $menu,
+            'outlet_code' => $outlet_code
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($outlet_code = null, $menu)
+    public function edit($param1, $param2 = null)
     {
-        $menu = Menu::where('slug', $menu)->firstOrFail();
+        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+
+        $menu = Menu::where('slug', $slug)->firstOrFail();
 
         return view('/dashboard.menus.edit', [
             'menu' => $menu,
+            'outlet_code' => $outlet_code,
             'outlets' => Outlet::all()
         ]);
     }
@@ -241,10 +247,11 @@ class AdminMenuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($outlet_code = null, $menu)
+    public function destroy($param1, $param2 = null)
     {
-        $menu = Menu::where('slug', $menu)->firstOrFail();
+        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
 
+        $menu = Menu::where('slug', $slug)->firstOrFail();
         if($menu->image) {
             Storage::delete($menu->image);
         }

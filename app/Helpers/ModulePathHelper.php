@@ -51,7 +51,6 @@ if (!function_exists('getModuleUrl')) {
     }
 }
 
-
 if (!function_exists('getModuleFormAction')) {
     function getModuleFormAction(string $module, ?string $slug = null): string
     {

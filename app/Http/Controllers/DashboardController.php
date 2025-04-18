@@ -32,6 +32,9 @@ class DashboardController extends Controller
             }
         }
 
+        // Formatted date
+        $todayFormatted = Carbon::now('Asia/Jakarta')->translatedFormat('l, d F Y, H:i') . ' WIB';
+
         // Chart data
         $labels = [];
         $data = [];
@@ -47,7 +50,7 @@ class DashboardController extends Controller
             $data[] = $total;
         }
 
-        return view('dashboard.index', compact('outlet', 'user', 'labels', 'data'));
+        return view('dashboard.index', compact('outlet', 'user', 'labels', 'data', 'todayFormatted'));
     }
 
     public function indexAdministrator(Request $request)
@@ -69,24 +72,34 @@ class DashboardController extends Controller
         $labels = [];
         $data = [];
         $outlets = Outlet::all();
-        $today = Carbon::today();
+        // $today = Carbon::today();
 
         foreach ($outlets as $outlet) {
-            $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($today, $outlet) {
-                    $query->where('outlet_id', $outlet->id)
-                          ->whereDate('created_at', $today);
-                })
-                ->sum('quantity');
+            // per Day
+            // $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($today, $outlet) {
+            //         $query->where('outlet_id', $outlet->id)
+            //               ->whereDate('created_at', $today);
+            //     })
+            //     ->sum('quantity');
+
+            $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($outlet) {
+                $query->where('outlet_id', $outlet->id);
+            })
+            ->sum('quantity');
 
             $labels[] = $outlet->name;
-            $data[] = $jumlahMenu;
+            $data[] = $jumlahMenu ?? 0;
         }
+
+        // Latest Order
+        $latestOrders = Order::latest()->take(5)->get();
 
         return view('dashboard.index', [
             'user' => $user,
+            'todayFormatted' => $todayFormatted,
             'labels' => $labels,
             'data' => $data,
-            'todayFormatted' => $todayFormatted
+            'latestOrders' => $latestOrders
         ]);
     }
 }
