@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Head, usePage, useForm } from "@inertiajs/react";
 import { ReceiptText, ChevronDown, LogOut, ShoppingCart, ChevronRight } from "lucide-react";
@@ -16,14 +16,15 @@ export default function MenuPage({ menus }) {
 
     const [selectedMenus, setSelectedMenus] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
-    // const navigate = useNavigate();
 
     // Add menu
     const handleAddMenu = (menu) => {
         if (menu.stock.current_stock === 0) return;
 
-        setSelectedMenus((prev) => [...prev, menu]);
+        const menuAlreadyAdded = selectedMenus.some((selected) => selected.id === menu.id);
+        if (menuAlreadyAdded) return;
 
+        setSelectedMenus((prev) => [...prev, menu]);
         setTotalPrice((prev) => {
             const menuPrice = Number(menu.price) || 0;
             const promoDiscount = Number(menu.price_promo?.price_promo) || 0;
@@ -40,6 +41,23 @@ export default function MenuPage({ menus }) {
             state: { totalPrice }
         });
     };
+
+    // Menu List
+    useEffect(() => {
+        const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
+        if (storedMenus.length > 0) {
+            setSelectedMenus(storedMenus);
+
+            const total = storedMenus.reduce((acc, menu) => {
+                const menuPrice = Number(menu.price) || 0;
+                const menuDiscount = Number(menu.price_promo?.price_promo) || 0;
+
+                return acc + Math.max(menuPrice - menuDiscount, 0);
+            }, 0);
+
+            setTotalPrice(total);
+        }
+    }, []);
 
     // Alert
     const {flashMsg, dismissFlash} = WelcomeFlashMessage(flash, customer)
