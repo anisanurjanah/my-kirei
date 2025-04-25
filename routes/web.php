@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminPriceController;
@@ -14,7 +16,6 @@ use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminOutletController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminOrderItemController;
-use App\Http\Controllers\DashboardController;
 
 // VIEWS
 Route::middleware(['guest'])->group(function () {
@@ -32,6 +33,12 @@ Route::middleware(['auth.customer'])->group(function () {
     Route::get('/{outlet_code}/cart-page', [CartController::class, 'index'])->name('cart-page');
 
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
+});
+
+Route::get('/check-session', function () {
+    return response()->json([
+        'authenticated' => Auth::guard('customer')->check()
+    ]);
 });
 
 

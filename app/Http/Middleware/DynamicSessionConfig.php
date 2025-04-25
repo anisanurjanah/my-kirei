@@ -17,7 +17,7 @@ class DynamicSessionConfig
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::guard('customer')->check()) {
-            config(['session.lifetime' => 0]);
+            config(['session.lifetime' => 60]);
         } elseif (Auth::guard('web')->check()) {
             config(['session.lifetime' => 1440]);
         }

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useEffect, useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Head, usePage, useForm } from "@inertiajs/react";
@@ -17,11 +18,17 @@ export default function MenuPage({ menus }) {
     const [selectedMenus, setSelectedMenus] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
 
+    // Alert
+    const {flashMsg, dismissFlash} = WelcomeFlashMessage(flash, customer)
+    const [isOpen, setIsOpen] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+
     // Add menu
     const handleAddMenu = (menu) => {
-        if (menu.stock.current_stock === 0) return;
+        if (!menu || !menu.id) return;
+        if (menu?.stock?.current_stock === 0) return;
 
-        const menuAlreadyAdded = selectedMenus.some((selected) => selected.id === menu.id);
+        const menuAlreadyAdded = Array.isArray(selectedMenus) && selectedMenus.some((selected) => selected?.id === menu.id);
         if (menuAlreadyAdded) return;
 
         setSelectedMenus((prev) => [...prev, menu]);
@@ -42,6 +49,21 @@ export default function MenuPage({ menus }) {
         });
     };
 
+    // Logout
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(`/${outletCode}/logout`);
+        setShowAlert(false);
+        localStorage.removeItem("customer");
+    };
+
+    // Customer
+    useEffect(() => {
+        if (customer) {
+            localStorage.setItem("customer", JSON.stringify(customer));
+        }
+    }, [customer]);
+
     // Menu List
     useEffect(() => {
         const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
@@ -59,17 +81,22 @@ export default function MenuPage({ menus }) {
         }
     }, []);
 
-    // Alert
-    const {flashMsg, dismissFlash} = WelcomeFlashMessage(flash, customer)
-    const [isOpen, setIsOpen] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
+    // Session Check
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const response = await axios.get('/check-session');
+                if (!response.data.authenticated) {
+                    localStorage.removeItem("customer");
+                    Inertia.visit(`/${outletCode}/login`);
+                }
+            } catch (error) {
+                console.error("Gagal cek sesi:", error);
+            }
+        };
 
-    // Logout
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        post(`/${outletCode}/logout`);
-        setShowAlert(false);
-    };
+        checkSession();
+    }, []);
 
     return (
         <>

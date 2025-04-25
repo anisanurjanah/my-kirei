@@ -17,22 +17,24 @@ export default function CartPage() {
     // Menu List
     useEffect(() => {
         const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
-        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || [];
+        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
 
         setMenus(storedMenus);
         setQuantities(storedQuantities);
     }, []);
 
     useEffect(() => {
+        if (menus.length === 0) return;
+
         const subTotal = menus.reduce((acc, menu) => {
-            const menuQuantity = quantities[menu.id] || 1;
+            const menuQuantity = Number(quantities[menu.id]) || 1;
             const menuPrice = Number(menu.price);
 
             return acc + menuPrice * menuQuantity
         }, 0);
 
         const total = menus.reduce((acc, menu) => {
-            const menuQuantity = quantities[menu.id] || 1;
+            const menuQuantity = Number(quantities[menu.id]) || 1;
             const menuPrice = Number(menu.price) - (Number(menu.price_promo?.price_promo) || 0 );
 
             return acc + Math.max(menuPrice, 0) * menuQuantity;
@@ -172,7 +174,7 @@ export default function CartPage() {
                                                                     type="button"
                                                                     onClick={() => handleDecrease(menu.id)}
                                                                     className="h-8 w-8 bg-[#C60E2A] text-white rounded-md"
-                                                                    disabled={quantities <= 1}
+                                                                    disabled={(quantities[menu.id] || 1) <= 1}
                                                                 >
                                                                     −
                                                                 </button>
@@ -222,7 +224,9 @@ export default function CartPage() {
                                             <dt>Diskon</dt>
                                             <dd>- IDR { menus.reduce((acc, menu) => {
                                                 const discount = Number(menu.price_promo?.price_promo) || 0;
-                                                return acc + discount;
+                                                const menuQuantity = Number(quantities[menu.id]) || 1;
+
+                                                return acc + discount * menuQuantity;
                                             }, 0).toLocaleString()}</dd>
                                         </div>
 
