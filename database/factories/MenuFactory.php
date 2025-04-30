@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,13 +17,15 @@ class MenuFactory extends Factory
      */
     public function definition(): array
     {
+        $name = fake()->words(3, true);
+
         return [
-            'name' => fake()->words(3, true),
-            'slug' => fake()->slug(mt_rand(3, 6)),
+            'name' => $name,
+            'slug' => Str::slug($name),
             'description' => fake()->paragraph(),
-            'price' => fake()->randomFloat(1, 10000, 50000),
-            'image' => asset('img/dimsum-placeholder.jpg'),
-            'outlet_id' => mt_rand(1, 5)
+            'price' => fake()->numberBetween(10000, 50000),
+            'image' => 'img/dimsum-placeholder.jpg',
+            'outlet_id' => fake()->numberBetween(1, 2),
         ];
     }
 }

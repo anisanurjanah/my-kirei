@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -30,11 +31,11 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'phone' => fake()->phoneNumber(),
-            'username' => Str::slug($name),
+            'username' => Str::slug($name) . mt_rand(100, 999),
             'password' => static::$password ??= Hash::make('password'),
             'role' => fake()->randomElement(['kasir', 'produksi']),
             'remember_token' => Str::random(10),
-            'outlet_id' => mt_rand(1, 5)
+            'outlet_id' => fake()->numberBetween(1, 2),
         ];
     }
 

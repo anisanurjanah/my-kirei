@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('prices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->unique();
+            $table->foreignId('menu_id')
+                ->constrained('menus')
+                ->onDelete('cascade')
+                ->onUpdate('cascade')
+                ->unique();
             $table->decimal('price_promo')->nullable();
             $table->date('promo_start_date')->nullable();
             $table->date('promo_end_date')->nullable();

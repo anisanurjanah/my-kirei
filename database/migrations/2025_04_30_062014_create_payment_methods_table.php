@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stocks', function (Blueprint $table) {
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')
-                ->constrained('menus')
-                ->onDelete('cascade')
-                ->onUpdate('cascade')
-                ->unique();
-            $table->integer('current_stock');
+            $table->string('type');
+            $table->string('icon');
+            $table->json('method');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stocks');
+        Schema::dropIfExists('payment_methods');
     }
 };

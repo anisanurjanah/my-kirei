@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('outlet_id');
+            $table->foreignId('outlet_id')
+                ->constrained('outlets')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->string('name');
             $table->text('description');
             $table->decimal('price');
