@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { Inertia } from "@inertiajs/inertia";
 import { Head, usePage, useForm } from "@inertiajs/react";
-import { CircleCheck, UtensilsCrossed, ShoppingBasket, ReceiptText, Trash2, Ticket } from "lucide-react";
+import { CircleCheck, UtensilsCrossed, ShoppingBasket, ReceiptText, Trash2, Ticket, CircleDollarSign, ChevronRight } from "lucide-react";
 
 import Main from "@/Layouts/Main";
-import { Inertia } from "@inertiajs/inertia";
+import PaymentMethodSelector from '@/Components/PaymentMethodSelector';
 
 export default function CartPage() {
     const { outlet_code: outletCode, customer } = usePage().props;
@@ -90,7 +91,7 @@ export default function CartPage() {
             <Main>
                 <section className="after:mt-4 after:block after:h-1 after:w-full after:rounded-lg after:bg-gray-200 p-4">
 
-                    <ol className="grid grid-cols-3 text-sm font-medium text-gray-500">
+                    <ol className="grid grid-cols-3 text-sm font-medium text-[#333]">
                         <li className="relative flex justify-start text-[#C60E2A]">
                             <button
                                 onClick={() => Inertia.visit(`/${outletCode}/menu-page`)}
@@ -139,7 +140,7 @@ export default function CartPage() {
 
                         <div className="mt-4">
                             {menus.length === 0 ? (
-                                <p className="text-gray-500 text-center">Belum ada menu yang dipilih.</p>
+                                <p className="text-[#333] text-center">Belum ada menu yang dipilih.</p>
                             ) : (
                                 <ul className="space-y-4">
                                     {
@@ -153,9 +154,9 @@ export default function CartPage() {
                                                     />
 
                                                     <div className="flex flex-col gap-1">
-                                                        <h3 className="text-sm text-gray-900">{menu.name}</h3>
+                                                        <h3 className="text-sm text-[#333] font-bold">{menu.name}</h3>
 
-                                                        <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
+                                                        <dl className="mt-0.5 space-y-px text-[12px] text-[#333]">
                                                             <div>
                                                                 <dd className="inline">
                                                                 IDR{" "}
@@ -212,9 +213,25 @@ export default function CartPage() {
                                 </ul>
                             )}
 
+                            <div className="flex justify-between items-center py-6">
+                                <div className="flex justify-center items-center gap-2">
+                                    <CircleDollarSign className="text-[#C60E2A]" />
+                                    <span className="text-md md:text-xl text-[#333]">Metode Pembayaran</span>
+                                </div>
+
+                                <div className="flex justify-center items-center gap-2">
+                                    <button onClick={() => Inertia.visit(`/${outletCode}/payment-page`)} className="text-md text-[#333] cursor-pointer">
+                                        Pilih Metode
+                                    </button>
+                                    <ChevronRight size={16} className="text-gray-400" />
+                                </div>
+                            </div>
+
+                            <hr className="border border-gray-300" />
+
                             <div className="mt-8 flex justify-end border-t border-gray-100 pt-8">
                                 <div className="w-screen max-w-lg space-y-4">
-                                    <dl className="space-y-0.5 text-sm text-gray-700">
+                                    <dl className="space-y-0.5 text-sm text-[#333]">
                                         <div className="flex justify-between">
                                             <dt>Subtotal</dt>
                                             <dd>IDR {subTotal.toLocaleString()}</dd>

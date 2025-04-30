@@ -16,6 +16,7 @@ use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminOutletController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminOrderItemController;
+use App\Http\Controllers\PaymentController;
 
 // VIEWS
 Route::middleware(['guest'])->group(function () {
@@ -31,6 +32,7 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth.customer'])->group(function () {
     Route::get('/{outlet_code}/menu-page', [MenuController::class, 'index'])->name('menu-page');
     Route::get('/{outlet_code}/cart-page', [CartController::class, 'index'])->name('cart-page');
+    Route::get('/{outlet_code}/payment-page', [PaymentController::class, 'index'])->name('payment-page');
 
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
