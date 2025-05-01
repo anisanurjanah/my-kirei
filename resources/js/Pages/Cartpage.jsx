@@ -4,7 +4,6 @@ import { Head, usePage, useForm } from "@inertiajs/react";
 import { CircleCheck, UtensilsCrossed, ShoppingBasket, ReceiptText, Trash2, Ticket, CircleDollarSign, ChevronRight } from "lucide-react";
 
 import Main from "@/Layouts/Main";
-import PaymentMethodSelector from '@/Components/PaymentMethodSelector';
 
 export default function CartPage() {
     const { outlet_code: outletCode, customer } = usePage().props;
@@ -14,14 +13,17 @@ export default function CartPage() {
     const [quantities, setQuantities] = useState({});
     const [subTotal, setSubTotal] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
     // Menu List
     useEffect(() => {
         const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
         const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
+        const paymentMethod = JSON.parse(sessionStorage.getItem('selectedPaymentMethod'));
 
         setMenus(storedMenus);
         setQuantities(storedQuantities);
+        setSelectedPaymentMethod(paymentMethod);
     }, []);
 
     useEffect(() => {
@@ -71,6 +73,12 @@ export default function CartPage() {
         setMenus(updatedMenus);
         sessionStorage.setItem("selectedMenus", JSON.stringify(updatedMenus));
     }
+
+    const goToPayment = () => {
+        sessionStorage.setItem("totalPrice", totalPrice);
+
+        Inertia.visit(`/${outletCode}/payment-page`);
+    };
 
     return (
         <>
@@ -215,13 +223,13 @@ export default function CartPage() {
 
                             <div className="flex justify-between items-center py-6">
                                 <div className="flex justify-center items-center gap-2">
-                                    <CircleDollarSign className="text-[#C60E2A]" />
-                                    <span className="text-md md:text-xl text-[#333]">Metode Pembayaran</span>
+                                    <CircleDollarSign size={16} className="text-[#C60E2A]" />
+                                    <span className="text-sm md:text-md text-[#333]">Metode Pembayaran</span>
                                 </div>
 
                                 <div className="flex justify-center items-center gap-2">
-                                    <button onClick={() => Inertia.visit(`/${outletCode}/payment-page`)} className="text-md text-[#333] cursor-pointer">
-                                        Pilih Metode
+                                    <button onClick={goToPayment} className="text-sm md:text-md text-[#333] cursor-pointer">
+                                        {selectedPaymentMethod ? selectedPaymentMethod.method.name : "Pilih Metode Pembayaran"}
                                     </button>
                                     <ChevronRight size={16} className="text-gray-400" />
                                 </div>
@@ -253,22 +261,14 @@ export default function CartPage() {
                                         </div>
                                     </dl>
 
-                                    {
-                                        menus.map((menu) => {
-                                            if (Number(menu.price_promo?.price_promo) > 0) {
-                                                return (
-                                                    <div className="flex justify-end" key={menu.id}>
-                                                        <span className="inline-flex items-center justify-center rounded-full bg-green-200 px-2.5 py-0.5 text-green-700">
-                                                            <Ticket className="me-1.5" size={16} />
-                                                            <p className="text-xs whitespace-nowrap">Harga spesial berhasil kamu dapatkan!</p>
-                                                        </span>
-                                                    </div>
-                                                );
-                                            }
-
-                                            return null;
-                                        })
-                                    }
+                                    {menus.some((menu) => Number(menu.price_promo?.price_promo) > 0) && (
+                                        <div className="flex justify-end">
+                                            <span className="inline-flex items-center justify-center rounded-full bg-green-200 px-2.5 py-0.5 text-green-700">
+                                                <Ticket className="me-1.5" size={16} />
+                                                <p className="text-xs whitespace-nowrap">Harga spesial berhasil kamu dapatkan!</p>
+                                            </span>
+                                        </div>
+                                    )}
 
                                     <div className="flex justify-end">
                                         <a

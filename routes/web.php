@@ -19,9 +19,9 @@ use App\Http\Controllers\AdminOrderItemController;
 use App\Http\Controllers\PaymentController;
 
 // VIEWS
-Route::middleware(['guest'])->group(function () {
-    Route::get('/', [OutletController::class, 'index']);
+Route::get('/', [OutletController::class, 'index'])->middleware('guest');
 
+Route::middleware(['guest', 'check.outlet.code'])->group(function () {
     Route::get('/{outlet_code}/login', [AuthController::class, 'showLogin'])->name('login');
     Route::get('/{outlet_code}/register', [AuthController::class, 'showRegister'])->name('register');
 
@@ -29,7 +29,7 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/{outlet_code}/register', [AuthController::class, 'register']);
 });
 
-Route::middleware(['auth.customer'])->group(function () {
+Route::middleware(['auth.customer', 'check.outlet.code'])->group(function () {
     Route::get('/{outlet_code}/menu-page', [MenuController::class, 'index'])->name('menu-page');
     Route::get('/{outlet_code}/cart-page', [CartController::class, 'index'])->name('cart-page');
     Route::get('/{outlet_code}/payment-page', [PaymentController::class, 'index'])->name('payment-page');

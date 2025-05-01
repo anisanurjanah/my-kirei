@@ -7,9 +7,33 @@ import Main from "@/Layouts/Main";
 import PaymentMethodSelector from '@/Components/PaymentMethodSelector';
 
 export default function paymentPage() {
-    const { outlet_code: outletCode } = usePage().props;
+    const { outlet_code: outletCode, payment_method: paymentMethods } = usePage().props;
 
-    const [selectedMethod, setSelectedMethod] = useState(null);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+    const [totalPrice, setTotalPrice] = useState(0);
+
+    useEffect(() => {
+        const price = parseInt(sessionStorage.getItem("totalPrice")) || 0;
+        const paymentMethod = JSON.parse(sessionStorage.getItem('selectedPaymentMethod'));
+
+        setTotalPrice(price);
+        setSelectedPaymentMethod(paymentMethod);
+    }, []);
+
+    const handleSelect = (methodId) => {
+        const selected = paymentMethods.find(method => method.id === methodId);
+        setSelectedPaymentMethod(selected);
+    };
+
+    const handlePayment = () => {
+        if (!selectedPaymentMethod) {
+            alert('Pilih metode pembayaran!');
+            return;
+        }
+
+        sessionStorage.setItem('selectedPaymentMethod', JSON.stringify(selectedPaymentMethod));
+        Inertia.visit(`/${outletCode}/cart-page`);
+    };
 
     return (
         <>
@@ -47,7 +71,13 @@ export default function paymentPage() {
                     </span>
 
                     <div className="mt-4">
-                        <PaymentMethodSelector onSelect={setSelectedMethod} />
+                        <PaymentMethodSelector
+                            PaymentMethod={paymentMethods}
+                            totalPrice={totalPrice.toLocaleString()}
+                            onSelect={handleSelect}
+                            onConfirm={handlePayment}
+                            selectedPaymentMethod={selectedPaymentMethod}
+                        />
                     </div>
                 </div>
 

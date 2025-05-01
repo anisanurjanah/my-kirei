@@ -12,8 +12,8 @@ import WelcomeAnnouncement from "@/Components/AnnouncementWelcome";
 
 import WelcomeFlashMessage from "@/Helpers/WelcomeFlashMessage";
 
-export default function MenuPage({ menus }) {
-    const { outlet_code: outletCode, customer, flash } = usePage().props;
+export default function MenuPage() {
+    const { outlet_code: outletCode, menus, customer, flash } = usePage().props;
     const { post } = useForm();
 
     const [selectedMenus, setSelectedMenus] = useState([]);
@@ -45,9 +45,7 @@ export default function MenuPage({ menus }) {
     const goToCart = () => {
         sessionStorage.setItem("selectedMenus", JSON.stringify(selectedMenus));
 
-        Inertia.visit(`/${outletCode}/cart-page`, {
-            state: { totalPrice }
-        });
+        Inertia.visit(`/${outletCode}/cart-page`);
     };
 
     // Logout
@@ -190,7 +188,9 @@ export default function MenuPage({ menus }) {
                                         )}
 
                                         <img
-                                            src={menu.image?.includes('menu-images/') ? `/storage/${menu.image}` : menu.image}
+                                            src={menu.image?.includes('menu-images/')
+                                              ? `/storage/${menu.image}`
+                                              : `/${menu.image}`}
                                             alt={menu.name}
                                             className={`w-full h-24 md:h-48 object-cover
                                                 ${menu.stock.current_stock == 0 ? "blur-md brightness-70" : ""}

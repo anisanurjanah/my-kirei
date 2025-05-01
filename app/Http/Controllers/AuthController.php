@@ -41,13 +41,11 @@ class AuthController extends Controller
             $username .= '-' . ($existingUsernameCount + 1);
         }
 
-        $customer = Customer::create([
+        Customer::create([
             'name' => $request->name,
             'username' => $username,
             'phone' => $formattedPhone,
         ]);
-
-        Auth::guard('customer')->login($customer);
 
         return redirect("/{$outlet_code}/login")->with('success', 'Akun Anda berhasil didaftarkan!');
     }
@@ -85,6 +83,7 @@ class AuthController extends Controller
     public function logout(Request $request, $outlet_code)
     {
         $customer = Auth::guard('customer')->user();
+
         if ($customer) {
             Auth::guard('customer')->logout();
 
