@@ -33,7 +33,7 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
         <>
             <div className="w-full max-w-md mx-auto">
                 {/* E-Wallets */}
-                <div className="mb-3">
+                <div className="py-3">
                     <button
                         onClick={() => setShowEwallets(!showEwallets)}
                         className="w-full flex items-center justify-between gap-4 rounded border border-gray-100 bg-white p-3 shadow-sm transition-colors hover:bg-gray-50 has-checked:border-[#C60E2A] has-checked:ring-1 has-checked:ring-[#C60E2A]"
@@ -124,26 +124,28 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
 
                 {/* QR Code */}
                 <div className="mb-3">
-                    {
-                        PaymentMethod.filter((method) => method.type !== 'Bank Transfer' && method.type !== 'E-Wallet').map((method) => {
-                            const isSelected = selectedMethod?.id === method.id;
-                            return (
-                                <div
-                                    key={method.id}
-                                    onClick={() => handleSelect(method)}
-                                    className={`flex items-center justify-between gap-4 p-3 rounded border cursor-pointer transition-colors
-                                        ${isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100'}`}
-                                >
-                                    <div className="flex justify-center items-center gap-4 text-blue-700">
-                                        {icons[method.method.icon] || <QrCode size={20} />}
-                                        <span>{method.method.name}</span>
-                                    </div>
+                    <div className="w-full flex items-center justify-between rounded border border-gray-100 bg-white shadow-sm transition-colors hover:bg-gray-50 has-checked:border-[#C60E2A] has-checked:ring-1 has-checked:ring-[#C60E2A]">
+                        {
+                            PaymentMethod.filter((method) => method.type !== 'Bank Transfer' && method.type !== 'E-Wallet').map((method) => {
+                                const isSelected = selectedMethod?.id === method.id;
+                                return (
+                                    <div
+                                        key={method.id}
+                                        onClick={() => handleSelect(method)}
+                                        className={`flex items-center justify-between gap-4 p-3 rounded border cursor-pointer transition-colors
+                                            ${isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100'}`}
+                                    >
+                                        <div className="flex justify-center items-center gap-4 text-blue-700">
+                                            {icons[method.method.icon] || <QrCode size={20} />}
+                                            <span>{method.method.name}</span>
+                                        </div>
 
-                                    <p className="text-md text-[#333]">{totalPrice || 0}</p>
-                                </div>
-                            );
-                        })
-                    }
+                                        <p className="text-md text-[#333]">{totalPrice || 0}</p>
+                                    </div>
+                                );
+                            })
+                        }
+                    </div>
                 </div>
 
                 <button

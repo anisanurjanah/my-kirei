@@ -1,4 +1,4 @@
-export default function MenuItem({ menu }) {
+export default function MenuItem({ menu, onClick }) {
     return (
         <>
             <div className={`relative block border border-gray-100 transition animate-slide-up h-full
@@ -47,9 +47,9 @@ export default function MenuItem({ menu }) {
 
                     <div className="mt-auto">
                         <button
+                            onClick={ () => onClick(menu) }
                             className={ `mt-4 w-full block rounded-md border py-2 text-sm md:text-md font-medium tracking-widest text-white uppercase transition-colors hover:bg-[#333] hover:border-[#333] hover:text-[#ffffff] cursor-pointer
                                 ${ menu.stock.current_stock == 0 ? "border-[#333] bg-[#333] opacity-50 cursor-not-allowed pointer-events-none" : "border-[#C60E2A] bg-[#C60E2A]"}` }
-                            onClick={ () => handleAddMenu(menu) }
                         >
                             Tambah
                         </button>

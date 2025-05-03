@@ -14,14 +14,6 @@ export default function paymentPage() {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
     const [totalPrice, setTotalPrice] = useState(0);
 
-    useEffect(() => {
-        const price = parseInt(sessionStorage.getItem("totalPrice")) || 0;
-        const paymentMethod = JSON.parse(sessionStorage.getItem('selectedPaymentMethod'));
-
-        setTotalPrice(price);
-        setSelectedPaymentMethod(paymentMethod);
-    }, []);
-
     const handleSelect = (methodId) => {
         const selected = paymentMethods.find(method => method.id === methodId);
         setSelectedPaymentMethod(selected);
@@ -37,32 +29,37 @@ export default function paymentPage() {
         Inertia.visit(`/${outletCode}/cart-page`);
     };
 
+    const goToCart = () => {
+        Inertia.visit(`/${outletCode}/cart-page`);
+    };
+
+    useEffect(() => {
+        const price = parseInt(sessionStorage.getItem("totalPrice")) || 0;
+        const paymentMethod = JSON.parse(sessionStorage.getItem('selectedPaymentMethod'));
+
+        setTotalPrice(price);
+        setSelectedPaymentMethod(paymentMethod);
+    }, []);
+
     return (
         <>
             <Head title={`Metode Pembayaran - ${outletCode.toUpperCase()}`} />
-
             <Header />
-
             <Main>
                 <section className="after:mt-4 after:block after:h-1 after:w-full after:rounded-lg after:bg-gray-200 p-4">
-
-                <div className="bg-white w-full">
-                    <span className="flex justify-center items-center py-1">
-                        <button
-                            onClick={() => Inertia.visit(`/${outletCode}/cart-page`)}
-                            className="cursor-pointer"
-                        >
-                            <ChevronLeft className="text-gray-400 me-2" />
-                        </button>
-
-                        <span className="shrink-0 pe-4">
-                            <h2 className="text-xl md:text-3xl text-[#333] font-semibold">Metode Pembayaran</h2>
+                    <div className="bg-white w-full">
+                        <span className="flex justify-center items-center py-1">
+                            <button
+                                onClick={ goToCart }
+                                className="cursor-pointer"
+                            >
+                                <ChevronLeft className="text-gray-400 me-2" />
+                            </button>
+                            <span className="shrink-0 pe-4">
+                                <h2 className="text-xl md:text-3xl text-[#333] font-semibold">Metode Pembayaran</h2>
+                            </span>
+                            <span className="h-px flex-1 bg-gray-300"></span>
                         </span>
-
-                        <span className="h-px flex-1 bg-gray-300"></span>
-                    </span>
-
-                    <div className="mt-4">
                         <PaymentMethodSelector
                             PaymentMethod={paymentMethods}
                             totalPrice={totalPrice.toLocaleString()}
@@ -71,8 +68,6 @@ export default function paymentPage() {
                             selectedPaymentMethod={selectedPaymentMethod}
                         />
                     </div>
-                </div>
-
                 </section>
             </Main>
         </>

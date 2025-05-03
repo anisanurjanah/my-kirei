@@ -135,7 +135,10 @@ export default function MenuPage() {
                 <section className="p-4">
                     <div className="bg-white w-full">
                         <Titles title="Rekomendasi Menu Untuk Kamu" />
-                        <MenuList menus={ menus } />
+                        <MenuList
+                            menus={ menus }
+                            onClick={ handleAddMenu }
+                        />
                         <MenuButton
                             selectedMenus={ selectedMenus }
                             totalPrice={ totalPrice }
