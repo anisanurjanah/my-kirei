@@ -48,7 +48,7 @@ export default function paymentPage() {
             <Main>
                 <section className="after:mt-4 after:block after:h-1 after:w-full after:rounded-lg after:bg-gray-200 p-4">
                     <div className="bg-white w-full">
-                        <span className="flex justify-center items-center py-1">
+                        <span className="flex justify-center items-center py-2">
                             <button
                                 onClick={ goToCart }
                                 className="cursor-pointer"

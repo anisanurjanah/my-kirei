@@ -128,7 +128,7 @@ export default function MenuPage() {
             <MenuHeader
                 isOpen={ isOpen }
                 toggleOpen={ () => setIsOpen(!isOpen) }
-                setShowAlert={ () => setShowAlert(true) }
+                showAlert={ () => setShowAlert(true) }
             />
             <MenuNavigation />
             <Main>
