@@ -19,10 +19,10 @@ class CheckOutletCode
     {
         if (!Auth::guard('customer')->check()) {
             $outlet_code = $request->route('outlet_code');
-            $outlet = Outlet::where('code', $outlet_code)->first();
+            $outlet = Outlet::where('outlet_code', $outlet_code)->first();
 
             if (!$outlet) {
-                return redirect()->route('404');
+                abort(404);
             }
         }
 

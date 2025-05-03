@@ -40,7 +40,7 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                     >
                         <div className="flex justify-center items-center gap-4 text-yellow-500">
                             <Wallet2 size={20} />
-                            <span>{selectedMethod?.type === 'E-Wallet' ? selectedMethod.method.name : 'E-Wallet'}</span>
+                            <span>E-Wallet</span>
                         </div>
 
                         <div className="flex justify-center items-center gap-2 text-gray-400">
@@ -85,7 +85,7 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                     >
                         <div className="flex justify-center items-center gap-4 text-green-600">
                             <ArrowRightLeft size={20} />
-                            <span>{selectedMethod?.type === 'Bank Transfer' ? selectedMethod.method.name : 'Bank Transfer'}</span>
+                            <span>Bank Transfer</span>
                         </div>
 
                         <div className="flex justify-center items-center gap-2 text-gray-400">

@@ -5,6 +5,7 @@ import { LogIn } from "lucide-react";
 import Jumbotron from "@/Layouts/Jumbotron";
 import Main from "@/Layouts/Main";
 
+import Header from "@/Components/Header";
 import ErrorAlert from "@/Components/AlertError";
 import SuccessAlert from "@/Components/AlertSuccess";
 
@@ -51,17 +52,7 @@ export default function Login() {
         <>
             <Head title={`Masuk - ${outletCode.toUpperCase()}`} />
 
-            <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
-                <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 items-center justify-center">
-                        <div className="md:flex md:items-center md:gap-12">
-                            <Link className="block text-[#333] text-2xl md:text-3xl font-bold" href="/">
-                                KIREI <span className="text-[#C60E2A]">SUM</span>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <Header />
 
             <Jumbotron />
 
