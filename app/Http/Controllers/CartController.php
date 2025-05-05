@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Outlet;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
@@ -20,6 +19,7 @@ class CartController extends Controller
             ->get(),
             'outlet_code' => $outlet_code,
             'customer' => Auth::guard('customer')->user(),
+            'selectedPaymentMethod' => session('selected_payment_method', null),
         ]);
     }
 }

@@ -17,10 +17,17 @@ import WelcomeAnnouncement from "@/Components/AnnouncementWelcome";
 import WelcomeFlashMessage from "@/Helpers/WelcomeFlashMessage";
 
 export default function MenuPage() {
-    const { outlet_code: outletCode, menus, customer, flash } = usePage().props;
+    const {
+        outlet_code: outletCode,
+        menus,
+        customer,
+        flash
+    } = usePage().props;
+
     const { post } = useForm();
 
     const [selectedMenus, setSelectedMenus] = useState([]);
+    const [quantities, setQuantities] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
 
     // Alert
@@ -48,6 +55,7 @@ export default function MenuPage() {
 
     const goToCart = () => {
         sessionStorage.setItem("selectedMenus", JSON.stringify(selectedMenus));
+        sessionStorage.setItem("quantities", JSON.stringify(quantities));
 
         Inertia.visit(`/${outletCode}/cart-page`);
     };
@@ -57,27 +65,24 @@ export default function MenuPage() {
         e.preventDefault();
         post(`/${outletCode}/logout`);
         setShowAlert(false);
-        localStorage.removeItem("customer");
+        sessionStorage.removeItem("selectedMenus");
+        sessionStorage.removeItem("quantities");
     };
-
-    // Customer
-    useEffect(() => {
-        if (customer) {
-            localStorage.setItem("customer", JSON.stringify(customer));
-        }
-    }, [customer]);
 
     // Menu List
     useEffect(() => {
         const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
+        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
+
         if (storedMenus.length > 0) {
             setSelectedMenus(storedMenus);
+            setQuantities(storedQuantities);
 
             const total = storedMenus.reduce((acc, menu) => {
-                const menuPrice = Number(menu.price) || 0;
-                const menuDiscount = Number(menu.price_promo?.price_promo) || 0;
+                const menuQuantity = Number(storedQuantities[menu.id]) || 1;
+                const menuPrice = Number(menu.price) - (Number(menu.price_promo?.price_promo) || 0 );
 
-                return acc + Math.max(menuPrice - menuDiscount, 0);
+                return acc + Math.max(menuPrice, 0) * menuQuantity;
             }, 0);
 
             setTotalPrice(total);
@@ -90,7 +95,9 @@ export default function MenuPage() {
             try {
                 const response = await axios.get('/check-session');
                 if (!response.data.authenticated) {
-                    localStorage.removeItem("customer");
+                    sessionStorage.removeItem("selectedMenus");
+                    sessionStorage.removeItem("quantities");
+
                     Inertia.visit(`/${outletCode}/login`);
                 }
             } catch (error) {
@@ -109,8 +116,8 @@ export default function MenuPage() {
                         <LogoutAlert
                             title="Konfirmasi Logout"
                             message="Apakah Anda yakin ingin keluar?"
-                            onClose={() => setShowAlert(false)}
-                            onConfirm={handleSubmit}
+                            onClose={ () => setShowAlert(false) }
+                            onConfirm={ handleSubmit }
                         />
                     </div>
                 )
@@ -119,9 +126,9 @@ export default function MenuPage() {
             {
                 flashMsg && (
                     <WelcomeAnnouncement
-                        message={{ title: flashMsg }}
-                        customer={customer.name}
-                        onClose={dismissFlash}
+                        message={ { title: flashMsg } }
+                        customer={ customer.name }
+                        onClose={ dismissFlash }
                     />
                 )
             }

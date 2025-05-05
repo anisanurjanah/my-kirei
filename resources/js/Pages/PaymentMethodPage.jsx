@@ -8,10 +8,14 @@ import Main from "@/Layouts/Main";
 import Header from "@/Components/Header";
 import PaymentMethodSelector from '@/Components/Cart/PaymentMethodSelector';
 
-export default function paymentPage() {
-    const { outlet_code: outletCode, payment_method: paymentMethods } = usePage().props;
+export default function PaymentMethodPage() {
+    const {
+        outlet_code: outletCode,
+        payment_method: paymentMethods,
+        selectedPaymentMethod: InitialPaymentMethods,
+    } = usePage().props;
 
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(InitialPaymentMethods);
     const [totalPrice, setTotalPrice] = useState(0);
 
     const handleSelect = (methodId) => {
@@ -25,7 +29,10 @@ export default function paymentPage() {
             return;
         }
 
-        sessionStorage.setItem('selectedPaymentMethod', JSON.stringify(selectedPaymentMethod));
+        Inertia.post(`/${outletCode}/payment-method-store`, {
+            payment_method_id: selectedPaymentMethod.id
+        });
+
         Inertia.visit(`/${outletCode}/cart-page`);
     };
 
@@ -34,11 +41,17 @@ export default function paymentPage() {
     };
 
     useEffect(() => {
-        const price = parseInt(sessionStorage.getItem("totalPrice")) || 0;
-        const paymentMethod = JSON.parse(sessionStorage.getItem('selectedPaymentMethod'));
+        const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
+        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
 
-        setTotalPrice(price);
-        setSelectedPaymentMethod(paymentMethod);
+        const total = storedMenus.reduce((acc, menu) => {
+            const menuQuantity = Number(storedQuantities[menu.id]) || 1;
+            const menuPrice = Number(menu.price) - (Number(menu.price_promo?.price_promo) || 0 );
+
+            return acc + Math.max(menuPrice, 0) * menuQuantity;
+        }, 0);
+
+        setTotalPrice(total);
     }, []);
 
     return (

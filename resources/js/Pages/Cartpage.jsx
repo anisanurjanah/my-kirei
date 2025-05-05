@@ -12,24 +12,67 @@ import CartProgressSteps from "@/Components/Cart/CartProgressSteps";
 import CartSummary from "@/Components/Cart/CartSummary";
 
 export default function CartPage() {
-    const { outlet_code: outletCode, customer } = usePage().props;
+    const {
+        outlet_code: outletCode,
+        selectedPaymentMethod: paymentMethods,
+        customer
+    } = usePage().props;
+
     // const { post } = useForm();
+
+    console.log(usePage().props);
 
     const [menus, setMenus] = useState([]);
     const [quantities, setQuantities] = useState({});
     const [subTotal, setSubTotal] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods);
+
+    // Update quantity
+    const handleIncrease = (id) => {
+        setQuantities((prev) => ({
+            ...prev,
+            [id]: (prev[id] || 1) + 1,
+        }));
+    };
+
+    const handleDecrease = (id) => {
+        setQuantities((prev) => ({
+            ...prev,
+            [id]: prev[id] > 1 ? prev[id] - 1 : 1,
+        }));
+    };
+
+    // Remove menu
+    const handleRemoveMenu = (id) => {
+        const updatedMenus = menus.filter((menu) => menu.id !== id);
+        setMenus(updatedMenus);
+        sessionStorage.setItem("selectedMenus", JSON.stringify(updatedMenus));
+
+        const updatedQuantities = { ...quantities };
+        delete updatedQuantities[id];
+        setQuantities(updatedQuantities);
+        sessionStorage.setItem("quantities", JSON.stringify(updatedQuantities));
+    }
+
+    const goToPaymentMethod = () => {
+        Inertia.visit(`/${outletCode}/payment-method-page`);
+    };
 
     // Menu List
     useEffect(() => {
         const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
         const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
-        const paymentMethod = JSON.parse(sessionStorage.getItem('selectedPaymentMethod'));
+
+        const updatedQuantities = { ...storedQuantities };
+        storedMenus.forEach(menu => {
+            if (!updatedQuantities[menu.id]) {
+                updatedQuantities[menu.id] = 1;
+            }
+        });
 
         setMenus(storedMenus);
-        setQuantities(storedQuantities);
-        setSelectedPaymentMethod(paymentMethod);
+        setQuantities(updatedQuantities);
     }, []);
 
     useEffect(() => {
@@ -53,38 +96,13 @@ export default function CartPage() {
         setTotalPrice(total);
     }, [menus, quantities]);
 
-    // Quantity
+    useEffect(() => {
+        setSelectedPaymentMethod(selectedPaymentMethod);
+    }, [selectedPaymentMethod]);
+
     useEffect(() => {
         sessionStorage.setItem("quantities", JSON.stringify(quantities));
     }, [quantities]);
-
-    // Update quantity
-    const handleIncrease = (id) => {
-        setQuantities((prev) => ({
-            ...prev,
-            [id]: (prev[id] || 1) + 1,
-        }));
-    };
-
-    const handleDecrease = (id) => {
-        setQuantities((prev) => ({
-            ...prev,
-            [id]: prev[id] > 1 ? prev[id] - 1 : 1,
-        }));
-    };
-
-    // Remove menu
-    const handleRemoveMenu = (id) => {
-        const updatedMenus = menus.filter((menu) => menu.id !== id);
-        setMenus(updatedMenus);
-        sessionStorage.setItem("selectedMenus", JSON.stringify(updatedMenus));
-    }
-
-    const goToPayment = () => {
-        sessionStorage.setItem("totalPrice", totalPrice);
-
-        Inertia.visit(`/${outletCode}/payment-page`);
-    };
 
     return (
         <>
@@ -105,7 +123,7 @@ export default function CartPage() {
                             />
                             <CartPaymentMethod
                                 selectedPaymentMethod={ selectedPaymentMethod }
-                                onClick={ goToPayment }
+                                onClick={ goToPaymentMethod }
                             />
                             <hr className="border border-gray-300" />
                             <CartSummary
@@ -113,7 +131,7 @@ export default function CartPage() {
                                 subTotal={ subTotal }
                                 totalPrice={ totalPrice }
                                 quantities={ quantities }
-                                onSubmit={ goToPayment }
+                                onSubmit={ goToPaymentMethod }
                             />
                         </div>
                     </div>

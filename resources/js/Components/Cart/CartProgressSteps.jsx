@@ -1,16 +1,18 @@
 import { Inertia } from "@inertiajs/inertia";
-import { CircleCheck, UtensilsCrossed, ShoppingBasket, ReceiptText } from "lucide-react";
+import { CircleCheck, UtensilsCrossed, ShoppingBasket, CreditCard, ReceiptText } from "lucide-react";
 
-export default function CartProgressSteps({ currentStep = 2, outletCode }) {
+export default function CartProgressSteps({ currentStep = 1, outletCode }) {
     const steps = [
         { label: "Daftar Menu", icon: "UtensilsCrossed", href: `/${outletCode}/menu-page` },
         { label: "Keranjang Pesanan", icon: "ShoppingBasket", href: `/${outletCode}/cart-page` },
-        { label: "Ringkasan Pesanan", icon: "ReceiptText", href: `/${outletCode}/order-detail-page` }
+        { label: "Pembayaran", icon: "CreditCard", href: `` },
+        { label: "Ringkasan Pesanan", icon: "ReceiptText", href: `` }
     ];
 
     const icons = {
         UtensilsCrossed: UtensilsCrossed,
         ShoppingBasket: ShoppingBasket,
+        CreditCard: CreditCard,
         ReceiptText: ReceiptText,
     };
 
@@ -19,7 +21,7 @@ export default function CartProgressSteps({ currentStep = 2, outletCode }) {
             <section className="relative p-4 flex justify-center">
                 <div className="relative w-full">
                     <div className="after:content-[''] after:mt-4 after:block after:h-1 after:w-[100%] after:mx-auto after:rounded-lg after:bg-gray-200">
-                        <ol className="grid grid-cols-3 text-sm font-medium text-[#333] text-center">
+                        <ol className="grid grid-cols-4 text-sm font-medium text-[#333] text-center">
                             {
                                 steps.map((step, index) => {
                                     const Icon = icons[step.icon];
@@ -28,7 +30,7 @@ export default function CartProgressSteps({ currentStep = 2, outletCode }) {
                                         <li
                                             key={index}
                                             className={`relative flex flex-col items-center justify-center ${
-                                                index !== currentStep ? "text-[#C60E2A]" : "text-[#333]"
+                                                index === currentStep || index == 0 ? "text-[#C60E2A]" : "text-[#333]"
                                             }`}
                                         >
                                             <button
@@ -36,7 +38,7 @@ export default function CartProgressSteps({ currentStep = 2, outletCode }) {
                                                 className="flex flex-col items-center gap-1 cursor-pointer"
                                             >
                                                 <span className={`absolute -bottom-[1.75rem] rounded-full text-white ${
-                                                    index !== currentStep ? "bg-[#C60E2A]" : "bg-[#333]"
+                                                    index === currentStep || index == 0 ? "bg-[#C60E2A]" : "bg-[#333]"
                                                 }`}>
                                                     <CircleCheck />
                                                 </span>

@@ -87,6 +87,7 @@ class AuthController extends Controller
         if ($customer) {
             Auth::guard('customer')->logout();
 
+            session()->flush();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
