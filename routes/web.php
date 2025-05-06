@@ -8,7 +8,6 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\SessionController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\DashboardController;
@@ -35,11 +34,13 @@ Route::middleware(['guest', 'check.outlet.code'])->group(function () {
 Route::middleware(['auth.customer', 'check.outlet.code'])->group(function () {
     Route::get('/{outlet_code}/menu-page', [MenuController::class, 'index'])->name('menu-page');
     Route::get('/{outlet_code}/cart-page', [CartController::class, 'index'])->name('cart-page');
+    Route::get('/{outlet_code}/payment-page/{order_number}', [PaymentController::class, 'index'])->name('payment-page');
 
     Route::get('/{outlet_code}/payment-method-page', [PaymentMethodController::class, 'index'])->name('payment-method-page');
     Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
 
     Route::resource('/{outlet_code}/orders', OrderController::class);
+
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
 

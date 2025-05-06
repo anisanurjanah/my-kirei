@@ -35,6 +35,45 @@ export default function MenuPage() {
     const [isOpen, setIsOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
+    // Session Check
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const response = await axios.get('/check-session');
+                if (!response.data.authenticated) {
+                    sessionStorage.removeItem("selectedMenus");
+                    sessionStorage.removeItem("quantities");
+
+                    Inertia.visit(`/${outletCode}/login`);
+                }
+            } catch (error) {
+                console.error("Gagal cek sesi:", error);
+            }
+        };
+
+        checkSession();
+    }, []);
+
+    // Menu List
+    useEffect(() => {
+        const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
+        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
+
+        if (storedMenus.length > 0) {
+            setSelectedMenus(storedMenus);
+            setQuantities(storedQuantities);
+
+            const total = storedMenus.reduce((acc, menu) => {
+                const menuQuantity = Number(storedQuantities[menu.id]) || 1;
+                const menuPrice = Number(menu.price) - (Number(menu.price_promo?.price_promo) || 0 );
+
+                return acc + Math.max(menuPrice, 0) * menuQuantity;
+            }, 0);
+
+            setTotalPrice(total);
+        }
+    }, []);
+
     // Add menu
     const handleAddMenu = (menu) => {
         if (!menu || !menu.id) return;
@@ -68,45 +107,6 @@ export default function MenuPage() {
         sessionStorage.removeItem("selectedMenus");
         sessionStorage.removeItem("quantities");
     };
-
-    // Menu List
-    useEffect(() => {
-        const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
-        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
-
-        if (storedMenus.length > 0) {
-            setSelectedMenus(storedMenus);
-            setQuantities(storedQuantities);
-
-            const total = storedMenus.reduce((acc, menu) => {
-                const menuQuantity = Number(storedQuantities[menu.id]) || 1;
-                const menuPrice = Number(menu.price) - (Number(menu.price_promo?.price_promo) || 0 );
-
-                return acc + Math.max(menuPrice, 0) * menuQuantity;
-            }, 0);
-
-            setTotalPrice(total);
-        }
-    }, []);
-
-    // Session Check
-    useEffect(() => {
-        const checkSession = async () => {
-            try {
-                const response = await axios.get('/check-session');
-                if (!response.data.authenticated) {
-                    sessionStorage.removeItem("selectedMenus");
-                    sessionStorage.removeItem("quantities");
-
-                    Inertia.visit(`/${outletCode}/login`);
-                }
-            } catch (error) {
-                console.error("Gagal cek sesi:", error);
-            }
-        };
-
-        checkSession();
-    }, []);
 
     return (
         <>

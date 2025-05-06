@@ -12,11 +12,10 @@ class PaymentController extends Controller
 {
     public function index($outlet_code)
     {
-        $payment_method = PaymentMethod::all();
-
         return Inertia::render('PaymentPage', [
             'outlet_code' => $outlet_code,
-            'payment_method' => $payment_method,
+            'customer' => Auth::guard('customer')->user(),
+            'selectedPaymentMethod' => session('selected_payment_method', null),
         ]);
     }
 }

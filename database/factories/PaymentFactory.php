@@ -22,6 +22,7 @@ class PaymentFactory extends Factory
         return [
             'order_id' => null,
             'payment_method_id' => $paymentMethod->id,
+            'transaction_id' => $this->faker->uuid(),
             'payment_number' => 'PAY' . now()->format('YmdHis') . mt_rand(1000, 9999),
             'payment_date' => now(),
             'amount' => $this->faker->randomFloat(2, 10000, 500000),

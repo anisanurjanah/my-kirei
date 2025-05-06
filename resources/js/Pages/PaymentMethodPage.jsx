@@ -18,6 +18,20 @@ export default function PaymentMethodPage() {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(InitialPaymentMethods);
     const [totalPrice, setTotalPrice] = useState(0);
 
+    useEffect(() => {
+        const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
+        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
+
+        const total = storedMenus.reduce((acc, menu) => {
+            const menuQuantity = Number(storedQuantities[menu.id]) || 1;
+            const menuPrice = Number(menu.price) - (Number(menu.price_promo?.price_promo) || 0 );
+
+            return acc + Math.max(menuPrice, 0) * menuQuantity;
+        }, 0);
+
+        setTotalPrice(total);
+    }, []);
+
     const handleSelect = (methodId) => {
         const selected = paymentMethods.find(method => method.id === methodId);
         setSelectedPaymentMethod(selected);
@@ -32,27 +46,11 @@ export default function PaymentMethodPage() {
         Inertia.post(`/${outletCode}/payment-method-store`, {
             payment_method_id: selectedPaymentMethod.id
         });
-
-        Inertia.visit(`/${outletCode}/cart-page`);
     };
 
     const goToCart = () => {
         Inertia.visit(`/${outletCode}/cart-page`);
     };
-
-    useEffect(() => {
-        const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
-        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
-
-        const total = storedMenus.reduce((acc, menu) => {
-            const menuQuantity = Number(storedQuantities[menu.id]) || 1;
-            const menuPrice = Number(menu.price) - (Number(menu.price_promo?.price_promo) || 0 );
-
-            return acc + Math.max(menuPrice, 0) * menuQuantity;
-        }, 0);
-
-        setTotalPrice(total);
-    }, []);
 
     return (
         <>

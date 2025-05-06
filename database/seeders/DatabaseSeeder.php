@@ -96,7 +96,7 @@ class DatabaseSeeder extends Seeder
         // Payment::factory(8)->create();
         // PaymentMethod::factory(7)->create();
 
-        // Order::factory(8)->create();
-        // OrderItem::factory(16)->create();
+        // Order::factory(4)->create();
+        // OrderItem::factory(8)->create();
     }
 }

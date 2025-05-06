@@ -10,22 +10,20 @@ class PaymentMethodController extends Controller
 {
     public function index($outlet_code)
     {
-        $payment_method = PaymentMethod::all();
-
         return Inertia::render('PaymentMethodPage', [
             'outlet_code' => $outlet_code,
-            'payment_method' => $payment_method,
+            'payment_method' => PaymentMethod::all(),
             'selectedPaymentMethod' => session('selected_payment_method', null),
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $outlet_code)
     {
         $paymentMethodId = $request->input('payment_method_id');
         $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
 
         session()->put("selected_payment_method", $paymentMethod->toArray());
-        return back();
+        return redirect("/{$outlet_code}/cart-page");
     }
 
     public function getPaymentMethods()

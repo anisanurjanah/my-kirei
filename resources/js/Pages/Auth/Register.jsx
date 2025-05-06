@@ -12,14 +12,6 @@ import AuthButton from "@/Components/Auth/AuthButton";
 export default function Register() {
     const { outlet_code: outletCode, flash } = usePage().props;
 
-    // Alert
-    const [flashMsg, setFlashMsg] = useState(flash);
-    useEffect(() => {
-        if (flash) {
-            setFlashMsg(flash);
-        }
-    }, [flash]);
-
     // Handle data
     const { data, setData, post, errors } = useForm({
         name: "",
@@ -31,6 +23,14 @@ export default function Register() {
         const formData = { name: data.name, phone: data.phone };
         post(`/${outletCode}/register`, formData);
     };
+
+    // Alert
+    const [flashMsg, setFlashMsg] = useState(flash);
+    useEffect(() => {
+        if (flash) {
+            setFlashMsg(flash);
+        }
+    }, [flash]);
 
     // Phone input change
     const handlePhoneChange = (e) => {

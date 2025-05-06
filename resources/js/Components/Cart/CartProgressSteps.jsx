@@ -3,10 +3,10 @@ import { CircleCheck, UtensilsCrossed, ShoppingBasket, CreditCard, ReceiptText }
 
 export default function CartProgressSteps({ currentStep = 1, outletCode }) {
     const steps = [
-        { label: "Daftar Menu", icon: "UtensilsCrossed", href: `/${outletCode}/menu-page` },
-        { label: "Keranjang Pesanan", icon: "ShoppingBasket", href: `/${outletCode}/cart-page` },
+        { label: "Menu", icon: "UtensilsCrossed", href: `/${outletCode}/menu-page` },
+        { label: "Keranjang", icon: "ShoppingBasket", href: `/${outletCode}/cart-page` },
         { label: "Pembayaran", icon: "CreditCard", href: `` },
-        { label: "Ringkasan Pesanan", icon: "ReceiptText", href: `` }
+        { label: "Ringkasan", icon: "ReceiptText", href: `` }
     ];
 
     const icons = {

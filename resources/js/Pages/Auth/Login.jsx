@@ -12,6 +12,17 @@ import AuthButton from "@/Components/Auth/AuthButton";
 export default function Login() {
     const { outlet_code: outletCode, flash } = usePage().props;
 
+    // Handle data
+    const { data, setData, post, errors } = useForm({
+        phone: "",
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = { phone: data.phone };
+        post(`/${outletCode}/login`, formData);
+    };
+
     // Alert
     const [flashMsg, setFlashMsg] = useState(flash);
     useEffect(() => {
@@ -22,17 +33,6 @@ export default function Login() {
 
     const dismissFlash = () => {
         setFlashMsg(null);
-    };
-
-    // Handle data
-    const { data, setData, post, errors } = useForm({
-        phone: "",
-    });
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const formData = { phone: data.phone };
-        post(`/${outletCode}/login`, formData);
     };
 
     // Phone input change

@@ -1,6 +1,6 @@
 import { Ticket } from "lucide-react";
 
-export default function CartSummary({ menus, subTotal, totalPrice, quantities, onSubmit }) {
+export default function CartSummary({ menus, subTotal, discount, totalPrice, onSubmit }) {
     return (
         <>
             <div className="mt-8 flex justify-end border-t border-gray-100 pt-8">
@@ -8,22 +8,17 @@ export default function CartSummary({ menus, subTotal, totalPrice, quantities, o
                     <dl className="space-y-0.5 text-sm text-[#333]">
                         <div className="flex justify-between">
                             <dt>Subtotal</dt>
-                            <dd>IDR {subTotal.toLocaleString()}</dd>
+                            <dd>IDR { subTotal.toLocaleString() }</dd>
                         </div>
 
                         <div className="flex justify-between">
                             <dt>Diskon</dt>
-                            <dd>- IDR { menus.reduce((acc, menu) => {
-                                const discount = Number(menu.price_promo?.price_promo) || 0;
-                                const menuQuantity = Number(quantities[menu.id]) || 1;
-
-                                return acc + discount * menuQuantity;
-                            }, 0).toLocaleString()}</dd>
+                            <dd>- IDR { typeof discount === 'number' ? discount.toLocaleString() : 0 }</dd>
                         </div>
 
                         <div className="flex justify-between !text-base font-medium">
                             <dt>Total</dt>
-                            <dd>IDR {totalPrice.toLocaleString()}</dd>
+                            <dd>IDR { totalPrice.toLocaleString() }</dd>
                         </div>
                     </dl>
 
@@ -39,9 +34,9 @@ export default function CartSummary({ menus, subTotal, totalPrice, quantities, o
                     <div className="flex justify-end">
                         <button
                             onClick={ onSubmit }
-                            className="block rounded-sm bg-[#C60E2A] px-5 py-3 text-sm text-gray-100 transition hover:bg-[#333]"
+                            className="block rounded-sm bg-[#C60E2A] px-5 py-3 text-sm text-gray-100 transition hover:bg-[#333] cursor-pointer"
                         >
-                            Checkout
+                            Bayar Sekarang
                         </button>
                     </div>
                 </div>

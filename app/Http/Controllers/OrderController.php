@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Midtrans\Snap;
 use App\Models\Order;
+use Midtrans\CoreApi;
 use App\Models\Outlet;
 use App\Models\Payment;
 use App\Models\OrderItem;
@@ -13,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Midtrans\Config as MidtransConfig;
 
@@ -39,17 +41,10 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $itemsFromSession = session('selectedMenus');
-        $quantitiesFromSession = session('quantities');
-
-        if (!$itemsFromSession || !$quantitiesFromSession) {
-            return response()->json([
-                'message' => 'Data menu atau quantity tidak ditemukan di sesi.',
-            ], 422);
-        }
+        // dd($request->all());
 
         $validatedData = $this->validateOrder($request);
-        $items = $this->prepareItemsOrder($itemsFromSession, $quantitiesFromSession);
+        $items = $validatedData['items'];
 
         if (empty($items)) {
             return response()->json([
@@ -57,7 +52,7 @@ class OrderController extends Controller
             ], 422);
         }
 
-        $validatedData['items'] = $items;
+        // $validatedData['items'] = $items;
         $validatedData['order_type'] = 'Dine In';
         $validatedData['order_status'] = 'Ditunda';
 
@@ -67,20 +62,13 @@ class OrderController extends Controller
             $order = $this->createOrder($validatedData);
             $this->createOrderItems($order, $validatedData['items']);
 
-            $snapUrl = $this->createMidtransTransaction($order, $validatedData['items'], $validatedData['payment_method_id']);
-
-            $this->createInitialPayment($order, $validatedData['payment_method_id']);
+            $response = $this->createMidtransTransaction($order, $validatedData['items'], $validatedData['payment_method_id']);
+            $this->createInitialPayment($order, $validatedData['payment_method_id'], $response);
 
             DB::commit();
 
-            session()->forget(['customer', 'selectedMenus', 'quantities', 'totalPrice']);
-            
-            return response()->json([
-                'message' => 'Pesanan berhasil dibuat.',
-                'order_number' => $order->order_number,
-                'order' => $order->load('orderItems'),
-                'payment_url' => $snapUrl,
-            ], 201);
+            session()->forget(['selectedMenus', 'quantities']);
+            return redirect()->to("/{$order->outlet->outlet_code}/payment-page/{$order->order_number}");
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -122,46 +110,21 @@ class OrderController extends Controller
         //
     }
 
-    private function prepareItemsOrder($sessionItems, $sessionQuantities)
-    {
-        $items = [];
-        foreach ($sessionItems as $menu) {
-            $menuId = $menu['id'];
-            $quantity = $sessionQuantities[$menuId] ?? 0;
-            $price = isset($menu['price_promo']) ? (int)$menu['price_promo']['price_promo'] : (int)$menu['price'];
-
-            if ($quantity > 0) {
-                $items[] = [
-                    'menu_id' => $menuId,
-                    'quantity' => $quantity,
-                    'price' => $price
-                ];
-            }
-        }
-
-        return $items;
-    }
-
     private function validateOrder(Request $request)
     {
         return $request->validate([
             'outlet_code' => 'required|string',
             'customer_id' => 'required|exists:customers,id',
             'order_date' => 'required|date',
+            'items' => 'required|array|min:1',
+            'items.*.menu_id' => 'required|exists:menus,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.price' => 'required|integer|min:0',
             'sub_total' => 'required|integer|min:0',
             'discount' => 'nullable|integer|min:0',
             'total_price' => 'required|integer|min:0',
             'payment_method_id' => 'required|exists:payment_methods,id',
         ]);
-    }
-
-    private function generateOrderNumber(array $validatedData)
-    {
-        $outlet = Outlet::where('outlet_code', $validatedData['outlet_code'])->first();
-        $formattedDate = Carbon::parse($validatedData['order_date'])->format('Ymd');
-        $randomNumber = mt_rand(100000, 999999);
-
-        return $formattedDate . Str::slug($outlet->outlet_code) . $randomNumber;
     }
 
     private function createOrder(array $validatedData)
@@ -176,7 +139,7 @@ class OrderController extends Controller
             'order_date' => now(),
             'sub_total' => $subTotal,
             'discount' => $validatedData['discount'] ?? 0,
-            'total_price' => $validatedData['total_price'],
+            'total_price' => $subTotal - ($validatedData['discount'] ?? 0),
             'order_type' => 'Dine In',
             'order_status' => 'Ditunda',
         ]);
@@ -194,6 +157,27 @@ class OrderController extends Controller
         }
     }
 
+    private function createInitialPayment(Order $order, int $paymentMethodId, $response)
+    {
+        $va_number = $response->va_numbers[0]->va_number ?? null;
+        $bank = $response->va_numbers[0]->bank ?? null;
+        $pdf_url = $response->pdf_url ?? null;
+        $transaction_id = $response->transaction_id ?? null;
+
+        Payment::create([
+            'order_id' => $order->id,
+            'payment_method_id' => $paymentMethodId,
+            'payment_number' => $this->generatePaymentNumber($order),
+            'payment_date' => now(),
+            'transaction_id' => $transaction_id,
+            'amount' => $order->total_price,
+            'va_number' => $va_number,
+            'bank' => $bank,
+            'pdf_url' => $pdf_url,
+            'payment_status' => 'Ditunda',
+        ]);
+    }
+
     private function createMidtransTransaction(Order $order, array $items, int $paymentMethodId)
     {
         MidtransConfig::$serverKey = config('services.midtrans.server_key');
@@ -202,7 +186,16 @@ class OrderController extends Controller
         MidtransConfig::$is3ds = true;
 
         $method = PaymentMethod::findOrFail($paymentMethodId);
-        $methodConfig = json_decode($method->method, true);
+        $methodConfig = is_string($method->method)
+            ? json_decode($method->method, true)
+            : $method->method;
+
+        if (!isset($methodConfig['payment_type'])) {
+            return response()->json([
+                'message' => 'Gagal membuat pesanan.',
+                'error' => 'Metode pembayaran tidak valid.',
+            ]);
+        }
 
         $payload = [
             'transaction_details' => [
@@ -225,21 +218,35 @@ class OrderController extends Controller
 
         $payload = array_merge($payload, $methodConfig);
 
-        return Snap::createTransaction($payload)->redirect_url;
+        $response = CoreApi::charge($payload);
+
+        // Bank Transfer
+        if (isset($response->va_numbers[0])) {
+            Payment::where('order_id', $order->id)->update([
+                'va_number' => $response->va_numbers[0]->va_number,
+                'bank' => $response->va_numbers[0]->bank,
+                'pdf_url' => $response->pdf_url ?? null,
+            ]);
+        }
+
+        return $response;
     }
 
-    private function createInitialPayment(Order $order, int $paymentMethodId)
+    private function generateOrderNumber(array $validatedData)
     {
-        Payment::create([
-            'order_id' => $order->id,
-            'payment_method_id' => $paymentMethodId,
-            'payment_number' => 'PAY-' . strtoupper(Str::random(10)),
-            'payment_date' => now(),
-            'amount' => $order->total_price,
-            'va_number' => null,
-            'bank' => null,
-            'pdf_url' => null,
-            'payment_status' => 'Ditunda',
-        ]);
+        $outlet = Outlet::where('outlet_code', $validatedData['outlet_code'])->first();
+        $formattedDate = Carbon::parse($validatedData['order_date'])->format('Ymd');
+        $randomNumber = mt_rand(100000, 999999);
+
+        return $formattedDate . $outlet->outlet_code . $randomNumber;
+    }
+
+    private function generatePaymentNumber(Order $order)
+    {
+        $outlet = $order->outlet;
+        $timestamp = now()->format('YmdHis');
+        $randomNumber = mt_rand(1000, 9999);
+
+        return 'PY' . $outlet->outlet_code . $timestamp . $randomNumber;
     }
 }

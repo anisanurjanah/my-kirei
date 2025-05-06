@@ -21,6 +21,7 @@ return new class extends Migration
                 ->constrained('payment_methods')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            $table->string('transaction_id')->nullable();
             $table->string('payment_number')->unique();
             $table->timestamp('payment_date');
             $table->decimal('amount');
