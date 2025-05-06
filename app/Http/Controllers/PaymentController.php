@@ -18,4 +18,14 @@ class PaymentController extends Controller
             'selectedPaymentMethod' => session('selected_payment_method', null),
         ]);
     }
+
+    public function handleCallback(Request $request, $outlet_code)
+    {
+
+    }
+
+    private function updatePaymentStatus($payload)
+    {
+
+    }
 }

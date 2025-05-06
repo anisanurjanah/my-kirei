@@ -151,7 +151,7 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                 <button
                     onClick={() => onConfirm?.(selectedMethod)}
                     disabled={!selectedMethod}
-                    className="w-full bg-[#C60E2A] text-white font-semibold py-2 rounded-lg disabled:bg-gray-400"
+                    className="w-full block rounded-sm bg-[#C60E2A] px-5 py-3 text-sm text-gray-100 transition hover:bg-[#333] cursor-pointer"
                 >
                     Konfirmasi
                 </button>

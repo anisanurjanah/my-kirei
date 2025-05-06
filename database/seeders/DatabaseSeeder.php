@@ -87,11 +87,11 @@ class DatabaseSeeder extends Seeder
         // Stock::factory(25)->create();
         // Price::factory(10)->create();
 
-        Order::all()->each(function ($order) {
-            Payment::factory()->create([
-                'order_id' => $order->id,
-            ]);
-        });
+        // Order::all()->each(function ($order) {
+        //     Payment::factory()->create([
+        //         'order_id' => $order->id,
+        //     ]);
+        // });
 
         // Payment::factory(8)->create();
         // PaymentMethod::factory(7)->create();

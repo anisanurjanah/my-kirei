@@ -35,11 +35,12 @@ Route::middleware(['auth.customer', 'check.outlet.code'])->group(function () {
     Route::get('/{outlet_code}/menu-page', [MenuController::class, 'index'])->name('menu-page');
     Route::get('/{outlet_code}/cart-page', [CartController::class, 'index'])->name('cart-page');
     Route::get('/{outlet_code}/payment-page/{order_number}', [PaymentController::class, 'index'])->name('payment-page');
-
     Route::get('/{outlet_code}/payment-method-page', [PaymentMethodController::class, 'index'])->name('payment-method-page');
-    Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
 
+    Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
     Route::resource('/{outlet_code}/orders', OrderController::class);
+
+    Route::post('/midtrans/callback/{outlet_code}', [PaymentController::class, 'handleCallback'])->name('midtrans.callback');
 
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });

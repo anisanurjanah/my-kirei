@@ -3,20 +3,18 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use Midtrans\Snap;
+use Midtrans\Config;
 use App\Models\Order;
 use Midtrans\CoreApi;
 use App\Models\Outlet;
 use App\Models\Payment;
 use App\Models\OrderItem;
-use Midtrans\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Midtrans\Config as MidtransConfig;
 
 class OrderController extends Controller
 {
@@ -41,8 +39,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-
         $validatedData = $this->validateOrder($request);
         $items = $validatedData['items'];
 
@@ -52,7 +48,6 @@ class OrderController extends Controller
             ], 422);
         }
 
-        // $validatedData['items'] = $items;
         $validatedData['order_type'] = 'Dine In';
         $validatedData['order_status'] = 'Ditunda';
 
@@ -68,7 +63,7 @@ class OrderController extends Controller
             DB::commit();
 
             session()->forget(['selectedMenus', 'quantities']);
-            return redirect()->to("/{$order->outlet->outlet_code}/payment-page/{$order->order_number}");
+            return redirect()->to('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . Str::slug($order->order_number));
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -159,10 +154,21 @@ class OrderController extends Controller
 
     private function createInitialPayment(Order $order, int $paymentMethodId, $response)
     {
+        $transaction_id = $response->transaction_id ?? null;
         $va_number = $response->va_numbers[0]->va_number ?? null;
         $bank = $response->va_numbers[0]->bank ?? null;
         $pdf_url = $response->pdf_url ?? null;
-        $transaction_id = $response->transaction_id ?? null;
+        $qr_code_url = null;
+        $expiry_time = $response->expiry_time ? Carbon::parse($response->expiry_time) : null;
+
+        if (isset($response->actions)) {
+            foreach ($response->actions as $action) {
+                if ($action->name === 'generate-qr-code') {
+                    $qr_code_url = $action->url ?? null;
+                    break;
+                }
+            }
+        }
 
         Payment::create([
             'order_id' => $order->id,
@@ -174,21 +180,23 @@ class OrderController extends Controller
             'va_number' => $va_number,
             'bank' => $bank,
             'pdf_url' => $pdf_url,
+            'qr_code_url' => $qr_code_url,
             'payment_status' => 'Ditunda',
+            'expiry_time' => $expiry_time,
         ]);
     }
 
     private function createMidtransTransaction(Order $order, array $items, int $paymentMethodId)
     {
-        MidtransConfig::$serverKey = config('services.midtrans.server_key');
-        MidtransConfig::$isProduction = config('services.midtrans.is_production');
-        MidtransConfig::$isSanitized = true;
-        MidtransConfig::$is3ds = true;
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
 
-        $method = PaymentMethod::findOrFail($paymentMethodId);
-        $methodConfig = is_string($method->method)
-            ? json_decode($method->method, true)
-            : $method->method;
+        $method = collect(config('payment_methods'))->firstWhere('id', $paymentMethodId);
+        $methodConfig = is_string($method['midtrans_config'])
+            ? json_decode($method['midtrans_config'], true)
+            : $method['midtrans_config'];
 
         if (!isset($methodConfig['payment_type'])) {
             return response()->json([
@@ -200,7 +208,7 @@ class OrderController extends Controller
         $payload = [
             'transaction_details' => [
                 'order_id' => $order->order_number,
-                'gross_amount' => $order->total_price,
+                'gross_amount' => $order->sub_total,
             ],
             'customer_details' => [
                 'first_name' => $order->customer->name,
@@ -214,20 +222,37 @@ class OrderController extends Controller
                     'name' => 'Menu ' . $item['menu_id'],
                 ];
             }, $items),
+            'callback_url' => url('/midtrans/callback/'),
         ];
 
         $payload = array_merge($payload, $methodConfig);
 
         $response = CoreApi::charge($payload);
+        // dd($response);
+
+        $updateData = [
+            'transaction_id' => $response->transaction_id ?? null,
+            'pdf_url' => $response->pdf_url ?? null,
+            'expiry_time' => $response->expiry_time ?? null,
+        ];
 
         // Bank Transfer
         if (isset($response->va_numbers[0])) {
-            Payment::where('order_id', $order->id)->update([
-                'va_number' => $response->va_numbers[0]->va_number,
-                'bank' => $response->va_numbers[0]->bank,
-                'pdf_url' => $response->pdf_url ?? null,
-            ]);
+            $updateData['va_number'] = $response->va_numbers[0]->va_number ?? null;
+            $updateData['bank'] = $response->va_numbers[0]->bank ?? null;
         }
+
+        // QR Code URL
+        if (isset($response->actions)) {
+            foreach ($response->actions as $action) {
+                if ($action->name === 'generate-qr-code') {
+                    $updateData['qr_code_url'] = $action->url ?? null;
+                    break;
+                }
+            }
+        }
+
+        Payment::where('order_id', $order->id)->update($updateData);
 
         return $response;
     }

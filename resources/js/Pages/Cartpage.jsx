@@ -27,7 +27,7 @@ export default function CartPage() {
     const [totalPrice, setTotalPrice] = useState(0);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods);
 
-    const { data, setData, post } = useForm({
+    const { setData, post } = useForm({
         outlet_code: outletCode,
         customer_id: customer.id,
         payment_method_id: selectedPaymentMethod ? selectedPaymentMethod.id : null,
