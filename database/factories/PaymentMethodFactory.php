@@ -17,16 +17,20 @@ class PaymentMethodFactory extends Factory
     public function definition(): array
     {
         $paymentMethods = config('payment_methods');
-        $paymentMethod = $paymentMethods[array_rand($paymentMethods)];
+        $randomMethod = $paymentMethods[array_rand($paymentMethods)];
+        dd(config('payment_methods'));
 
         return [
-            'id' => $paymentMethod['id'],
-            'type' => $paymentMethod['type'],
-            'icon' => $paymentMethod['icon'],
+            'type' => $randomMethod['type'],
+            'icon' => $randomMethod['icon'],
             'method' => [
-                'name' => $paymentMethod['method']['name'],
-                'icon' => $paymentMethod['method']['icon'],
+                'name' => $randomMethod['method']['name'],
+                'icon' => $randomMethod['method']['icon'],
+                'image' => $randomMethod['method']['image'],
             ],
+            'instruction' => $randomMethod['instruction'],
+            'details' => $randomMethod['details'],
+            'midtrans_config' => $randomMethod['midtrans_config'],
         ];
-        }
+    }
 }

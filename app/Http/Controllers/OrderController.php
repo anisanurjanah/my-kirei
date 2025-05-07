@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Menu;
 use Midtrans\Config;
 use App\Models\Order;
 use Midtrans\CoreApi;
@@ -59,6 +60,15 @@ class OrderController extends Controller
 
             $response = $this->createMidtransTransaction($order, $validatedData['items'], $validatedData['payment_method_id']);
             $this->createInitialPayment($order, $validatedData['payment_method_id'], $response);
+
+            // Direct ShopeePay
+            if (!empty($response->actions)) {
+                foreach ($response->actions as $action) {
+                    if ($action->name === 'deeplink-redirect') {
+                        return redirect()->away($action->url);
+                    }
+                }
+            }
 
             DB::commit();
 
@@ -125,7 +135,10 @@ class OrderController extends Controller
     private function createOrder(array $validatedData)
     {
         $outlet = Outlet::where('outlet_code', $validatedData['outlet_code'])->first();
-        $subTotal = collect($validatedData['items'])->sum(fn($item) => $item['quantity'] * $item['price']);
+
+        $subTotal = collect($validatedData['items'])->sum(function ($item) {
+            return $item['price'] * $item['quantity'];
+        });
 
         return Order::create([
             'outlet_id' => $outlet->id,
@@ -199,16 +212,19 @@ class OrderController extends Controller
             : $method['midtrans_config'];
 
         if (!isset($methodConfig['payment_type'])) {
-            return response()->json([
-                'message' => 'Gagal membuat pesanan.',
-                'error' => 'Metode pembayaran tidak valid.',
-            ]);
+            return redirect()->back()->withErrors(['Metode pembayaran tidak valid.']);
         }
+
+        $totalItemPrice = array_reduce($items, function ($carry, $item) {
+            return $carry + ($item['price'] * $item['quantity']);
+        }, 0);
+
+        $discount = $order->total_price - $totalItemPrice;
 
         $payload = [
             'transaction_details' => [
                 'order_id' => $order->order_number,
-                'gross_amount' => $order->sub_total,
+                'gross_amount' => $order->total_price,
             ],
             'customer_details' => [
                 'first_name' => $order->customer->name,
@@ -222,11 +238,28 @@ class OrderController extends Controller
                     'name' => 'Menu ' . $item['menu_id'],
                 ];
             }, $items),
-            'callback_url' => url('/midtrans/callback/'),
+            'custom_expiry' => [
+                'order_time' => now()->format('Y-m-d H:i:s O'),
+                'expiry_duration' => 15,
+                'unit' => 'minute'
+            ]
         ];
 
-        $payload = array_merge($payload, $methodConfig);
+        $payload['item_details'][] = [
+            'id' => 'DISCOUNT-' . uniqid(),
+            'price' => $discount,
+            'quantity' => 1,
+            'name' => 'Discount',
+        ];
 
+        if ($methodConfig['payment_type'] === 'shopeepay') {
+            $payload['payment_type'] = 'shopeepay';
+            $payload['shopeepay'] = [
+                'callback_url' => url("/midtrans/callback/" . $order->order_number),
+            ];
+        }
+
+        $payload = array_merge($payload, $methodConfig);
         $response = CoreApi::charge($payload);
         // dd($response);
 
@@ -236,24 +269,22 @@ class OrderController extends Controller
             'expiry_time' => $response->expiry_time ?? null,
         ];
 
-        // Bank Transfer
-        if (isset($response->va_numbers[0])) {
+        // Virtual Account (Bank Transfer)
+        if (!empty($response->va_numbers[0])) {
             $updateData['va_number'] = $response->va_numbers[0]->va_number ?? null;
             $updateData['bank'] = $response->va_numbers[0]->bank ?? null;
         }
 
-        // QR Code URL
-        if (isset($response->actions)) {
+        // GoPay dan QRIS
+        if (!empty($response->actions)) {
             foreach ($response->actions as $action) {
                 if ($action->name === 'generate-qr-code') {
                     $updateData['qr_code_url'] = $action->url ?? null;
-                    break;
                 }
             }
         }
 
         Payment::where('order_id', $order->id)->update($updateData);
-
         return $response;
     }
 

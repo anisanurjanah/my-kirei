@@ -32,11 +32,13 @@ export default function CartPage() {
         customer_id: customer.id,
         payment_method_id: selectedPaymentMethod ? selectedPaymentMethod.id : null,
         order_date: new Date().toISOString().slice(0, 10),
-        items: menus.map((menu) => ({
-            menu_id: menu.id,
-            quantity: quantities[menu.id] || 1,
-            price: parseInt(menu.price),
-        })),
+        items: menus.map((menu) => {
+            return {
+                menu_id: menu.id,
+                quantity: quantities[menu.id] || 1,
+                price: parseFloat(menu.price)
+            };
+        }),
         sub_total: parseInt(subTotal),
         discount: parseInt(discount),
         total_price: parseInt(totalPrice),
@@ -50,8 +52,8 @@ export default function CartPage() {
 
         post(`/${outletCode}/orders`);
 
-        sessionStorage.removeItem("selectedMenus");
-        sessionStorage.removeItem("quantities");
+        // sessionStorage.removeItem("selectedMenus");
+        // sessionStorage.removeItem("quantities");
     }
 
     // Menu List

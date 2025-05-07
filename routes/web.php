@@ -40,7 +40,7 @@ Route::middleware(['auth.customer', 'check.outlet.code'])->group(function () {
     Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
     Route::resource('/{outlet_code}/orders', OrderController::class);
 
-    Route::post('/midtrans/callback/{outlet_code}', [PaymentController::class, 'handleCallback'])->name('midtrans.callback');
+    Route::post('/midtrans/callback/{order_number}', [PaymentController::class, 'handleCallback']);
 
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });

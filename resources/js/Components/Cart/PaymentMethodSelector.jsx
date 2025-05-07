@@ -40,11 +40,11 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                     >
                         <div className="flex justify-center items-center gap-4 text-yellow-500">
                             <Wallet2 size={20} />
-                            <span>E-Wallet</span>
+                            <span className='text-sm md:text-md'>E-Wallet</span>
                         </div>
 
                         <div className="flex justify-center items-center gap-2 text-gray-400">
-                            <p className="text-md text-[#333]">{totalPrice || 0}</p>
+                            <p className="text-sm md:text-md text-[#333]">{totalPrice || 0}</p>
                             <ChevronDown size={20} />
                         </div>
                     </button>
@@ -63,11 +63,11 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                                                     ${isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100'}`}
                                             >
                                                 <div className="flex justify-center items-center gap-4">
-                                                    {icons[method.method.icon] || <WalletCards size={20} />}
-                                                    <span>{method.method.name}</span>
+                                                    { icons[method.method.icon] || <WalletCards size={20} /> }
+                                                    <span className='text-sm md:text-md'>{method.method.name}</span>
                                                 </div>
 
-                                                <p className="text-md text-[#333]">{totalPrice || 0}</p>
+                                                <p className="text-sm md:text-md text-[#333]">{totalPrice || 0}</p>
                                             </div>
                                         );
                                     })
@@ -85,11 +85,11 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                     >
                         <div className="flex justify-center items-center gap-4 text-green-600">
                             <ArrowRightLeft size={20} />
-                            <span>Bank Transfer</span>
+                            <span className='text-sm md:text-md'>Bank Transfer</span>
                         </div>
 
                         <div className="flex justify-center items-center gap-2 text-gray-400">
-                            <p className="text-md text-[#333]">{totalPrice || 0}</p>
+                            <p className="text-sm md:text-md text-[#333]">{totalPrice || 0}</p>
                             <ChevronDown size={20} />
                         </div>
                     </button>
@@ -108,11 +108,11 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                                                     ${isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100'}`}
                                             >
                                                 <div className="flex justify-center items-center gap-4">
-                                                    {icons[method.method.icon] || <Banknote size={20} />}
-                                                    <span>{method.method.name}</span>
+                                                    { icons[method.method.icon] || <Banknote size={20} /> }
+                                                    <span className='text-sm md:text-md'>{method.method.name}</span>
                                                 </div>
 
-                                                <p className="text-md text-[#333]">{totalPrice || 0}</p>
+                                                <p className="text-sm md:text-md text-[#333]">{totalPrice || 0}</p>
                                             </div>
                                         );
                                     })
@@ -137,10 +137,10 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                                     >
                                         <div className="flex justify-center items-center gap-4 text-blue-700">
                                             {icons[method.method.icon] || <QrCode size={20} />}
-                                            <span>{method.method.name}</span>
+                                            <span className='text-sm md:text-md'>{method.method.name}</span>
                                         </div>
 
-                                        <p className="text-md text-[#333]">{totalPrice || 0}</p>
+                                        <p className="text-sm md:text-md text-[#333]">{totalPrice || 0}</p>
                                     </div>
                                 );
                             })

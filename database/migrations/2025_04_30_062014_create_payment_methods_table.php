@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('type');
             $table->string('icon');
             $table->json('method');
+            $table->string('instruction')->nullable();
+            $table->text('details')->nullable();
             $table->json('midtrans_config')->nullable();
             $table->timestamps();
         });

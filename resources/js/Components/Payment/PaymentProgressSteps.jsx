@@ -1,10 +1,10 @@
 import { Inertia } from "@inertiajs/inertia";
 import { CircleCheck, UtensilsCrossed, ShoppingBasket, CreditCard, ReceiptText } from "lucide-react";
 
-export default function CartProgressSteps({ outletCode }) {
+export default function PaymentProgressSteps({ outletCode }) {
     const steps = [
-        { label: "Menu", icon: "UtensilsCrossed", href: `/${outletCode}/menu-page` },
-        { label: "Keranjang", icon: "ShoppingBasket", href: `/${outletCode}/cart-page` },
+        { label: "Menu", icon: "UtensilsCrossed", href: `` },
+        { label: "Keranjang", icon: "ShoppingBasket", href: `` },
         { label: "Pembayaran", icon: "CreditCard", href: `` },
         { label: "Ringkasan", icon: "ReceiptText", href: `` }
     ];
@@ -30,7 +30,7 @@ export default function CartProgressSteps({ outletCode }) {
                                         <li
                                             key={index}
                                             className={`relative flex flex-col items-center justify-center ${
-                                                index != 2 && index != 3 ? "text-[#C60E2A]" : "text-[#333]"
+                                                index != 3 ? "text-[#C60E2A]" : "text-[#333]"
                                             }`}
                                         >
                                             <button
@@ -38,7 +38,7 @@ export default function CartProgressSteps({ outletCode }) {
                                                 className="flex flex-col items-center gap-1 cursor-pointer"
                                             >
                                                 <span className={`absolute -bottom-[1.75rem] rounded-full text-white ${
-                                                    index != 2 && index != 3 ? "bg-[#C60E2A]" : "bg-[#333]"
+                                                    index != 3 ? "bg-[#C60E2A]" : "bg-[#333]"
                                                 }`}>
                                                     <CircleCheck />
                                                 </span>

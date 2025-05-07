@@ -8,11 +8,12 @@ use App\Models\Order;
 use App\Models\Price;
 use App\Models\Stock;
 use App\Models\Outlet;
+use App\Models\Payment;
 use App\Models\Customer;
 use App\Models\OrderItem;
-use App\Models\Payment;
 use App\Models\PaymentMethod;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -23,6 +24,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $outlets = [1, 2];
+        $methods = config('payment_methods');
         $menusWithoutStock = Menu::doesntHave('stock')->get();
         $menusWithoutPrice = Menu::doesntHave('pricePromo')->get();
 
@@ -98,5 +100,26 @@ class DatabaseSeeder extends Seeder
 
         // Order::factory(4)->create();
         // OrderItem::factory(8)->create();
+
+        // foreach ($methods as $method) {
+        //     DB::table('payment_methods')->updateOrInsert(
+        //         ['id' => $method['id']],
+        //         [
+        //             'type' => $method['type'],
+        //             'icon' => $method['icon'],
+        //             'method' => json_encode([
+        //                 'name' => $method['method']['name'],
+        //                 'icon' => $method['method']['icon'],
+        //                 'image' => $method['method']['image'] ?? null,
+        //             ]),
+        //             'instruction' => $method['instruction'] ?? null,
+        //             'details' => $method['details'] ?? null,
+        //             'midtrans_config' => is_array($method['midtrans_config'])
+        //                 ? json_encode($method['midtrans_config'])
+        //                 : $method['midtrans_config'],
+        //         ]
+        //     );
+        // }
+
     }
 }
