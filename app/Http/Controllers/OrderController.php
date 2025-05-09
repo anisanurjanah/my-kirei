@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Menu;
+use Inertia\Inertia;
 use Midtrans\Config;
 use App\Models\Order;
 use Midtrans\CoreApi;
@@ -22,9 +23,19 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($order_number)
     {
-        //
+        // $order = Order::where('order_number', $order_number)->first();
+        // $payment = Payment::where('order_id', $order->id)->first();
+
+        // if (!$order) {
+        //     abort(404);
+        // }
+
+        // return Inertia::render('OrderDetailPage', [
+        //     'order' => $order,
+        //     'payment' => $payment,
+        // ]);
     }
 
     /**
@@ -62,13 +73,13 @@ class OrderController extends Controller
             $this->createInitialPayment($order, $validatedData['payment_method_id'], $response);
 
             // Direct ShopeePay
-            if (!empty($response->actions)) {
-                foreach ($response->actions as $action) {
-                    if ($action->name === 'deeplink-redirect') {
-                        return redirect()->away($action->url);
-                    }
-                }
-            }
+            // if (!empty($response->actions)) {
+            //     foreach ($response->actions as $action) {
+            //         if ($action->name === 'deeplink-redirect') {
+            //             return redirect()->away($action->url);
+            //         }
+            //     }
+            // }
 
             DB::commit();
 
@@ -273,6 +284,11 @@ class OrderController extends Controller
         if (!empty($response->va_numbers[0])) {
             $updateData['va_number'] = $response->va_numbers[0]->va_number ?? null;
             $updateData['bank'] = $response->va_numbers[0]->bank ?? null;
+        }
+
+        // Permata Virtual Account (Bank Transfer)
+        if (!empty($response->permata_va_number)) {
+            $updateData['va_number'] = $response->permata_va_number ?? null;
         }
 
         // GoPay dan QRIS

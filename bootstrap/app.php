@@ -10,6 +10,7 @@ use App\Http\Middleware\AuthenticateCustomer;
 use App\Http\Middleware\DynamicSessionConfig;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
             DynamicSessionConfig::class,
+            VerifyCsrfToken::class,
         ]);
         $middleware->alias([
             'auth' => Authenticate::class,

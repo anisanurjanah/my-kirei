@@ -10,12 +10,14 @@ export default function CartPaymentMethod({ selectedPaymentMethod, onClick }) {
                 </div>
 
                 <div className="flex justify-center items-center gap-2">
-                    <button onClick={ onClick } className="text-xs md:text-md text-[#333] cursor-pointer">
-                    { selectedPaymentMethod
-                        ? selectedPaymentMethod.method.name.length > 16
-                            ? selectedPaymentMethod.method.name.slice(0, 16) + '...'
-                            : selectedPaymentMethod.method.name
-                        : "Pilih Pembayaran" }
+                    <button onClick={ onClick } className="text-xs md:text-sm text-[#333] cursor-pointer">
+                    {
+                        selectedPaymentMethod
+                            ? selectedPaymentMethod.method.name.length > 16
+                                ? selectedPaymentMethod.method.name.slice(0, 16) + '...'
+                                : selectedPaymentMethod.method.name
+                            : "Pilih Pembayaran"
+                        }
                     </button>
                     <ChevronRight size={16} className="text-gray-400" />
                 </div>

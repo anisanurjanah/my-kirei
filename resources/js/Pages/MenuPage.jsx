@@ -137,7 +137,7 @@ export default function MenuPage() {
                 toggleOpen={ () => setIsOpen(!isOpen) }
                 showAlert={ () => setShowAlert(true) }
             />
-            <MenuNavigation />
+            {/* <MenuNavigation /> */}
             <Main>
                 <section className="p-4">
                     <div className="bg-white w-full">

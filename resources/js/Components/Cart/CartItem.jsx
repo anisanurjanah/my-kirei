@@ -18,9 +18,20 @@ export default function CartItem({ menu, quantities, onIncrease, onDecrease, onR
                             <dd className="inline">
                             IDR{" "}
                             {
-                                menu.price_promo?.price_promo
-                                    ? (menu.price - menu.price_promo.price_promo).toLocaleString()
-                                    : Number(menu.price).toLocaleString()
+                                menu.price_promo?.price_promo ? (
+                                    <>
+                                        <span style={{ textDecoration: 'line-through', color: 'gray', marginRight: 4 }}>
+                                            { Number(menu.price).toLocaleString() }
+                                        </span>
+                                        <span>
+                                            { Number(menu.price - menu.price_promo.price_promo).toLocaleString() }
+                                        </span>
+                                    </>
+                                ) : (
+                                    <span>
+                                        { Number(menu.price).toLocaleString() }
+                                    </span>
+                                )
                             }
                             </dd>
                         </div>
@@ -32,7 +43,7 @@ export default function CartItem({ menu, quantities, onIncrease, onDecrease, onR
                         <button
                             type="button"
                             onClick={ onDecrease }
-                            className="h-8 w-8 bg-[#C60E2A] text-white rounded-md"
+                            className="h-8 w-8 bg-[#C60E2A] text-white rounded-md cursor-pointer"
                             disabled={ quantities <= 1 }
                         >
                             −
@@ -49,13 +60,13 @@ export default function CartItem({ menu, quantities, onIncrease, onDecrease, onR
                         <button
                             type="button"
                             onClick={ onIncrease }
-                            className="h-8 w-8 bg-[#C60E2A] text-white rounded-md"
+                            className="h-8 w-8 bg-[#C60E2A] text-white rounded-md cursor-pointer"
                         >
                             +
                         </button>
 
                         <button
-                            className="text-gray-600 transition hover:text-red-600 p-2 md:p-4"
+                            className="text-gray-600 transition hover:text-red-600 p-2 md:p-4 cursor-pointer"
                             onClick={ onRemove }
                         >
                             <Trash2 size={16} />

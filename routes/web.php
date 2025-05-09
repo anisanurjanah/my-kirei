@@ -8,6 +8,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\DashboardController;
@@ -17,8 +18,9 @@ use App\Http\Controllers\AdminPriceController;
 use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminOutletController;
 use App\Http\Controllers\AdminCustomerController;
-use App\Http\Controllers\AdminOrderItemController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\AdminOrderItemController;
+use App\Http\Controllers\OrderDetailController;
 
 // VIEWS
 Route::get('/', [IndexController::class, 'index'])->middleware('guest');
@@ -36,14 +38,18 @@ Route::middleware(['auth.customer', 'check.outlet.code'])->group(function () {
     Route::get('/{outlet_code}/cart-page', [CartController::class, 'index'])->name('cart-page');
     Route::get('/{outlet_code}/payment-page/{order_number}', [PaymentController::class, 'index'])->name('payment-page');
     Route::get('/{outlet_code}/payment-method-page', [PaymentMethodController::class, 'index'])->name('payment-method-page');
+    Route::get('/{outlet_code}/order-detail-page/{order_number}', [OrderDetailController::class, 'index'])->name('order-detail-page');
+    // Route::get('/{outlet_code}/orders/{order_number}', [OrderController::class, 'index'])->name('order-detail');
 
     Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
     Route::resource('/{outlet_code}/orders', OrderController::class);
 
-    Route::post('/midtrans/callback/{order_number}', [PaymentController::class, 'handleCallback']);
+    // Route::post('/midtrans/callback/{order_number}', [PaymentController::class, 'handleCallback']);
 
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
+
+Route::post('/midtrans/callback', [MidtransController::class, 'handleNotification']);
 
 // SESSION
 Route::get('/check-session', function () {

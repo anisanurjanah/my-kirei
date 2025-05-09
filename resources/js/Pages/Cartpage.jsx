@@ -115,9 +115,9 @@ export default function CartPage() {
         setData((prev) => ({
             ...prev,
             items,
-            sub_total: subTotal,
-            discount: discount,
-            total_price: totalPrice
+            sub_total: parseInt(subTotal),
+            discount: parseInt(discount),
+            total_price: parseInt(totalPrice)
         }));
     }, [menus, quantities, subTotal, discount, totalPrice]);
 
