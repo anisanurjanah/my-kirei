@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Menu;
+use App\Models\Price;
+use App\Models\Stock;
 use App\Models\Outlet;
 use App\Models\OrderItem;
-use App\Models\Stock;
-use App\Models\Price;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-// use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class AdminMenuController extends Controller
 {
@@ -20,26 +20,54 @@ class AdminMenuController extends Controller
      */
     public function index()
     {
-        return view('dashboard.menus.index', [
-            // 'menus' => Menu::latest()->with(['stock', 'pricePromo'])->paginate(10)->withQueryString(),
-            'menus' => Menu::latest()->with(['stock', 'pricePromo' => function ($query) {
-                $query->where('promo_end_date', '>=', now());
-            }])->paginate(10)->withQueryString(),
+        $user = Auth::guard('web')->user();
 
+        // Menus
+        $queryMenus = Menu::latest()->with(['stock', 'pricePromo' => function ($query) {
+            $query->where('promo_end_date', '>=', now());
+        }]);
+
+        if ($user->username !== 'administrator') {
+            $queryMenus->where('outlet_id', $user->outlet_id);
+        }
+
+        $menus = $queryMenus->paginate(10)->withQueryString();
+
+        // Best Selling
+        $bestSellingMenu = OrderItem::select('menu_id')
+            ->selectRaw('SUM(quantity) as total_sold')
+            ->groupBy('menu_id')
+            ->orderByDesc('total_sold')
+            ->with('menu')
+            ->first();
+
+        // Sold Today
+        $soldToday = OrderItem::whereHas('order', function ($query) {
+            $query->whereDate('created_at', Carbon::today());
+        })->sum('quantity');
+
+        // Sold This Month
+        $soldThisMonth = OrderItem::whereHas('order', function ($query) {
+            $query->whereMonth('created_at', Carbon::now()->month);
+        })->sum('quantity');
+
+        // Empty Stock
+        $emptyStock = (clone $queryMenus)
+            ->whereHas('stock')
+            ->with(['stock' => function ($query) {
+                $query->orderBy('current_stock', 'asc');
+            }])
+            ->get()
+            ->sortBy(fn ($menu) => $menu->stock?->current_stock)
+            ->first();
+
+        return view('dashboard.menus.index', [
+            'menus' => $menus,
             'outlets' => Outlet::all(),
-            'emptyStock' => Stock::orderBy('current_stock', 'asc')->first(),
-            'bestSellingMenu' => OrderItem::select('menu_id')
-                ->selectRaw('SUM(quantity) as total_sold')
-                ->groupBy('menu_id')
-                ->orderByDesc('total_sold')
-                ->with('menu')
-                ->first(),
-            'soldToday' => OrderItem::whereHas('order', function ($query) {
-                    $query->whereDate('created_at', Carbon::today());
-                })->sum('quantity'),
-            'soldThisMonth' => OrderItem::whereHas('order', function ($query) {
-                    $query->whereMonth('created_at', Carbon::now()->month);
-                })->sum('quantity')
+            'bestSellingMenu' => $bestSellingMenu,
+            'soldToday' => $soldToday,
+            'soldThisMonth' => $soldThisMonth,
+            'emptyStock' => $emptyStock,
         ]);
     }
 
@@ -56,7 +84,7 @@ class AdminMenuController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $outlet_code = null)
     {
         $today = now()->toDateString();
 
@@ -115,26 +143,37 @@ class AdminMenuController extends Controller
         ]);
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Menu berhasil ditambahkan!');
+        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+            ->with('success', 'Menu berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Menu $menu)
+    public function show($param1, $param2 = null)
     {
+        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+
+        $menu = Menu::where('slug', $slug)->firstOrFail();
+
         return view('dashboard.menus.show', [
-            'menu' => $menu
+            'menu' => $menu,
+            'outlet_code' => $outlet_code
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Menu $menu)
+    public function edit($param1, $param2 = null)
     {
+        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+
+        $menu = Menu::where('slug', $slug)->firstOrFail();
+
         return view('/dashboard.menus.edit', [
             'menu' => $menu,
+            'outlet_code' => $outlet_code,
             'outlets' => Outlet::all()
         ]);
     }
@@ -142,8 +181,9 @@ class AdminMenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Menu $menu)
+    public function update(Request $request, $outlet_code = null, $menu)
     {
+        $menu = Menu::where('slug', $menu)->firstOrFail();
         $today = now()->toDateString();
 
         // Remove Price's Dot
@@ -200,14 +240,18 @@ class AdminMenuController extends Controller
         }
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Menu berhasil diperbarui!');
+        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+            ->with('success', 'Menu berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Menu $menu)
+    public function destroy($param1, $param2 = null)
     {
+        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+
+        $menu = Menu::where('slug', $slug)->firstOrFail();
         if($menu->image) {
             Storage::delete($menu->image);
         }
@@ -215,12 +259,7 @@ class AdminMenuController extends Controller
         Menu::destroy($menu->id);
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Menu berhasil dihapus!');
+        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+            ->with('success', 'Menu berhasil dihapus!');
     }
-
-    // public function checkSlug(Request $request)
-    // {
-    //     $slug = SlugService::createSlug(Menu::class, 'slug', $request->name);
-    //     return response()->json(['slug' => $slug]);
-    // }
 }

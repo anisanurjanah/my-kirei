@@ -18,12 +18,11 @@ class PriceFactory extends Factory
      */
     public function definition(): array
     {
-        $startDate = $this->faker->dateTimeBetween('-1 month', '+1 week');
+        $startDate = fake()->dateTimeBetween('-1 month', '+1 week');
         $endDate = (clone $startDate)->modify('+7 days');
 
         return [
-            'menu_id' => Menu::whereDoesntHave('pricePromo')->inRandomOrder()->first()->id,
-            'price_promo' => $this->faker->randomFloat(2, 100, 1900),
+            'price_promo' => fake()->randomFloat(2, 100, 1900),
             'promo_start_date' => Carbon::instance($startDate)->format('Y-m-d'),
             'promo_end_date' => Carbon::instance($endDate)->format('Y-m-d'),
         ];

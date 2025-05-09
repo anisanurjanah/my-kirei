@@ -20,7 +20,6 @@ class StockFactory extends Factory
     public function definition(): array
     {
         return [
-            'menu_id' => Menu::whereDoesntHave('stock')->inRandomOrder()->first()->id,
             'current_stock' => fake()->numberBetween(0, 1000),
         ];
     }

@@ -3,36 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use Inertia\Inertia;
+use App\Models\Outlet;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
-class AdminMenuController extends Controller
+class MenuController extends Controller
 {
-    public function index() {
-        $title = '';
+    public function index($outlet_code)
+    {
+        $outlet = Outlet::where('outlet_code', $outlet_code)->first();
 
-        // if(request('category')) {
-        //     $category = Category::firstWhere('slug', request('category'));
-        //     $title = ' in ' . $category->name;
-        // }
-
-        // if(request('author')) {
-        //     $author = User::firstWhere('username', request('author'));
-        //     $title = ' by ' . $author->name;
-        // }
-
-        return view('dashboard.menus.index', [
-            "title" => "Daftar Menu" . $title,
-            // "active" => "menus",
-            // "menus" => Menu::latest()->filter(request(['search', 'category', 'author']))->paginate(7)->withQueryString()
-            "menus" => Menu::all()
-        ]);
-    }
-
-    public function show(Menu $menu) {
-        return view('dashboard.menus.index', [
-            "title" => "Daftar Menu",
-            "active" => "menus",
-            "menu" => $menu
+        return Inertia::render('MenuPage', [
+            'menus' => Menu::latest()->with(['stock', 'pricePromo' => function ($query) {
+                $query->where('promo_end_date', '>=', now());
+            }])->where('outlet_id', $outlet->id)->get(),
+            'outlet_code' => $outlet_code,
+            'customer' => Auth::guard('customer')->user(),
         ]);
     }
 }

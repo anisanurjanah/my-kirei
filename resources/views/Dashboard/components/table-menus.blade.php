@@ -4,8 +4,9 @@
             <tr>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NO <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                {{-- <th scope="col" class="text-secondary" style="font-size: 12px;">DESKRIPSI <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th> --}}
+                @if (auth()->user()->isAdministrator())
+                    <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                @endif
                 <th scope="col" class="text-secondary" style="font-size: 12px;">HARGA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">POTONGAN HARGA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
@@ -19,8 +20,9 @@
                     <tr>
                         <td>{{ ($menus->currentPage() - 1) * $menus->perPage() + $loop->iteration }}</td>
                         <td>{{ $menu->name }}</td>
-                        <td>{{ $menu->outlet->name }}</td>
-                        {{-- <td>{{ Str::limit($menu->description, 20, '...') }}</td> --}}
+                        @if (auth()->user()->isAdministrator())
+                            <td>{{ $menu->outlet->name }}</td>
+                        @endif
                         <td>Rp. {{ number_format($menu->price, 0, ',', '.') }}</td>
                         <td>Rp. {{ number_format(optional($menu->pricePromo)->price_promo ?? 0, 0, ',', '.') }}</td>
                         @php
@@ -43,19 +45,25 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/menus/{{ $menu->slug }}">
+                                        <a class="dropdown-item" href="{{ getModuleUrl('menus', $menu->slug) }}">
                                             <i class="bi bi-eye mx-2" style="font-size: 16px"></i>Lihat
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/menus/{{ $menu->slug }}/edit">
+                                        <a class="dropdown-item" href="{{ getModuleUrl('menus', $menu->slug, 'edit') }}">
                                             <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Perbarui
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                         <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmModal"
-                                            data-bs-url="/dashboard/menus/{{ $menu->slug }}" data-bs-name="{{ $menu->name }}" data-action="delete">
+                                         <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmModal"
+                                            data-bs-url="{{ getModuleUrl('menus', $menu->slug) }}"
+                                            data-bs-name="{{ $menu->name }}"
+                                            data-action="delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
                                         </button>
                                     </li>

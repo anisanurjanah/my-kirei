@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->unique();
+            $table->foreignId('menu_id')
+                ->constrained('menus')
+                ->onDelete('cascade')
+                ->onUpdate('cascade')
+                ->unique();
             $table->integer('current_stock');
             $table->timestamps();
         });

@@ -48,7 +48,7 @@
                         <tr>
                             <th scope="row">Nama</th>
                             <td>:</td>
-                            <td>{{ $order->customer->name }}</td>
+                            <td>{{ $order->customer->name ?? "Name" }}</td>
 
                             <th scope="row">Status Pembayaran</th>
                             <td>:</td>

@@ -6,7 +6,7 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap py-3">
             <div class="d-block">
                 <h1 class="h2">
-                    <a href="/dashboard/menus" class="text-decoration-none text-danger">
+                    <a href="{{ getModuleUrl('menus') }}" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
                     Perbarui Menu {{ $menu->name }}
@@ -15,12 +15,12 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
-                            <a href="/dashboard" class="text-decoration-none text-black">
+                            <a href="{{ getDashboardUrl() }}" class="text-decoration-none text-black">
                                 <i class="bi bi-house-fill"></i>
                             </a>
                         </li>
                         <li class="breadcrumb-item" aria-current="page">
-                            <a href="/dashboard/menus" class="text-decoration-none text-black">
+                            <a href="{{ getModuleUrl('menus') }}" class="text-decoration-none text-black">
                                 Menu
                             </a>
                         </li>
@@ -33,9 +33,14 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/menus/{{ $menu->slug }}" enctype="multipart/form-data">
+        <form
+            method="post"
+            action="{{ getModuleUrl('menus', $menu->slug) }}"
+            enctype="multipart/form-data"
+        >
             @method('PUT')
             @csrf
+
             <div class="row p-2">
                 <div class="col-lg-12 mb-3 mb-md-0">
                     <div class="accordion accordion-flush">
@@ -49,12 +54,19 @@
                                 <div class="accordion-body">
                                     <div class="mb-3">
                                         <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
-                                            <option value="" disabled selected>Pilih Outlet</option>
-                                            @foreach ($outlets as $outlet)
-                                                <option value="{{ $outlet->id }}" data-slug="{{ $outlet->slug }}" {{ old('outlet_id', $menu->outlet_id) == $outlet->id ? 'selected' : '' }}>
-                                                    {{ $outlet->name }}
+                                            @if (auth()->user()->isAdministrator())
+                                                <option value="" disabled selected>Pilih Outlet</option>
+                                                @foreach ($outlets as $outlet)
+                                                    <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                                                        {{ $outlet->name }}
+                                                    </option>
+                                                @endforeach
+                                            @else
+                                                @php $user = auth()->user(); @endphp
+                                                <option value="{{ $user->outlet->id }}" data-code="{{ $user->outlet->outlet_code }}" {{ old('outlet_id') == $user->outlet->id ? 'selected' : '' }}>
+                                                    {{ $user->outlet->name }}
                                                 </option>
-                                            @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                 </div>

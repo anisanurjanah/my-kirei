@@ -79,9 +79,15 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $topOutlet }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $topOutlet }}</h6>
-                                    <small class="card-text m-0">Pesanan Terbanyak</small>
+                                    @if (auth()->user()->isAdministrator())
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($topOutlet, 12, '...') }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($topOutlet, 12, '...') }}</h6>
+                                        <small class="card-text m-0">Pesanan Terbanyak</small>
+                                    @else
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($topStaff, 12, '...') }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($topStaff, 12, '...') }}</h6>
+                                        <small class="card-text m-0">Staf Teraktif</small>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -97,13 +103,23 @@
                         <input type="text" class="form-control" placeholder="Cari pesanan.." style="font-size: 12px;">
                         <button class="btn btn-outline-secondary" type="button" id="search" name="search" style="font-size: 12px;">Cari</button>
                     </div>
-                    <select class="form-select w-25 ms-auto" name="outlet_id" style="font-size: 12px;">
-                        @foreach ($outlets as $outlet)
-                            <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
-                                Outlet: {{ $outlet->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    @if (auth()->user()->isAdministrator())
+                        <select class="form-select w-25 ms-auto" name="outlet_id" style="font-size: 12px;">
+                            @foreach ($outlets as $outlet)
+                                <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                                    Outlet: {{ $outlet->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @else
+                        <select class="form-select w-25 ms-auto" name="user_id" style="font-size: 12px;">
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                    Staff: {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @endif
                 </div>
 
                 @include('dashboard.components.table-orders')

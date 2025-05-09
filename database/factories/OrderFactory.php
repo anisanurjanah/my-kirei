@@ -28,17 +28,15 @@ class OrderFactory extends Factory
         $totalPrice = $subTotal - $discount;
 
         return [
-            'outlet_id' => mt_rand(1, 5),
+            'outlet_id' => $outlet->id,
             'customer_id' => mt_rand(1, 10),
-            'user_id' => mt_rand(2, 11),
             'order_number' => now()->format('Ymd') . $outlet->outlet_code . mt_rand(100000, 999999),
             'order_date' => now()->toDateTimeString(),
             'sub_total' => $subTotal,
             'discount' => $discount,
             'total_price' => $totalPrice,
             'order_type' => fake()->randomElement(['Dine In', 'Take Away']),
-            'order_status' => fake()->randomElement(['Selesai', 'Dibatalkan']),
-            'payment_status' => fake()->randomElement(['Lunas', 'Belum Lunas']),
+            'order_status' => fake()->randomElement(['Ditunda', 'Dibatalkan', 'Selesai', 'Dalam Proses']),
         ];
     }
 }

@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Menu;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Outlet;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use App\Models\Menu;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\Outlet;
+use App\Models\Customer;
+use App\Models\OrderItem;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminOrderController extends Controller
 {
@@ -19,17 +20,44 @@ class AdminOrderController extends Controller
      */
     public function index()
     {
+        $user = Auth::guard('web')->user();
+
+        // Orders
+        $queryOrders = Order::query();
+
+        if ($user->username !== 'administrator') {
+            $user = User::where('outlet_id', $user->outlet_id)->get();
+            $queryOrders->where('outlet_id', $user->outlet_id);
+        }
+
+        $orders = (clone $queryOrders)->with(['outlet', 'customer', 'user'])->latest()->paginate(10)->withQueryString();
+        $totalOrders = (clone $queryOrders)->count();
+        $totalTransactions = (clone $queryOrders)->whereDate('created_at', today())->count();
+        $monthlyRevenue = (clone $queryOrders)->whereMonth('created_at', now()->month)->sum('total_price');
+
+        $topOutlet = (clone $queryOrders)
+            ->selectRaw('outlet_id, COUNT(*) as total_orders')
+            ->with('outlet')
+            ->groupBy('outlet_id')
+            ->orderByDesc('total_orders')
+            ->first()?->outlet->name;
+
+        $topStaff = (clone $queryOrders)
+            ->selectRaw('user_id, COUNT(*) as total_orders')
+            ->with('user')
+            ->groupBy('user_id')
+            ->orderByDesc('total_orders')
+            ->first()?->user->name;
+
         return view('dashboard.orders.index', [
-            'orders' => Order::latest()->with(['outlet', 'customer', 'user'])->paginate(10)->withQueryString(),
+            'orders' => $orders,
             'outlets' => Outlet::all(),
-            'totalOrders' => Order::count(),
-            'totalTransactions' => Order::whereDate('created_at', today())->count(),
-            'monthlyRevenue' => Order::whereMonth('created_at', now()->month)->sum('total_price'),
-            'topOutlet' => Order::select('outlet_id')
-                            ->with('outlet')
-                            ->groupBy('outlet_id')
-                            ->orderByRaw('COUNT(*) DESC')
-                            ->first()?->outlet->name
+            'users' => $user,
+            'totalOrders' => $totalOrders,
+            'totalTransactions' => $totalTransactions,
+            'monthlyRevenue' => $monthlyRevenue,
+            'topOutlet' => $topOutlet,
+            'topStaff' => $topStaff,
         ]);
     }
 
@@ -82,6 +110,7 @@ class AdminOrderController extends Controller
             'sub_total' => 'required|integer|min:0',
             'discount' => 'nullable|integer|min:0',
             'total_price' => 'required|integer|min:0',
+            'order_type' => 'required|string|in:Dine In,Take Away',
             'order_status' => 'required|string|in:Selesai,Dibatalkan',
             'payment_status' => 'required|string|in:Lunas,Belum Lunas',
         ]);
@@ -105,6 +134,7 @@ class AdminOrderController extends Controller
             'sub_total' => $validatedData['sub_total'],
             'discount' => $validatedData['discount'],
             'total_price' => $validatedData['total_price'],
+            'order_type' => $validatedData['order_type'],
             'order_status' => $validatedData['order_status'],
             'payment_status' => $validatedData['payment_status'],
         ]);
@@ -188,6 +218,7 @@ class AdminOrderController extends Controller
             'sub_total' => 'required|integer|min:0',
             'discount' => 'nullable|integer|min:0',
             'total_price' => 'required|integer|min:0',
+            'order_type' => 'required|string|in:Dine In,Take Away',
             'order_status' => 'required|string|in:Selesai,Dibatalkan',
             'payment_status' => 'required|string|in:Lunas,Belum Lunas',
         ]);
@@ -201,6 +232,7 @@ class AdminOrderController extends Controller
             'sub_total' => $validatedData['sub_total'],
             'discount' => $validatedData['discount'],
             'total_price' => $validatedData['total_price'],
+            'order_type' => $validatedData['order_type'],
             'order_status' => $validatedData['order_status'],
             'payment_status' => $validatedData['payment_status'],
         ]);

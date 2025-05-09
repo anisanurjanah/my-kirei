@@ -11,9 +11,11 @@
     "require": {
         "php": "^8.2",
         "cviebrock/eloquent-sluggable": "^12.0",
+        "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "livewire/livewire": "^3.6"
+        "livewire/livewire": "^3.6",
+        "midtrans/midtrans-php": "^2.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -31,8 +33,9 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/PhoneHelper.php",
-            "app/Helpers/MenuHelper.php"
+            "app/Helpers/MenuHelper.php",
+            "app/Helpers/ModulePathHelper.php",
+            "app/Helpers/PhoneHelper.php"
         ]
     },
     "autoload-dev": {

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Menu;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,11 +18,17 @@ class OrderItemFactory extends Factory
      */
     public function definition(): array
     {
+        $order = Order::inRandomOrder()->first();
+
+        $menu = Menu::where('outlet_id', $order->outlet_id)
+                    ->inRandomOrder()
+                    ->first();
+
         return [
-            'order_id' => mt_rand(1, 10),
-            'menu_id' => mt_rand(1, 25),
-            'quantity' => mt_rand(1, 10),
-            'price' => fake()->randomFloat(2, 10000, 50000),
+            'order_id' => $order->id,
+            'menu_id' => $menu->id,
+            'quantity' => $this->faker->numberBetween(1, 5),
+            'price' => $menu->price,
         ];
     }
 }

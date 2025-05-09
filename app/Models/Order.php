@@ -25,10 +25,10 @@ class Order extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function user()
+    public function payment()
     {
-        return $this->belongsTo(User::class);
-    }
+        return $this->hasOne(Payment::class);
+}
 
     public function orderItems()
     {
@@ -46,12 +46,9 @@ class Order extends Model
     ];
 
     const ORDER_STATUSES = [
+        'Ditunda' => 'Ditunda',
         'Selesai' => 'Selesai',
         'Dibatalkan' => 'Dibatalkan',
-    ];
-
-    const PAYMENT_STATUSES = [
-        'Lunas' => 'Lunas',
-        'Belum Lunas' => 'Belum Lunas',
+        'Dalam Proses' => 'Dalam Proses'
     ];
 }
