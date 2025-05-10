@@ -15,5 +15,9 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('menu', function ($value) {
             return Menu::where('slug', $value)->firstOrFail();
         });
+
+        Route::middleware('api')
+        ->prefix('api')
+        ->group(base_path('routes/api.php'));
     }
 }

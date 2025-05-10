@@ -49,7 +49,7 @@ Route::middleware(['auth.customer', 'check.outlet.code'])->group(function () {
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
 
-Route::post('/midtrans/callback', [MidtransController::class, 'handleNotification']);
+// Route::post('/midtrans/callback', [MidtransController::class, 'handleNotification']);
 
 // SESSION
 Route::get('/check-session', function () {

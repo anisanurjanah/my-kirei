@@ -72,7 +72,8 @@ class AuthController extends Controller
             Auth::guard('customer')->login($customer);
             $request->session()->regenerate();
 
-            return redirect()->intended("/{$outlet_code}/menu-page")
+            // return redirect()->intended("/{$outlet_code}/menu-page")
+            return redirect()->to(secure_url("{$outlet_code}/menu-page"))
                 ->with('success', "Selamat datang di Kirei Sum,")
                 ->with('customer', $customer->only(['id', 'name', 'phone']));
         }

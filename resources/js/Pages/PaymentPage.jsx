@@ -15,7 +15,6 @@ export default function PaymentPage() {
         outlet_code: outletCode,
         selectedPaymentMethod: paymentMethods,
         payment,
-        customer
     } = usePage().props;
 
     console.log(usePage().props);
@@ -30,14 +29,6 @@ export default function PaymentPage() {
         }
     }, [paymentMethods]);
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         window.location.reload();
-    //     }, 5000);
-
-    //     return () => clearInterval(interval);
-    // }, []);
-
     useEffect(() => {
         const interval = setInterval(() => {
             Inertia.reload();
@@ -47,14 +38,14 @@ export default function PaymentPage() {
     }, []);
 
     useEffect(() => {
-        console.log('payment status:', payment?.payment_status); // ⬅️ tambahkan ini
+        console.log('payment status:', payment?.payment_status);
 
         if (payment?.payment_status === 'Lunas') {
             setTimeout(() => {
                 Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
                 // Inertia.visit(`/${outletCode}/orders/${payment.order.order_number}`);
                 // window.location.href = `/${outletCode}/order-detail-page/${payment.order.order_number}`;
-            }, 1000);
+            }, 5000);
         }
     }, [payment]);
 

@@ -181,9 +181,8 @@ class AdminMenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $outlet_code = null, $menu)
+    public function update(Request $request, $outlet_code = null, Menu $menu)
     {
-        $menu = Menu::where('slug', $menu)->firstOrFail();
         $today = now()->toDateString();
 
         // Remove Price's Dot

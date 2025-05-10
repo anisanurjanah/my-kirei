@@ -13,28 +13,27 @@ class PaymentController extends Controller
     public function index($outlet_code, $order_number)
     {
         $order = Order::where('order_number', $order_number)->first();
-        $payment = Payment::where('order_id', $order->id)->first();
+        $payment = Payment::with('order')->where('order_id', $order->id)->first();
 
         return Inertia::render('PaymentPage', [
             'outlet_code' => $outlet_code,
-            'customer' => Auth::guard('customer')->user(),
             'selectedPaymentMethod' => session('selected_payment_method', null),
-            'payment' => $payment,
+            'payment' => $payment->refresh(),
         ]);
     }
 
-    public function handleCallback(Request $request, $order_number)
-    {
-        $payload = $request->all();
+    // public function handleCallback(Request $request, $order_number)
+    // {
+    //     $payload = $request->all();
 
-        if (isset($payload['transaction_status']) && $payload['transaction_status'] === 'settlement') {
-            Payment::whereHas('order', function ($query) use ($order_number) {
-                $query->where('order_number', $order_number);
-            })->update([
-                'payment_status' => 'Lunas',
-            ]);
-        }
+    //     if (isset($payload['transaction_status']) && $payload['transaction_status'] === 'settlement') {
+    //         Payment::whereHas('order', function ($query) use ($order_number) {
+    //             $query->where('order_number', $order_number);
+    //         })->update([
+    //             'payment_status' => 'Lunas',
+    //         ]);
+    //     }
 
-        return response()->json(['message' => 'Callback handled'], 200);
-    }
+    //     return response()->json(['message' => 'Callback handled'], 200);
+    // }
 }

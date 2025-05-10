@@ -3,42 +3,43 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class MidtransController extends Controller
 {
     public function handleNotification(Request $request)
     {
-        dd($request->all());
-
         $serverKey = config('services.midtrans.server_key');
 
-        $signatureKey = hash("sha512",
-            $request->order_number .
-            $request->status_code .
-            $request->gross_amount .
-            $serverKey
-        );
+        // $signatureKey = hash("sha512",
+        //     $request->order_id .
+        //     $request->status_code .
+        //     $request->gross_amount .
+        //     $serverKey
+        // );
 
-        if ($signatureKey !== $request->signature_key) {
+        $orderId = $request->input('order_id');
+        $statusCode = $request->input('status_code');
+        $grossAmount = $request->input('gross_amount');
+        $signatureKey = $request->input('signature_key');
+
+        $mySignature = hash("sha512", $orderId . $statusCode . $grossAmount . $serverKey);
+
+        if ($mySignature !== $signatureKey) {
             return response()->json(['message' => 'Invalid signature key'], 403);
         }
 
-        // $payment = Payment::find($request->order_id);
         $order = Order::where('order_number', $request->order_id)->first();
-
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
         $payment = $order->payment;
-
         if (!$payment) {
             return response()->json(['message' => 'Payment not found'], 404);
         }
 
-        switch ($request->transaction_status) {
+        switch ($request->input('transaction_status')) {
             case 'settlement':
             case 'capture':
                 $payment->payment_status = 'Lunas';

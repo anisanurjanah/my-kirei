@@ -35,6 +35,7 @@
 
         <form
             method="post"
+            {{-- action="/dashboard/menus/{{ $menu->slug }}" --}}
             action="{{ getModuleUrl('menus', $menu->slug) }}"
             enctype="multipart/form-data"
         >
@@ -55,7 +56,6 @@
                                     <div class="mb-3">
                                         <select class="form-select select2" id="outlet_id" name="outlet_id" required autofocus>
                                             @if (auth()->user()->isAdministrator())
-                                                <option value="" disabled selected>Pilih Outlet</option>
                                                 @foreach ($outlets as $outlet)
                                                     <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
                                                         {{ $outlet->name }}
