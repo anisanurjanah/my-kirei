@@ -7,4 +7,4 @@ use App\Http\Controllers\MidtransController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::post('/midtrans/callback', [MidtransController::class, 'handleNotification']);
+// Route::post('/midtrans/callback', [MidtransController::class, 'handleNotification']);
