@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MidtransController;
 
 // Route::get('/user', function (Request $request) {
@@ -8,3 +9,4 @@ use App\Http\Controllers\MidtransController;
 // })->middleware('auth:sanctum');
 
 // Route::post('/midtrans/callback', [MidtransController::class, 'handleNotification']);
+Route::post('/payment/webhook', [PaymentController::class, 'handleWebhook']);

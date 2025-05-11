@@ -31,7 +31,7 @@ export default function PaymentPage() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (payment?.payment_status !== 'Lunas') {
+            if (payment?.payment_status !== 'Lunas' && payment?.payment_status !== 'Gagal') {
                 Inertia.reload({ only: ['payment'] });
             }
         }, 10000);
@@ -42,47 +42,12 @@ export default function PaymentPage() {
     useEffect(() => {
         if (payment?.payment_status === 'Lunas') {
             setTimeout(() => {
-                // Redirect to order detail page setelah pembayaran sukses
-                window.location.href = `/${outletCode}/order-detail-page/${payment.order.order_number}`;
-            }, 5000);
+                Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
+            }, 3000);
         } else if (payment?.payment_status === 'Gagal') {
-            // Tampilkan pesan gagal atau error
             alert('Pembayaran Gagal, silakan coba lagi.');
         }
-    }, [payment]); // Pastikan payment status ter-update
-
-
-    // useEffect(() => {
-    //     console.log('Payment status:', payment?.payment_status);
-
-    //     // Jika pembayaran sudah Lunas, lakukan redirect
-    //     if (payment?.payment_status === 'Lunas') {
-    //         setTimeout(() => {
-    //             Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
-    //         }, 5000);
-    //     }
-
-    //     // Jika pembayaran Ditunda, kamu bisa menunggu atau memberikan informasi tambahan
-    //     else if (payment?.payment_status === 'Ditunda') {
-    //         console.log('Payment is delayed, waiting for status update...');
-    //         // Bisa tambahkan logic untuk memeriksa status pembaruan setiap beberapa detik
-    //     }
-    // }, [payment, outletCode]);
-
-
-    // useEffect(() => {
-    //     console.log('payment status:', payment?.payment_status);
-
-    //     if (payment?.payment_status === 'Lunas') {
-    //         setTimeout(() => {
-    //             console.log('Redirecting to:', `/${outletCode}/order-detail-page/${payment.order.order_number}`);
-    //             Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
-    //             // Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
-    //             // Inertia.visit(`/${outletCode}/orders/${payment.order.order_number}`);
-    //             // window.location.href = `/${outletCode}/order-detail-page/${payment.order.order_number}`;
-    //         }, 5000);
-    //     }
-    // }, [payment]);
+    }, [payment]);
 
     return (
         <>
