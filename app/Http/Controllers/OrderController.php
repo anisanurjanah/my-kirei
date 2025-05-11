@@ -34,22 +34,17 @@ class OrderController extends Controller
         Config::$is3ds = true;
     }
 
-    public function index($outlet_code, $order_number)
+    public function index($outlet_code)
     {
-        $order = Order::with('outlet', 'customer', 'payment')->where('order_number', $order_number)->first();
-        $payment = Payment::with('payment_method')->where('order_id', $order->id)->first();
-        $order_items = OrderItem::with('menu')->where('order_id', $order->id)->get();
+        $orders = Order::with(['payment', 'orderItems.menu'])->latest()->get();
 
-        if (!$order) {
+        if (!$orders) {
             abort(404);
         }
 
-        return Inertia::render('OrderDetailPage', [
+        return Inertia::render('OrderHistoryPage', [
             'outlet_code' => $outlet_code,
-            'selectedPaymentMethod' => session('selected_payment_method', null),
-            'order' => $order,
-            'payment' => $payment,
-            'order_items' => $order_items,
+            'orders' => $orders,
         ]);
     }
 
@@ -108,9 +103,23 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($outlet_code, $order_number)
     {
-        //
+        $order = Order::with('outlet', 'customer', 'payment')->where('order_number', $order_number)->first();
+        $payment = Payment::with('payment_method')->where('order_id', $order->id)->first();
+        $order_items = OrderItem::with('menu')->where('order_id', $order->id)->get();
+
+        if (!$order) {
+            abort(404);
+        }
+
+        return Inertia::render('OrderDetailPage', [
+            'outlet_code' => $outlet_code,
+            'selectedPaymentMethod' => session('selected_payment_method', null),
+            'order' => $order,
+            'payment' => $payment,
+            'order_items' => $order_items,
+        ]);
     }
 
     /**
@@ -219,21 +228,6 @@ class OrderController extends Controller
             'payment_status' => 'Ditunda',
             'expiry_time' => $expiry_time,
         ]);
-
-        // Payment::create([
-        //     'order_id' => $order->id,
-        //     'payment_method_id' => $paymentMethodId,
-        //     'payment_number' => $this->generatePaymentNumber($order),
-        //     'payment_date' => now(),
-        //     'transaction_id' => $transaction_id,
-        //     'amount' => $order->total_price,
-        //     'va_number' => $va_number,
-        //     'bank' => $bank,
-        //     'pdf_url' => $pdf_url,
-        //     'qr_code_url' => $qr_code_url,
-        //     'payment_status' => 'Ditunda',
-        //     'expiry_time' => $expiry_time,
-        // ]);
     }
 
     private function createMidtransTransaction(Order $order, array $items, int $paymentMethodId)

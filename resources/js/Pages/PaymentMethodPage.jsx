@@ -72,7 +72,7 @@ export default function PaymentMethodPage() {
                             <span className="h-px flex-1 bg-gray-300"></span>
                         </span>
                         <PaymentMethodSelector
-                            PaymentMethod={paymentMethods}
+                            paymentMethod={paymentMethods}
                             totalPrice={totalPrice.toLocaleString()}
                             onSelect={handleSelect}
                             onConfirm={handlePayment}

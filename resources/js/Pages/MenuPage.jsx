@@ -99,6 +99,10 @@ export default function MenuPage() {
         Inertia.visit(`/${outletCode}/cart-page`);
     };
 
+    const goToOrderHistory = () => {
+        Inertia.visit(`/${outletCode}/orders/history`);
+    };
+
     // Logout
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -135,6 +139,7 @@ export default function MenuPage() {
             <MenuHeader
                 isOpen={ isOpen }
                 toggleOpen={ () => setIsOpen(!isOpen) }
+                onClick={ goToOrderHistory }
                 showAlert={ () => setShowAlert(true) }
             />
             {/* <MenuNavigation /> */}

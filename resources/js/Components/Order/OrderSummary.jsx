@@ -14,14 +14,13 @@ export default function OrderSummary({ order, payment, order_items, onClick }) {
         })}
     ];
 
-
     return(
         <>
             <div className="flex justify-center">
                 <div className="w-full max-w-lg mt-4">
                     <div className="bg-gray-100 border border-gray-100 rounded-t-xl">
                         <div className="flex items-center justify-center p-6 font-medium">
-                            <span className='text-[#333] text-lg md:text-xl'>{ order.order_number }</span>
+                            <span className='text-[#333] text-lg md:text-2xl tracking-[2px]'>{ order.order_number }</span>
                         </div>
                         <hr className="border border-gray-200" />
                     </div>

@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Wallet2, WalletCards, ArrowRightLeft, QrCode, ChevronDown, Banknote } from 'lucide-react';
+import { Wallet2, ArrowRightLeft, ChevronDown } from 'lucide-react';
+import { TriangleAlert } from "lucide-react";
 
-const icons = {
-    wallet: <WalletCards size={20} />,
-    chevron: <ChevronDown size={20} />
-};
-
-export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSelect, onConfirm, selectedPaymentMethod }) {
+export default function PaymentMethodSelector({ paymentMethod, totalPrice, onSelect, onConfirm, selectedPaymentMethod }) {
     const [showEwallets, setShowEwallets] = useState(false);
     const [showBankTransfers, setBankTransfers] = useState(false);
     const [selectedMethod, setSelectedMethod] = useState(null);
@@ -27,6 +23,10 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
     const handleSelect = (method) => {
         setSelectedMethod(method);
         onSelect?.(method.id);
+    };
+
+    const isMethodDisabled = (id) => {
+        return [2, 6].includes(id);
     };
 
     return (
@@ -53,21 +53,44 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                         showEwallets && (
                             <div className="mb-4">
                                 {
-                                    PaymentMethod.filter((method) => method.type === 'E-Wallet').map((method) => {
+                                    paymentMethod.filter((method) => method.type === 'E-Wallet').map((method) => {
                                         const isSelected = selectedMethod?.id === method.id;
                                         return (
                                             <div
-                                                key={method.id}
-                                                onClick={() => handleSelect(method)}
-                                                className={`flex items-center justify-between gap-4 p-3 rounded border cursor-pointer transition-colors
-                                                    ${isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100'}`}
+                                                key={ method.id }
+                                                onClick={() => {
+                                                    if (!isMethodDisabled(method.id)) handleSelect(method);
+                                                }}
+                                                className={`flex items-center justify-between gap-4 p-3 rounded border transition-colors
+                                                    ${ isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100' }
+                                                    ${ isMethodDisabled(method.id) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }
+                                                `}
                                             >
                                                 <div className="flex justify-center items-center gap-4">
-                                                    { icons[method.method.icon] || <WalletCards size={20} /> }
-                                                    <span className='text-sm md:text-md'>{method.method.name}</span>
+                                                    <img
+                                                        src={ `/${ method.method.image }` }
+                                                        alt={ method.method.name }
+                                                        className="sm:block size-6 min-w-6 object-contain"
+                                                    />
+                                                    <span className='text-sm md:text-md'>{ method.method.name }</span>
                                                 </div>
 
-                                                <p className="text-sm md:text-md text-[#333]">{totalPrice || 0}</p>
+                                                <div className="flex items-center gap-2">
+                                                    {
+                                                        !isMethodDisabled(method.id) && (
+                                                            <p className="text-sm md:text-md text-[#333]">{ totalPrice || 0 }</p>
+                                                        )
+                                                    }
+
+                                                    {
+                                                        isMethodDisabled(method.id) && (
+                                                            <span className="inline-flex items-center justify-center gap-2 rounded-full bg-red-100 px-2.5 py-0.5 text-red-700">
+                                                                <TriangleAlert size={16} />
+                                                                <p className="text-sm whitespace-nowrap">Tidak tersedia</p>
+                                                            </span>
+                                                        )
+                                                    }
+                                                </div>
                                             </div>
                                         );
                                     })
@@ -98,21 +121,44 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                         showBankTransfers && (
                             <div className="mb-4">
                                 {
-                                    PaymentMethod.filter((method) => method.type === 'Bank Transfer').map((method) => {
+                                    paymentMethod.filter((method) => method.type === 'Bank Transfer').map((method) => {
                                         const isSelected = selectedMethod?.id === method.id;
                                         return (
                                             <div
-                                                key={method.id}
-                                                onClick={() => handleSelect(method)}
-                                                className={`flex items-center justify-between gap-4 p-3 rounded border cursor-pointer transition-colors
-                                                    ${isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100'}`}
+                                                key={ method.id }
+                                                onClick={() => {
+                                                    if (!isMethodDisabled(method.id)) handleSelect(method);
+                                                }}
+                                                className={`flex items-center justify-between gap-4 p-3 rounded border transition-colors
+                                                    ${ isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100' }
+                                                    ${ isMethodDisabled(method.id) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }
+                                                `}
                                             >
                                                 <div className="flex justify-center items-center gap-4">
-                                                    { icons[method.method.icon] || <Banknote size={20} /> }
-                                                    <span className='text-sm md:text-md'>{method.method.name}</span>
+                                                    <img
+                                                        src={ `/${ method.method.image }` }
+                                                        alt={ method.method.name }
+                                                        className="sm:block size-6 min-w-6 object-contain"
+                                                    />
+                                                    <span className='text-sm md:text-md'>{ method.method.name }</span>
                                                 </div>
 
-                                                <p className="text-sm md:text-md text-[#333]">{totalPrice || 0}</p>
+                                                <div className="flex items-center gap-2">
+                                                    {
+                                                        !isMethodDisabled(method.id) && (
+                                                            <p className="text-sm md:text-md text-[#333]">{ totalPrice || 0 }</p>
+                                                        )
+                                                    }
+
+                                                    {
+                                                        isMethodDisabled(method.id) && (
+                                                            <span className="inline-flex items-center justify-center gap-2 rounded-full bg-red-100 px-2.5 py-0.5 text-red-700">
+                                                                <TriangleAlert size={16} />
+                                                                <p className="text-sm whitespace-nowrap">Tidak tersedia</p>
+                                                            </span>
+                                                        )
+                                                    }
+                                                </div>
                                             </div>
                                         );
                                     })
@@ -126,7 +172,7 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                 <div className="mb-3">
                     <button className="w-full rounded border border-gray-100 bg-white shadow-sm transition-colors hover:bg-gray-50 has-checked:border-[#C60E2A] has-checked:ring-1 has-checked:ring-[#C60E2A]">
                         {
-                            PaymentMethod.filter((method) => method.type !== 'Bank Transfer' && method.type !== 'E-Wallet').map((method) => {
+                            paymentMethod.filter((method) => method.type !== 'Bank Transfer' && method.type !== 'E-Wallet').map((method) => {
                                 const isSelected = selectedMethod?.id === method.id;
                                 return (
                                     <div
@@ -136,7 +182,11 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
                                             ${isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100'}`}
                                     >
                                         <div className="flex justify-center items-center gap-4 text-blue-700">
-                                            {icons[method.method.icon] || <QrCode size={20} />}
+                                            <img
+                                                src={ `/${ method.method.image }` }
+                                                alt={ method.method.name }
+                                                className="sm:block size-6 min-w-6 object-contain"
+                                            />
                                             <span className='text-sm md:text-md'>{method.method.name}</span>
                                         </div>
 
