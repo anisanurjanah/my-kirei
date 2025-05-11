@@ -11,7 +11,7 @@ export default function MenuButton({ selectedMenus, totalPrice, onClick }) {
                             onClick={ onClick }
                         >
                             <ShoppingCart size={20} />
-                            <p className="me-4 md:me-8 text-md font-normal">IDR { totalPrice.toLocaleString() }</p>
+                            <p className="me-4 md:me-8 text-md font-normal">IDR { Number(totalPrice).toLocaleString() }</p>
                             Pesan Sekarang <ChevronRight size={16} />
                         </button>
                     </div>

@@ -41,8 +41,8 @@ export default function MenuItem({ menu, onClick }) {
 
                     <p className="mt-4 text-pretty text-gray-400 text-sm md:text-lg">
                         IDR { menu.price_promo?.price_promo && menu.stock.current_stock !== 0
-                            ? menu.price - menu.price_promo.price_promo
-                            : menu.price.toLocaleString() }
+                            ? Number(menu.price - menu.price_promo.price_promo).toLocaleString()
+                            : Number(menu.price).toLocaleString() }
                     </p>
 
                     <div className="mt-auto">

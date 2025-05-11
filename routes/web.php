@@ -53,6 +53,10 @@ Route::get('/check-session', function () {
     ]);
 });
 
+Route::post('/clear-payment-session', function () {
+    session()->forget('selected_payment_method');
+});
+
 
 // DASHBOARD
 Route::get('/login', [AdminLoginController::class, 'index'])->name('login')->middleware('guest');

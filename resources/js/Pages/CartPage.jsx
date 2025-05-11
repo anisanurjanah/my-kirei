@@ -48,10 +48,20 @@ export default function CartPage() {
             return;
         }
 
-        post(`/${outletCode}/orders`);
+        post(`/${outletCode}/orders`, {
+            onSuccess: () => {
+                post('/clear-payment-session');
 
-        sessionStorage.removeItem("selectedMenus");
-        sessionStorage.removeItem("quantities");
+                sessionStorage.removeItem("selectedMenus");
+                sessionStorage.removeItem("quantities");
+            }
+        });
+
+        // post(`/${outletCode}/orders`);
+
+        // post('/clear-payment-session');
+        // sessionStorage.removeItem("selectedMenus");
+        // sessionStorage.removeItem("quantities");
     }
 
     // Menu List
