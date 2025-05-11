@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Menu;
 use Inertia\Inertia;
 use Midtrans\Config;
 use App\Models\Order;
@@ -13,9 +12,7 @@ use App\Models\Payment;
 use App\Models\OrderItem;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Repositories\TransactionRepositoryInterface;
 
@@ -37,19 +34,23 @@ class OrderController extends Controller
         Config::$is3ds = true;
     }
 
-    public function index($order_number)
+    public function index($outlet_code, $order_number)
     {
-        // $order = Order::where('order_number', $order_number)->first();
-        // $payment = Payment::where('order_id', $order->id)->first();
+        $order = Order::with('outlet', 'customer', 'payment')->where('order_number', $order_number)->first();
+        $payment = Payment::with('payment_method')->where('order_id', $order->id)->first();
+        $order_items = OrderItem::with('menu')->where('order_id', $order->id)->get();
 
-        // if (!$order) {
-        //     abort(404);
-        // }
+        if (!$order) {
+            abort(404);
+        }
 
-        // return Inertia::render('OrderDetailPage', [
-        //     'order' => $order,
-        //     'payment' => $payment,
-        // ]);
+        return Inertia::render('OrderDetailPage', [
+            'outlet_code' => $outlet_code,
+            'selectedPaymentMethod' => session('selected_payment_method', null),
+            'order' => $order,
+            'payment' => $payment,
+            'order_items' => $order_items,
+        ]);
     }
 
     /**
@@ -94,7 +95,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return redirect()->to(secure_url('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . $order->order_number));
+            return redirect()->to(secure_url('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . Str::slug($order->order_number)));
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -311,13 +312,13 @@ class OrderController extends Controller
         // }
 
         // GoPay dan QRIS
-        // if (!empty($response->actions)) {
-        //     foreach ($response->actions as $action) {
-        //         if ($action->name === 'generate-qr-code') {
-        //             $updateData['qr_code_url'] = $action->url ?? null;
-        //         }
-        //     }
-        // }
+        if (!empty($response->actions)) {
+            foreach ($response->actions as $action) {
+                if ($action->name === 'generate-qr-code') {
+                    $updateData['qr_code_url'] = $action->url ?? null;
+                }
+            }
+        }
 
         Payment::where('order_id', $order->id)->update($updateData);
         return $response;

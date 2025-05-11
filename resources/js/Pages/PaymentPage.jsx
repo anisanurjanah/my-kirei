@@ -17,8 +17,6 @@ export default function PaymentPage() {
         payment,
     } = usePage().props;
 
-    console.log(usePage().props);
-
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods);
     const [paymentDetails, setPaymentDetails] = useState(null);
 
@@ -41,17 +39,10 @@ export default function PaymentPage() {
 
     useEffect(() => {
         if (payment?.payment_status === 'Lunas') {
-            console.log('Redirecting to order detail page...');
             setTimeout(() => {
-                window.location.href = `/${outletCode}/order-detail-page/${payment.order.order_number}`;
+                window.location.href = `/${outletCode}/orders/${ payment.order.order_number.toLowerCase() }`;
             }, 3000);
         }
-
-        // if (payment?.payment_status === 'Lunas') {
-        //     setTimeout(() => {
-        //         Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
-        //     }, 3000);
-        // }
     }, [payment]);
 
     return (

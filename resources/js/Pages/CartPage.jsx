@@ -18,8 +18,6 @@ export default function CartPage() {
         customer
     } = usePage().props;
 
-    console.log(usePage().props);
-
     const [menus, setMenus] = useState([]);
     const [quantities, setQuantities] = useState({});
     const [subTotal, setSubTotal] = useState(0);
@@ -52,8 +50,8 @@ export default function CartPage() {
 
         post(`/${outletCode}/orders`);
 
-        // sessionStorage.removeItem("selectedMenus");
-        // sessionStorage.removeItem("quantities");
+        sessionStorage.removeItem("selectedMenus");
+        sessionStorage.removeItem("quantities");
     }
 
     // Menu List

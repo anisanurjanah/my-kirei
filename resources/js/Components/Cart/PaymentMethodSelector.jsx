@@ -31,7 +31,7 @@ export default function PaymentMethodSelector({ PaymentMethod, totalPrice, onSel
 
     return (
         <>
-            <div className="w-full max-w-md mx-auto">
+            <div className="w-full max-w-md mx-auto mt-4">
                 {/* E-Wallets */}
                 <div className="py-3">
                     <button

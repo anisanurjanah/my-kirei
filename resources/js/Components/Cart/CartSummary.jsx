@@ -22,14 +22,16 @@ export default function CartSummary({ menus, subTotal, discount, totalPrice, onS
                         </div>
                     </dl>
 
-                    {menus.some((menu) => Number(menu.price_promo?.price_promo) > 0) && (
-                        <div className="flex justify-end">
-                            <span className="inline-flex items-center justify-center rounded-full bg-green-200 px-2.5 py-0.5 text-green-700">
-                                <Ticket className="me-1.5" size={16} />
-                                <p className="text-xs whitespace-nowrap">Harga spesial berhasil kamu dapatkan!</p>
-                            </span>
-                        </div>
-                    )}
+                    {
+                        menus.some((menu) => Number(menu.price_promo?.price_promo) > 0) && (
+                            <div className="flex justify-end">
+                                <span className="inline-flex items-center justify-center rounded-full bg-green-200 px-2.5 py-0.5 text-green-700">
+                                    <Ticket className="me-1.5" size={16} />
+                                    <p className="text-xs whitespace-nowrap">Harga spesial berhasil kamu dapatkan!</p>
+                                </span>
+                            </div>
+                        )
+                    }
 
                     <div className="flex justify-end">
                         <button
