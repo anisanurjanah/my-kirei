@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use Midtrans\Config;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -15,6 +13,10 @@ class PaymentController extends Controller
     {
         $order = Order::where('order_number', $order_number)->first();
         $payment = Payment::where('order_id', $order->id)->first();
+
+        if (!$order) {
+            abort(404);
+        }
 
         $payment->refresh();
         $payment->load('order');
@@ -72,7 +74,7 @@ class PaymentController extends Controller
         switch ($transactionStatus) {
             case 'settlement':
             case 'capture':
-                $order->update(['order_status' => 'Lunas']);
+                $order->update(['order_status' => 'Dalam Proses']);
                 $order->payment->update(['payment_status' => 'Lunas']);
                 break;
 

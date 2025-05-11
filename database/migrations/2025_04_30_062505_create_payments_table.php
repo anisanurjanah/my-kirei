@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('bank')->nullable();
             $table->string('pdf_url')->nullable();
             $table->text('qr_code_url')->nullable();
-            $table->enum('payment_status', ['Lunas', 'Belum Lunas', 'Kadaluarsa', 'Gagal', 'Ditunda']);
+            $table->string('payment_status')->default('Ditunda');
             $table->timestamp('expiry_time')->nullable();
             $table->timestamps();
         });

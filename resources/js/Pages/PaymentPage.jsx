@@ -41,12 +41,17 @@ export default function PaymentPage() {
 
     useEffect(() => {
         if (payment?.payment_status === 'Lunas') {
+            console.log('Redirecting to order detail page...');
             setTimeout(() => {
-                Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
+                window.location.href = `/${outletCode}/order-detail-page/${payment.order.order_number}`;
             }, 3000);
-        } else if (payment?.payment_status === 'Gagal') {
-            alert('Pembayaran Gagal, silakan coba lagi.');
         }
+
+        // if (payment?.payment_status === 'Lunas') {
+        //     setTimeout(() => {
+        //         Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
+        //     }, 3000);
+        // }
     }, [payment]);
 
     return (

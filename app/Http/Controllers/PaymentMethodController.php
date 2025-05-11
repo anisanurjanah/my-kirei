@@ -23,7 +23,8 @@ class PaymentMethodController extends Controller
         $paymentMethod = PaymentMethod::findOrFail($paymentMethodId);
 
         session()->put("selected_payment_method", $paymentMethod->toArray());
-        return redirect("/{$outlet_code}/cart-page");
+
+        return redirect()->to(secure_url("/{$outlet_code}/cart-page"));
     }
 
     public function getPaymentMethods()

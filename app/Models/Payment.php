@@ -23,7 +23,6 @@ class Payment extends Model
 
     const PAYMENT_STATUSES = [
         'Lunas' => 'Lunas',
-        'Belum Lunas' => 'Belum Lunas',
         'Kadaluarsa' => 'Kadaluarsa',
         'Gagal' => 'Gagal',
         'Ditunda' => 'Ditunda',

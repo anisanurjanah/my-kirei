@@ -44,13 +44,8 @@ Route::middleware(['auth.customer', 'check.outlet.code'])->group(function () {
     Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
     Route::resource('/{outlet_code}/orders', OrderController::class);
 
-    // Route::post('/midtrans/callback/{order_number}', [PaymentController::class, 'handleCallback']);
-
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
-
-// Route::post('/payment/webhook', [PaymentController::class, 'handleWebhook']);
-// Route::post('/midtrans/callback', [MidtransController::class, 'handleNotification']);
 
 // SESSION
 Route::get('/check-session', function () {

@@ -94,7 +94,6 @@ class OrderController extends Controller
 
             DB::commit();
 
-            session()->forget(['selectedMenus', 'quantities']);
             return redirect()->to(secure_url('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . $order->order_number));
         } catch (\Exception $e) {
             DB::rollBack();
