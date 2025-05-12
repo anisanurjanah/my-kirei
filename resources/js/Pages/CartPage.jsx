@@ -6,6 +6,7 @@ import Main from "@/Layouts/Main";
 
 import Header from "@/Components/Header";
 import Titles from "@/Components/Titles";
+import AlertPaymentMethod from "@/Components/AlertPaymentMethod";
 import CartList from "@/Components/Cart/CartList";
 import CartPaymentMethod from "@/Components/Cart/CartPaymentMethod";
 import CartProgressSteps from "@/Components/Cart/CartProgressSteps";
@@ -24,6 +25,8 @@ export default function CartPage() {
     const [discount, setDiscount] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods);
+
+    const [showPaymentWarning, setShowPaymentWarning] = useState(false);
 
     const { setData, post } = useForm({
         outlet_code: outletCode,
@@ -44,7 +47,7 @@ export default function CartPage() {
 
     const handleSubmit = () => {
         if (!selectedPaymentMethod) {
-            alert('Pilih metode pembayaran!');
+            setShowPaymentWarning(true);
             return;
         }
 
@@ -169,6 +172,10 @@ export default function CartPage() {
 
     return (
         <>
+            <AlertPaymentMethod
+                showPaymentWarning={ showPaymentWarning }
+                onClose={ () => setShowPaymentWarning(false) }
+            />
             <Head title={`Keranjang - ${outletCode.toUpperCase()}`} />
             <Header />
             <Main>

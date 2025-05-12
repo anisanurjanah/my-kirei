@@ -74,7 +74,7 @@ class AdminOrderController extends Controller
 
             'orderTypes' => Order::ORDER_TYPES,
             'orderStatuses' => Order::ORDER_STATUSES,
-            'paymentStatuses' => Order::PAYMENT_STATUSES
+            // 'paymentStatuses' => Order::PAYMENT_STATUSES
         ]);
     }
 
@@ -182,7 +182,7 @@ class AdminOrderController extends Controller
             'menus' => Menu::with('pricePromo')->get(),
             'orderTypes' => Order::ORDER_TYPES,
             'orderStatuses' => Order::ORDER_STATUSES,
-            'paymentStatuses' => Order::PAYMENT_STATUSES
+            // 'paymentStatuses' => Order::PAYMENT_STATUSES
         ]);
     }
 
@@ -223,6 +223,8 @@ class AdminOrderController extends Controller
             'payment_status' => 'required|string|in:Lunas,Belum Lunas',
         ]);
 
+        $previousStatus = $order->order_status;
+
         // Insert Data
         $order->update([
             'outlet_id' => $validatedData['outlet_id'],
@@ -239,6 +241,20 @@ class AdminOrderController extends Controller
 
         if (count($request->menu_id) !== count($request->quantity) || count($request->menu_id) !== count($request->price)) {
             return redirect()->back()->withErrors(['menu_id' => 'Data menu, quantity, dan harga tidak valid.']);
+        }
+
+        // Decrease menu stock
+        if ($previousStatus !== 'Selesai' && $validatedData['order_status'] === 'Selesai') {
+            foreach ($request->menu_id as $index => $menuId) {
+                $menu = Menu::find($menuId);
+                if ($menu) {
+                    $menu->stock -= $request->quantity[$index];
+                    if ($menu->stock < 0) {
+                        $menu->stock = 0;
+                    }
+                    $menu->save();
+                }
+            }
         }
 
         $order->orderItems()->delete();
