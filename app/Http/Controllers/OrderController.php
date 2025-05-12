@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\TransactionRepositoryInterface;
 
 class OrderController extends Controller
@@ -36,7 +37,14 @@ class OrderController extends Controller
 
     public function index($outlet_code)
     {
-        $orders = Order::with(['payment', 'orderItems.menu'])->latest()->get();
+        $outlet = Outlet::where('outlet_code', $outlet_code)->first();
+        $customer = Auth::guard('customer')->user();
+
+        $orders = Order::with(['outlet', 'customer', 'payment', 'orderItems.menu'])
+            ->where('outlet_id', $outlet->id)
+            ->where('customer_id', $customer->id)
+            ->latest()
+            ->get();
 
         if (!$orders) {
             abort(404);

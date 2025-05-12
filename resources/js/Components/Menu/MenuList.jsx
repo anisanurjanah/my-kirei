@@ -1,6 +1,6 @@
 import MenuItem from "@/Components/Menu/MenuItem";
 
-export default function MenuList({ menus, onClick }) {
+export default function MenuList({ menus, onClickDetail, onClick }) {
     return (
         <>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
@@ -9,6 +9,7 @@ export default function MenuList({ menus, onClick }) {
                         <MenuItem
                             key={ menu.id }
                             menu={ menu }
+                            onClickDetail={ () => onClickDetail(menu) }
                             onClick={ onClick }
                         />
                     ))

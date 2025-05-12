@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Head, usePage, useForm } from "@inertiajs/react";
+import { X } from "lucide-react";
 
 import Main from "@/Layouts/Main";
 
@@ -27,13 +28,15 @@ export default function MenuPage() {
     const { post } = useForm();
 
     const [selectedMenus, setSelectedMenus] = useState([]);
+    const [selectedMenuDetail, setSelectedMenuDetail] = useState(null);
     const [quantities, setQuantities] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
 
-    // Alert
     const {flashMsg, dismissFlash} = WelcomeFlashMessage(flash, customer)
     const [isOpen, setIsOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [showQuantity, setShowQuantity] = useState({});
 
     // Session Check
     useEffect(() => {
@@ -56,23 +59,30 @@ export default function MenuPage() {
 
     // Menu List
     useEffect(() => {
+        sessionStorage.setItem("selectedMenus", JSON.stringify(selectedMenus));
+        sessionStorage.setItem("quantities", JSON.stringify(quantities));
+    }, [selectedMenus, quantities]);
+
+    useEffect(() => {
         const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
         const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
 
-        if (storedMenus.length > 0) {
-            setSelectedMenus(storedMenus);
-            setQuantities(storedQuantities);
-
-            const total = storedMenus.reduce((acc, menu) => {
-                const menuQuantity = Number(storedQuantities[menu.id]) || 1;
-                const menuPrice = Number(menu.price) - (Number(menu.price_promo?.price_promo) || 0 );
-
-                return acc + Math.max(menuPrice, 0) * menuQuantity;
-            }, 0);
-
-            setTotalPrice(total);
-        }
+        setSelectedMenus(storedMenus);
+        setQuantities(storedQuantities);
     }, []);
+
+    useEffect(() => {
+        if (selectedMenus.length === 0) return;
+
+        const total = selectedMenus.reduce((acc, menu) => {
+            const menuQuantity = Number(quantities[menu.id]) || 1;
+            const menuPrice = Number(menu.price) - (Number(menu.price_promo?.price_promo) || 0 );
+
+            return acc + Math.max(menuPrice, 0) * menuQuantity;
+        }, 0);
+
+        setTotalPrice(total);
+    }, [selectedMenus, quantities]);
 
     // Add menu
     const handleAddMenu = (menu) => {
@@ -82,14 +92,46 @@ export default function MenuPage() {
         const menuAlreadyAdded = Array.isArray(selectedMenus) && selectedMenus.some((selected) => selected?.id === menu.id);
         if (menuAlreadyAdded) return;
 
-        setSelectedMenus((prev) => [...prev, menu]);
-        setTotalPrice((prev) => {
-            const menuPrice = Number(menu.price) || 0;
-            const promoDiscount = Number(menu.price_promo?.price_promo) || 0;
-            const finalPrice = menuPrice - promoDiscount;
+        const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
+        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
 
-            return prev + Math.max(finalPrice, 0);
+        const updatedQuantities = { ...storedQuantities };
+        storedMenus.forEach(menu => {
+            if (!updatedQuantities[menu.id]) {
+                updatedQuantities[menu.id] = 1;
+            }
         });
+
+        if (!updatedQuantities[menu.id]) {
+            updatedQuantities[menu.id] = 1;
+        }
+
+        const newMenus = [...storedMenus, menu];
+        sessionStorage.setItem("selectedMenus", JSON.stringify(newMenus));
+        sessionStorage.setItem("quantities", JSON.stringify(updatedQuantities));
+
+        setSelectedMenus((prev) => [...prev, menu]);
+        setQuantities(updatedQuantities);
+        setShowQuantity(prev => ({ ...prev, [menu.id]: true }));
+    }
+
+    const handleMenuDetail = (menu) => {
+        setSelectedMenuDetail(menu);
+        setShowModal(true);
+    };
+
+    const handleIncrease = (id) => {
+        setQuantities((prev) => ({
+            ...prev,
+            [id]: (prev[id] || 1) + 1,
+        }));
+    };
+
+    const handleDecrease = (id) => {
+        setQuantities((prev) => ({
+            ...prev,
+            [id]: prev[id] > 1 ? prev[id] - 1 : 1,
+        }));
     };
 
     const goToCart = () => {
@@ -149,6 +191,7 @@ export default function MenuPage() {
                         <Titles title="Rekomendasi Menu Untuk Kamu" />
                         <MenuList
                             menus={ menus }
+                            onClickDetail={ handleMenuDetail }
                             onClick={ handleAddMenu }
                         />
                         <MenuButton
@@ -159,6 +202,106 @@ export default function MenuPage() {
                     </div>
                     <hr className="mt-4 border border-gray-300" />
                 </section>
+
+                {
+                    showModal && selectedMenuDetail && (
+                        <div
+                            className="fixed inset-0 z-50 grid place-content-center bg-black/50 p-4"
+                            role="dialog"
+                            aria-modal="true"
+                        >
+                            <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+                                <div className="flex items-start justify-between">
+                                    <h2 id="modalTitle" className="text-xl font-bold text-gray-900 sm:text-2xl"></h2>
+
+                                    <button
+                                        onClick={ () => setShowModal(false) }
+                                        className="-me-4 -mt-4 rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600 focus:outline-none"
+                                    >
+                                        <X />
+                                    </button>
+                                </div>
+
+                                {
+                                    selectedMenuDetail && (
+                                        <div className="mt-4">
+                                            <button className="group relative block overflow-hidden">
+                                                <img
+                                                    src={ selectedMenuDetail.image?.includes('menu-images/')
+                                                        ? `/storage/${ selectedMenuDetail.image }`
+                                                        : `/${selectedMenuDetail.image}` }
+                                                    alt={ selectedMenuDetail.name }
+                                                    className="h-32 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-72"
+                                                />
+
+                                                <div className="relative border border-gray-100 bg-white">
+                                                    <div className="text-left py-3">
+                                                        <p className="text-gray-700">
+                                                            IDR{" "}
+                                                            <span className="text-gray-400 line-through me-2">{ selectedMenuDetail.price }</span>
+                                                            <span className="text-gray-700">
+                                                                { selectedMenuDetail.price_promo?.price_promo ?
+                                                                    Number(selectedMenuDetail.price - selectedMenuDetail.price_promo.price_promo).toLocaleString() :
+                                                                    Number(selectedMenuDetail.price).toLocaleString()
+                                                                }
+                                                            </span>
+                                                        </p>
+
+                                                        <h3 className="mt-1.5 text-lg font-medium text-gray-900">{ selectedMenuDetail.name }</h3>
+
+                                                        <p className="mt-1.5 line-clamp-3 text-gray-700 text-justify">
+                                                            { selectedMenuDetail.description }
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="mt-4 space-y-2 text-end">
+                                                        {
+                                                            showQuantity[selectedMenuDetail.id] && (
+                                                                <div className="flex items-end justify-end gap-2 mb-3">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={ () => handleDecrease(selectedMenuDetail.id) }
+                                                                        className="h-8 w-8 bg-[#C60E2A] text-white rounded-md cursor-pointer"
+                                                                        disabled={ quantities[selectedMenuDetail.id] <= 1 }
+                                                                    >
+                                                                        −
+                                                                    </button>
+
+                                                                    <input
+                                                                        type="number"
+                                                                        min="1"
+                                                                        value={ quantities[selectedMenuDetail.id] || 1 }
+                                                                        readOnly
+                                                                        className="h-8 w-12 rounded-md border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600"
+                                                                    />
+
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => handleIncrease(selectedMenuDetail.id)}
+                                                                        className="h-8 w-8 bg-[#C60E2A] text-white rounded-md cursor-pointer"
+                                                                    >
+                                                                        +
+                                                                    </button>
+                                                                </div>
+                                                            )
+                                                        }
+
+                                                        <button
+                                                            onClick={ () => handleAddMenu(selectedMenuDetail) }
+                                                            className="block w-full rounded-sm bg-[#C60E2A] py-3 text-sm text-white cursor-pointer"
+                                                        >
+                                                            Tambah ke Keranjang
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    )
+                }
             </Main>
         </>
     )

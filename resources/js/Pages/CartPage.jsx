@@ -56,12 +56,6 @@ export default function CartPage() {
                 sessionStorage.removeItem("quantities");
             }
         });
-
-        // post(`/${outletCode}/orders`);
-
-        // post('/clear-payment-session');
-        // sessionStorage.removeItem("selectedMenus");
-        // sessionStorage.removeItem("quantities");
     }
 
     // Menu List
@@ -110,10 +104,6 @@ export default function CartPage() {
     }, [menus, quantities]);
 
     useEffect(() => {
-        sessionStorage.setItem("quantities", JSON.stringify(quantities));
-    }, [quantities]);
-
-    useEffect(() => {
         const items = menus.map((menu) => ({
             menu_id: menu.id,
             quantity: quantities[menu.id] || 1,
@@ -128,6 +118,11 @@ export default function CartPage() {
             total_price: parseInt(totalPrice)
         }));
     }, [menus, quantities, subTotal, discount, totalPrice]);
+
+    useEffect(() => {
+        sessionStorage.setItem("selectedMenus", JSON.stringify(menus));
+        sessionStorage.setItem("quantities", JSON.stringify(quantities));
+    }, [menus, quantities]);
 
     useEffect(() => {
         if (paymentMethods) {
@@ -162,6 +157,13 @@ export default function CartPage() {
         sessionStorage.setItem("quantities", JSON.stringify(updatedQuantities));
     }
 
+    const goToMenu = () => {
+        sessionStorage.setItem("selectedMenus", JSON.stringify(menus));
+        sessionStorage.setItem("quantities", JSON.stringify(quantities));
+
+        Inertia.visit(`/${outletCode}/menu-page`);
+    };
+
     const goToPaymentMethod = () => {
         Inertia.visit(`/${outletCode}/payment-method-page`);
     };
@@ -171,7 +173,7 @@ export default function CartPage() {
             <Head title={`Keranjang - ${outletCode.toUpperCase()}`} />
             <Header />
             <Main>
-                <CartProgressSteps outletCode={ outletCode } />
+                <CartProgressSteps goToMenu={ goToMenu } />
                 <section className="p-4">
                     <div className="bg-white w-full">
                         <Titles title="Keranjang Pesanan" />

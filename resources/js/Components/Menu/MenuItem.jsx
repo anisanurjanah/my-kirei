@@ -1,9 +1,14 @@
-export default function MenuItem({ menu, onClick }) {
+export default function MenuItem({ menu, onClickDetail, onClick }) {
     return (
         <>
-            <div className={`relative block border border-gray-100 transition animate-slide-up h-full
-                ${ menu.price_promo?.price_promo && menu.stock.current_stock != 0 ? "rounded-tr-3xl" : "" }` }>
-                <div className="relative w-full">
+            <div
+                className={`relative block border border-gray-100 transition animate-slide-up h-full
+                    ${ menu.price_promo?.price_promo && menu.stock.current_stock != 0 ? "rounded-tr-3xl" : "" }` }
+            >
+                <button
+                    onClick={ () => onClickDetail(menu) }
+                    className="relative p-0 w-full text-left"
+                >
                     {
                         menu.price_promo?.price_promo && menu.stock.current_stock != 0 && (
                             <span
@@ -32,28 +37,28 @@ export default function MenuItem({ menu, onClick }) {
                             </div>
                         )
                     }
-                </div>
 
-                <div className="p-4 flex flex-col flex-grow">
-                    <div className="min-h-[48px] md:min-h-[84px] flex items-start">
-                        <strong className="text-md md:text-2xl font-medium text-[#333]">{ menu.name }</strong>
+                    <div className="p-2 flex flex-col flex-grow">
+                        <div className="min-h-[64px] md:min-h-[96px] flex items-start">
+                            <strong className="text-md md:text-2xl font-medium text-[#333]">{ menu.name }</strong>
+                        </div>
+
+                        <p className="mt-4 text-pretty text-gray-400 text-sm md:text-lg">
+                            IDR { menu.price_promo?.price_promo && menu.stock.current_stock !== 0
+                                ? Number(menu.price - menu.price_promo.price_promo).toLocaleString()
+                                : Number(menu.price).toLocaleString() }
+                        </p>
                     </div>
+                </button>
 
-                    <p className="mt-4 text-pretty text-gray-400 text-sm md:text-lg">
-                        IDR { menu.price_promo?.price_promo && menu.stock.current_stock !== 0
-                            ? Number(menu.price - menu.price_promo.price_promo).toLocaleString()
-                            : Number(menu.price).toLocaleString() }
-                    </p>
-
-                    <div className="mt-auto">
-                        <button
-                            onClick={ () => onClick(menu) }
-                            className={ `mt-4 w-full block rounded-md border py-2 text-sm md:text-md font-medium tracking-widest text-white uppercase transition-colors hover:bg-[#333] hover:border-[#333] hover:text-[#ffffff] cursor-pointer
-                                ${ menu.stock.current_stock == 0 ? "border-[#333] bg-[#333] opacity-50 cursor-not-allowed pointer-events-none" : "border-[#C60E2A] bg-[#C60E2A]"}` }
-                        >
-                            Tambah
-                        </button>
-                    </div>
+                <div className="mt-auto px-2 pb-2">
+                    <button
+                        onClick={ () => onClick(menu) }
+                        className={ `mt-4 w-full block rounded-md border py-2 text-sm md:text-md font-medium tracking-widest text-white uppercase transition-colors hover:bg-[#333] hover:border-[#333] hover:text-[#ffffff] cursor-pointer
+                            ${ menu.stock.current_stock == 0 ? "border-[#333] bg-[#333] opacity-50 cursor-not-allowed pointer-events-none" : "border-[#C60E2A] bg-[#C60E2A]"}` }
+                    >
+                        Tambah
+                    </button>
                 </div>
             </div>
         </>
