@@ -148,19 +148,18 @@ export default function CartPage() {
     // Remove menu
     const handleRemoveMenu = (id) => {
         const updatedMenus = menus.filter((menu) => menu.id !== id);
-        setMenus(updatedMenus);
-        sessionStorage.setItem("selectedMenus", JSON.stringify(updatedMenus));
-
         const updatedQuantities = { ...quantities };
+
         delete updatedQuantities[id];
+
+        setMenus(updatedMenus);
         setQuantities(updatedQuantities);
+
+        sessionStorage.setItem("selectedMenus", JSON.stringify(updatedMenus));
         sessionStorage.setItem("quantities", JSON.stringify(updatedQuantities));
     }
 
     const goToMenu = () => {
-        sessionStorage.setItem("selectedMenus", JSON.stringify(menus));
-        sessionStorage.setItem("quantities", JSON.stringify(quantities));
-
         Inertia.visit(`/${outletCode}/menu-page`);
     };
 

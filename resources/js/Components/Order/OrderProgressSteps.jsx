@@ -3,10 +3,10 @@ import { CircleCheck, UtensilsCrossed, ShoppingBasket, CreditCard, ReceiptText }
 
 export default function OrderProgressSteps() {
     const steps = [
-        { label: "Menu", icon: "UtensilsCrossed", href: `` },
-        { label: "Keranjang", icon: "ShoppingBasket", href: `` },
-        { label: "Pembayaran", icon: "CreditCard", href: `` },
-        { label: "Ringkasan", icon: "ReceiptText", href: `` }
+        { label: "Menu", icon: "UtensilsCrossed" },
+        { label: "Keranjang", icon: "ShoppingBasket" },
+        { label: "Pembayaran", icon: "CreditCard" },
+        { label: "Ringkasan", icon: "ReceiptText" }
     ];
 
     const icons = {
@@ -32,7 +32,6 @@ export default function OrderProgressSteps() {
                                             className="relative flex flex-col items-center justify-center text-[#C60E2A]"
                                         >
                                             <button
-                                                onClick={() => Inertia.visit( step.href )}
                                                 className="flex flex-col items-center gap-1 cursor-pointer"
                                             >
                                                 <span className="absolute -bottom-[1.75rem] rounded-full text-white bg-[#C60E2A]">
