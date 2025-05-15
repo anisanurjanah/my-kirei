@@ -4,7 +4,7 @@ export default function About() {
             <section id="about" className="h-auto flex flex-col justify-center items-center">
                 <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-center md:gap-8">
-                        <div className="flex justify-center order-first md:order-last">
+                        <div className="flex justify-center order-first md:order-last animate-slide-in-right">
                             <img
                                 src="/img/logo-kirei-sum.jpg"
                                 className="rounded w-auto h-64 lg:h-auto"
@@ -12,7 +12,7 @@ export default function About() {
                             />
                         </div>
 
-                        <div className="max-w-lg md:max-w-none">
+                        <div className="max-w-lg md:max-w-none animate-slide-in-left">
                             <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
                                 Tentang Kami
                             </h2>

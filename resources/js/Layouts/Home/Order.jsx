@@ -1,7 +1,16 @@
+import { UseOnScreen } from "@/Hooks/UseOnScreen";
+
 export default function Order() {
+    const [ref, isVisible] = UseOnScreen({ threshold: 0.3 });
+
     return (
         <>
-            <section className="h-auto">
+            <section
+                ref={ ref }
+                className={`h-auto transition-all duration-700 ${
+                    isVisible ? "animate-slide-up opacity-100" : "opacity-0"
+                }`}
+            >
                 <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
                     <div className="bg-[#C60E2A] mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8 lg:py-16">
                         <div className="text-center">

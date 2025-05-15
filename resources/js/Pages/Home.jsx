@@ -11,7 +11,10 @@ import Order from "@/Layouts/Home/Order";
 import Contact from "@/Layouts/Home/Contact";
 
 export default function Home() {
-    const { component } = usePage()
+    const {
+        outlets,
+        menus
+    } = usePage().props;
 
     const handleScroll = (id) => {
         const element = document.getElementById(id);
@@ -22,15 +25,20 @@ export default function Home() {
 
     return (
         <>
-            <Head title={component} />
-
-            <Header handleScroll={handleScroll} />
+            <Head title="Kirei Sum" />
+            <Header
+                handleScroll={ handleScroll }
+                outlets={ outlets }
+            />
             <Jumbotron />
-
             <Main>
                 <About />
-                <Menu />
-                <Location />
+                <Menu
+                    menus={ menus }
+                />
+                <Location
+                    outlets={ outlets }
+                />
                 <Order />
                 <Contact />
             </Main>

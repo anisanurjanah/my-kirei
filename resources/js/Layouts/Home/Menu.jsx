@@ -1,7 +1,21 @@
-export default function Menu() {
+import { useState } from 'react';
+import { UseOnScreen } from "@/Hooks/UseOnScreen";
+
+export default function Menu({ menus }) {
+    const [showAll, setShowAll] = useState(false);
+    const [ref, isVisible] = UseOnScreen({ threshold: 0.3 });
+
+    const displayedMenus = showAll ? menus : menus.slice(0, 4);
+
     return (
         <>
-            <section id="menu" className="h-auto flex flex-col justify-center items-center">
+            <section
+                id="menu"
+                ref={ ref }
+                className={`h-auto flex flex-col justify-center items-center transition-all duration-700 ${
+                    isVisible ? "animate-slide-up opacity-100" : "opacity-0"
+                }`}
+            >
                 <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
                     <header className="text-center">
                         <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">Menu Kami</h2>
@@ -12,94 +26,51 @@ export default function Menu() {
                     </header>
 
                     <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                        <li>
-                            <div className="group block overflow-hidden">
-                                <img
-                                    src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                                    alt=""
-                                    className="h-[250px] w-full object-cover transition duration-500 group-hover:scale-105"
-                                />
+                        {
+                            displayedMenus.map((menu) => (
+                                <li key={ menu.id }
+                                    className="group block overflow-hidden scale-90 transform transition duration-2000 animate-slide-up"
+                                >
+                                    <div className="group block overflow-hidden">
+                                        <img
+                                            src={ menu.image?.includes('menu-images/')
+                                                ? `/storage/${ menu.image }`
+                                                : `/${menu.image}` }
+                                            alt={ menu.name }
+                                            className="h-[250px] w-full object-cover transition duration-500 group-hover:scale-105"
+                                        />
 
-                                <div className="relative bg-white pt-3">
-                                    <h3 className="text-xs text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                                        Basic Tee
-                                    </h3>
+                                        <div className="relative bg-white pt-3">
+                                            <h3 className="text-lg text-[#333] font-bold group-hover:underline group-hover:underline-offset-4">
+                                                { menu.name }
+                                            </h3>
 
-                                    <p className="mt-2">
-                                    <span className="sr-only"> Regular Price </span>
-
-                                    <span className="tracking-wider text-gray-900"> £24.00 GBP </span>
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-
-                        <li>
-                            <a href="#" className="group block overflow-hidden">
-                            <img
-                                src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                                alt=""
-                                className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
-                            />
-
-                            <div className="relative bg-white pt-3">
-                                <h3 className="text-xs text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                                Basic Tee
-                                </h3>
-
-                                <p className="mt-2">
-                                <span className="sr-only"> Regular Price </span>
-
-                                <span className="tracking-wider text-gray-900"> £24.00 GBP </span>
-                                </p>
-                            </div>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#" className="group block overflow-hidden">
-                            <img
-                                src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                                alt=""
-                                className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
-                            />
-
-                            <div className="relative bg-white pt-3">
-                                <h3 className="text-xs text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                                Basic Tee
-                                </h3>
-
-                                <p className="mt-2">
-                                <span className="sr-only"> Regular Price </span>
-
-                                <span className="tracking-wider text-gray-900"> £24.00 GBP </span>
-                                </p>
-                            </div>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#" className="group block overflow-hidden">
-                            <img
-                                src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                                alt=""
-                                className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
-                            />
-
-                            <div className="relative bg-white pt-3">
-                                <h3 className="text-xs text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                                Basic Tee
-                                </h3>
-
-                                <p className="mt-2">
-                                <span className="sr-only"> Regular Price </span>
-
-                                <span className="tracking-wider text-gray-900"> £24.00 GBP </span>
-                                </p>
-                            </div>
-                            </a>
-                        </li>
+                                            <p className="mt-2">
+                                                <span className="tracking-wider text-[#333">
+                                                    IDR { menu.price_promo?.price_promo && menu.stock.current_stock !== 0
+                                                        ? Number(menu.price - menu.price_promo.price_promo).toLocaleString()
+                                                        : Number(menu.price).toLocaleString() }
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            ))
+                        }
                     </ul>
+
+                    {
+                        menus.length > 4 && (
+                            <div className="text-center mt-6">
+                                <button
+                                    onClick={() => setShowAll(!showAll)}
+                                    className="px-6 py-2 bg-[#C60E2A] text-white rounded hover:bg-[#555] transition cursor-pointer"
+                                >
+                                    {showAll ? 'Lihat lebih sedikit' : 'Lihat lebih banyak'}
+                                </button>
+                            </div>
+                        )
+                    }
                 </div>
             </section>
         </>

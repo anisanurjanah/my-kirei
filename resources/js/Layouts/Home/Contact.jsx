@@ -1,6 +1,9 @@
+import { UseOnScreen } from "@/Hooks/UseOnScreen";
 import { ChevronDown, Instagram, Mail, Phone } from 'lucide-react';
 
 export default function Contact() {
+    const [ref, isVisible] = UseOnScreen({ threshold: 0.3 });
+
     return (
         <>
             <section id="contact" className="h-auto flex flex-col justify-center items-center">
@@ -15,7 +18,12 @@ export default function Contact() {
 
                     <div className="mt-8 bg-white lg:grid lg:place-content-center">
                         <div className="mx-auto md:grid md:grid-cols-2 md:items-center md:gap-8">
-                            <div className="inline-block w-full mb-3 md:mb-0">
+                            <div
+                                ref={ ref }
+                                className={`inline-block w-full mb-3 md:mb-0 transition-all duration-700 ${
+                                        isVisible ? "animate-slide-in-left opacity-100" : "opacity-0"
+                                }`}
+                            >
                                 <div className="block rounded-md border border-gray-300 p-4 shadow-sm sm:p-6">
                                     <div className="sm:flex sm:justify-between sm:gap-4 lg:gap-6">
                                         <div className="sm:order-last sm:shrink-0">
@@ -75,7 +83,13 @@ export default function Contact() {
                                 </div>
                             </div>
 
-                            <form action="#" method="POST" className="max-w-lg">
+                            <form
+                                action="#"
+                                method="POST"
+                                className={`max-w-lg transition-all duration-700 ${
+                                    isVisible ? "animate-slide-in-right opacity-100" : "opacity-0"
+                                }`}
+                            >
                                 <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
                                     <div className="sm:col-span-2">
                                         <label htmlFor="first-name" className="block text-sm/6 font-semibold text-gray-900">
