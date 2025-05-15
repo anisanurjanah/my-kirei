@@ -1,18 +1,18 @@
-import { UseOnScreen } from "@/Hooks/UseOnScreen";
 import { ChevronDown, Instagram, Mail, Phone } from 'lucide-react';
+import { UseOnScreen } from "@/Hooks/UseOnScreen";
 
 export default function Contact() {
     const [ref, isVisible] = UseOnScreen({ threshold: 0.3 });
 
     return (
         <>
-            <section id="contact" className="h-auto flex flex-col justify-center items-center">
+            <section id="contact" className="h-auto scroll-mt-24 flex flex-col justify-center items-center">
                 <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
                     <header className="text-center">
                         <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">Hubungi Kami</h2>
 
                         <p className="mx-auto mt-4 max-w-md text-sm lg:text-lg text-gray-500">
-                            Kami senang mendengar dari Anda! Silakan hubungi kami melalui formulir atau kontak yang tersedia.
+                            Kami senang mendengar dari Anda! Silakan hubungi kami melalui formulir atau kontak yang tersedia
                         </p>
                     </header>
 
@@ -25,60 +25,36 @@ export default function Contact() {
                                 }`}
                             >
                                 <div className="block rounded-md border border-gray-300 p-4 shadow-sm sm:p-6">
-                                    <div className="sm:flex sm:justify-between sm:gap-4 lg:gap-6">
-                                        <div className="sm:order-last sm:shrink-0">
-                                            <Mail
-                                                className="size-8 text-[#DDD] sm:size-[48px] lg:ms-48"
-                                            />
+                                    <div className="flex justify-between sm:gap-4 lg:gap-6">
+                                        <div>
+                                            <h3 className="text-lg font-medium text-pretty text-gray-900">Email</h3>
+                                            <p className="mt-1 text-sm text-gray-700">kireisum@gmail.com</p>
                                         </div>
-
-                                        <div className="mt-4 sm:mt-0">
-                                            <h3 className="text-lg font-medium text-pretty text-gray-900">
-                                                Email
-                                            </h3>
-
-                                            <p className="line-clamp-2 text-sm text-pretty text-gray-700">
-                                                kireisum@gmail.com
-                                            </p>
-                                        </div>
+                                        <Mail
+                                            className="size-8 text-[#DDD] sm:size-[48px] lg:ms-48"
+                                        />
                                     </div>
                                 </div>
                                 <div className="block rounded-md border border-gray-300 p-4 my-4 shadow-sm sm:p-6">
-                                    <div className="sm:flex sm:justify-between sm:gap-4 lg:gap-6">
-                                        <div className="sm:order-last sm:shrink-0">
-                                            <Phone
-                                                className="size-8 text-[#DDD] sm:size-[48px] lg:ms-48"
-                                            />
+                                    <div className="flex justify-between sm:gap-4 lg:gap-6">
+                                        <div>
+                                            <h3 className="text-lg font-medium text-pretty text-gray-900">Telepon</h3>
+                                            <p className="mt-1 text-sm text-gray-700">0895-3332-33231</p>
                                         </div>
-
-                                        <div className="mt-4 sm:mt-0">
-                                            <h3 className="text-lg font-medium text-pretty text-gray-900">
-                                                Telepon
-                                            </h3>
-
-                                            <p className="line-clamp-2 text-sm text-pretty text-gray-700">
-                                                0895-3332-33231
-                                            </p>
-                                        </div>
+                                        <Phone
+                                            className="size-8 text-[#DDD] sm:size-[48px] lg:ms-48"
+                                        />
                                     </div>
                                 </div>
                                 <div className="block rounded-md border border-gray-300 p-4 my-4 shadow-sm sm:p-6">
-                                    <div className="sm:flex sm:justify-between sm:gap-4 lg:gap-6">
-                                        <div className="sm:order-last sm:shrink-0">
-                                            <Instagram
-                                                className="size-8 text-[#DDD] sm:size-[48px] lg:ms-48"
-                                            />
+                                    <div className="flex justify-between sm:gap-4 lg:gap-6">
+                                        <div>
+                                            <h3 className="text-lg font-medium text-pretty text-gray-900">Instagram</h3>
+                                            <p className="mt-1 text-sm text-gray-700">@kireisum</p>
                                         </div>
-
-                                        <div className="mt-4 sm:mt-0">
-                                            <h3 className="text-lg font-medium text-pretty text-gray-900">
-                                                Instagram
-                                            </h3>
-
-                                            <p className="line-clamp-2 text-sm text-pretty text-gray-700">
-                                                @kireisum
-                                            </p>
-                                        </div>
+                                        <Instagram
+                                            className="size-8 text-[#DDD] sm:size-[48px] lg:ms-48"
+                                        />
                                     </div>
                                 </div>
                             </div>

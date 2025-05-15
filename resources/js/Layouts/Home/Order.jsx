@@ -1,7 +1,11 @@
+import { useState } from 'react';
+
+import OutletList from "@/Components/OutletList";
 import { UseOnScreen } from "@/Hooks/UseOnScreen";
 
-export default function Order() {
+export default function Order({ outlets  }) {
     const [ref, isVisible] = UseOnScreen({ threshold: 0.3 });
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <>
@@ -20,12 +24,22 @@ export default function Order() {
                                 Pesan dengan mudah dan rasakan sensasi dimsum autentik dari Kirei Sum, dibuat dengan bahan pilihan dan cita rasa istimewa.
                             </p>
 
-                            <a
-                                href="#"
-                                className="inline-block bg-white mt-8 rounded-full border border-[#C60E2A] px-8 py-2 md:px-12 md:py-3 text-sm font-medium text-[#333] hover:bg-[#333] hover:text-white focus:ring-3 focus:outline-hidden"
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setIsModalOpen(true);
+                                }}
+                                className="mt-4 md:mt-8 bg-white rounded-full border border-[#C60E2A] px-6 py-2 text-sm font-medium text-[#333] hover:bg-[#333] hover:text-white transition cursor-pointer"
                             >
-                                Pesan Disini
-                            </a>
+                                Pesan disini
+                            </button>
+
+                            { isModalOpen &&
+                                <OutletList
+                                    outlets={ outlets }
+                                    onClose={ () => setIsModalOpen(false) }
+                                />
+                            }
                         </div>
                     </div>
                 </div>

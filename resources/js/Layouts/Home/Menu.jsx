@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { UseOnScreen } from "@/Hooks/UseOnScreen";
 
-export default function Menu({ menus }) {
+export default function Menu({ menus = [] }) {
     const [showAll, setShowAll] = useState(false);
     const [ref, isVisible] = UseOnScreen({ threshold: 0.3 });
-
-    const displayedMenus = showAll ? menus : menus.slice(0, 4);
+    
+    const displayedMenus = showAll ? menus : (menus || []).slice(0, 4);
 
     return (
         <>
             <section
                 id="menu"
                 ref={ ref }
-                className={`h-auto flex flex-col justify-center items-center transition-all duration-700 ${
+                className={`h-auto scroll-mt-24 flex flex-col justify-center items-center transition-all duration-700 ${
                     isVisible ? "animate-slide-up opacity-100" : "opacity-0"
                 }`}
             >
@@ -21,7 +21,7 @@ export default function Menu({ menus }) {
                         <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">Menu Kami</h2>
 
                         <p className="mx-auto mt-4 max-w-md text-sm lg:text-lg text-gray-500">
-                            Nikmati beragam hidangan dimsum terbaik dengan cita rasa otentik yang memanjakan lidah.
+                            Nikmati beragam hidangan dimsum terbaik dengan cita rasa otentik yang memanjakan lidah
                         </p>
                     </header>
 
@@ -63,10 +63,19 @@ export default function Menu({ menus }) {
                         menus.length > 4 && (
                             <div className="text-center mt-6">
                                 <button
-                                    onClick={() => setShowAll(!showAll)}
-                                    className="px-6 py-2 bg-[#C60E2A] text-white rounded hover:bg-[#555] transition cursor-pointer"
+                                    onClick={() => {
+                                        if (showAll) {
+                                            const element = document.getElementById('menu');
+                                            if (element) {
+                                                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                            }
+                                        }
+
+                                        setShowAll(!showAll);
+                                    }}
+                                    className="px-6 py-2 bg-[#C60E2A] text-white rounded hover:bg-[#333] transition cursor-pointer text-sm"
                                 >
-                                    {showAll ? 'Lihat lebih sedikit' : 'Lihat lebih banyak'}
+                                    { showAll ? 'Lihat lebih sedikit' : 'Lihat lebih banyak' }
                                 </button>
                             </div>
                         )

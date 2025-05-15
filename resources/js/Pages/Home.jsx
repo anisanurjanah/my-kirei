@@ -16,6 +16,8 @@ export default function Home() {
         menus
     } = usePage().props;
 
+    console.log(usePage().props)
+
     const handleScroll = (id) => {
         const element = document.getElementById(id);
         if (element) {
@@ -33,13 +35,9 @@ export default function Home() {
             <Jumbotron />
             <Main>
                 <About />
-                <Menu
-                    menus={ menus }
-                />
-                <Location
-                    outlets={ outlets }
-                />
-                <Order />
+                <Menu menus={ menus }/>
+                <Location outlets={ outlets } />
+                <Order outlets={outlets} />
                 <Contact />
             </Main>
         </>
