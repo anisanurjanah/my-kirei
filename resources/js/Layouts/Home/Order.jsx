@@ -29,7 +29,7 @@ export default function Order({ outlets  }) {
                                     e.preventDefault();
                                     setIsModalOpen(true);
                                 }}
-                                className="mt-4 md:mt-8 bg-white rounded-full border border-[#C60E2A] px-6 py-2 text-sm font-medium text-[#333] hover:bg-[#333] hover:text-white transition cursor-pointer"
+                                className="mt-4 md:mt-8 rounded-full border border-[#FFF] px-8 py-3 text-sm md:text-lg font-medium text-[#FFF] hover:bg-red-900 hover:text-white transition cursor-pointer"
                             >
                                 Pesan disini
                             </button>

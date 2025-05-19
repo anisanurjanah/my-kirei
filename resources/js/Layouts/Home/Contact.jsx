@@ -24,36 +24,36 @@ export default function Contact() {
                                         isVisible ? "animate-slide-in-left opacity-100" : "opacity-0"
                                 }`}
                             >
-                                <div className="block rounded-md border border-gray-300 p-4 shadow-sm sm:p-6">
+                                <div className="block rounded-md border border-gray-300 p-4 shadow-sm">
                                     <div className="flex justify-between sm:gap-4 lg:gap-6">
                                         <div>
                                             <h3 className="text-lg font-medium text-pretty text-gray-900">Email</h3>
                                             <p className="mt-1 text-sm text-gray-700">kireisum@gmail.com</p>
                                         </div>
                                         <Mail
-                                            className="size-8 text-[#DDD] sm:size-[48px] lg:ms-48"
+                                            className="size-8 text-[#DDD] sm:size-[40px] lg:ms-48"
                                         />
                                     </div>
                                 </div>
-                                <div className="block rounded-md border border-gray-300 p-4 my-4 shadow-sm sm:p-6">
+                                <div className="block rounded-md border border-gray-300 p-4 my-4 shadow-sm">
                                     <div className="flex justify-between sm:gap-4 lg:gap-6">
                                         <div>
                                             <h3 className="text-lg font-medium text-pretty text-gray-900">Telepon</h3>
                                             <p className="mt-1 text-sm text-gray-700">0895-3332-33231</p>
                                         </div>
                                         <Phone
-                                            className="size-8 text-[#DDD] sm:size-[48px] lg:ms-48"
+                                            className="size-8 text-[#DDD] sm:size-[40px] lg:ms-48"
                                         />
                                     </div>
                                 </div>
-                                <div className="block rounded-md border border-gray-300 p-4 my-4 shadow-sm sm:p-6">
+                                <div className="block rounded-md border border-gray-300 p-4 my-4 shadow-sm">
                                     <div className="flex justify-between sm:gap-4 lg:gap-6">
                                         <div>
                                             <h3 className="text-lg font-medium text-pretty text-gray-900">Instagram</h3>
                                             <p className="mt-1 text-sm text-gray-700">@kireisum</p>
                                         </div>
                                         <Instagram
-                                            className="size-8 text-[#DDD] sm:size-[48px] lg:ms-48"
+                                            className="size-8 text-[#DDD] sm:size-[40px] lg:ms-48"
                                         />
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@ export default function Contact() {
                                     isVisible ? "animate-slide-in-right opacity-100" : "opacity-0"
                                 }`}
                             >
-                                <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                                     <div className="sm:col-span-2">
                                         <label htmlFor="first-name" className="block text-sm/6 font-semibold text-gray-900">
                                             Nama
@@ -139,7 +139,7 @@ export default function Contact() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="mt-10">
+                                <div className="mt-4">
                                     <button
                                         type="submit"
                                         className="block w-full rounded-md bg-[#C60E2A] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs cursor-pointer hover:bg-[#333] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C60E2A]"

@@ -41,9 +41,9 @@ Route::middleware(['auth.customer', 'check.outlet.code'])->group(function () {
     Route::get('/{outlet_code}/orders/history', [OrderController::class, 'index'])->name('order-history-page');
     Route::get('/{outlet_code}/orders/{order_number}', [OrderController::class, 'show'])->name('order-detail-page');
 
-    Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
     Route::resource('/{outlet_code}/orders', OrderController::class);
 
+    Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
 

@@ -4,7 +4,7 @@ import { UseOnScreen } from "@/Hooks/UseOnScreen";
 export default function Menu({ menus = [] }) {
     const [showAll, setShowAll] = useState(false);
     const [ref, isVisible] = UseOnScreen({ threshold: 0.3 });
-    
+
     const displayedMenus = showAll ? menus : (menus || []).slice(0, 4);
 
     return (
@@ -73,7 +73,7 @@ export default function Menu({ menus = [] }) {
 
                                         setShowAll(!showAll);
                                     }}
-                                    className="px-6 py-2 bg-[#C60E2A] text-white rounded hover:bg-[#333] transition cursor-pointer text-sm"
+                                    className="px-6 py-2 bg-[#C60E2A] text-sm md:text-lg text-white rounded hover:bg-[#333] transition cursor-pointer"
                                 >
                                     { showAll ? 'Lihat lebih sedikit' : 'Lihat lebih banyak' }
                                 </button>
