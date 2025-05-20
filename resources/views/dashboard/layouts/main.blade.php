@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
+    <meta name="author" content="Anisa Nurjanah">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>My Kirei | Dashboard</title>
 
     <!-- Bootstrap CDN -->
@@ -51,6 +54,25 @@
     <script src="/js/dashboard.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/order.js"></script>
+
+    <!-- Pusher CDN -->
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
+    <!-- Laravel Echo CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.15.0/dist/echo.iife.js"></script>
+
+    <script>
+        window.UserData = {
+            username: "{{ auth()->user()->username ?? '' }}",
+            userRole: "{{ auth()->user()->role ?? '' }}",
+            outletCode: "{{ auth()->user()->outlet->outlet_code ?? '' }}"
+        };
+
+        window.PUSHER_APP_KEY = "{{ env('PUSHER_APP_KEY') }}";
+        window.PUSHER_APP_CLUSTER = "{{ env('PUSHER_APP_CLUSTER') }}";
+    </script>
+
+    <script type="module" src="/js/echo.js"></script>
 
     @stack('scripts')
 

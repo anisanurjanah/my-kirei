@@ -6,6 +6,8 @@ use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use App\Events\NewOrderEvent;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -19,11 +21,11 @@ class PaymentController extends Controller
         }
 
         $payment->refresh();
-        $payment->load('order');
+        $payment->load(['order', 'payment_method']);
 
         return Inertia::render('PaymentPage', [
             'outlet_code' => $outlet_code,
-            'selectedPaymentMethod' => session('selected_payment_method', null),
+            'selectedPaymentMethod' => $payment->payment_method,
             'payment' => $payment,
         ]);
     }
@@ -76,6 +78,9 @@ class PaymentController extends Controller
             case 'capture':
                 $order->update(['order_status' => 'Dalam Proses']);
                 $order->payment->update(['payment_status' => 'Lunas']);
+
+                Log::info('Broadcasting NewOrderEvent for order', ['order_number' => $order->order_number]);
+                $this->broadcastNewOrder($order);
                 break;
 
             case 'cancel':
@@ -89,5 +94,12 @@ class PaymentController extends Controller
                 $order->payment->update(['payment_status' => 'Ditunda']);
                 break;
         }
+    }
+
+    protected function broadcastNewOrder($order)
+    {
+        event(new NewOrderEvent($order, null, 'administrator'));
+        event(new NewOrderEvent($order, 'kasir', null, $order->outlet->outlet_code));
+        event(new NewOrderEvent($order, 'produksi', null, $order->outlet->outlet_code));
     }
 }

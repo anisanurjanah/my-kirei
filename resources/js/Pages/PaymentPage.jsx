@@ -30,7 +30,7 @@ export default function PaymentPage() {
     useEffect(() => {
         const interval = setInterval(() => {
             if (payment?.payment_status !== 'Lunas' && payment?.payment_status !== 'Gagal') {
-                Inertia.reload({ only: ['payment'] });
+                Inertia.reload({ only: ['payment', 'selectedPaymentMethod'] });
             }
         }, 10000);
 

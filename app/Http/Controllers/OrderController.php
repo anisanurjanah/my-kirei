@@ -101,10 +101,9 @@ class OrderController extends Controller
             return redirect()->to(secure_url('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . Str::slug($order->order_number)));
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'message' => 'Gagal membuat pesanan.',
-                'error' => $e->getMessage(),
-            ], 500);
+            return redirect()->back()->withErrors([
+                'midtrans_error' => 'Gagal membuat pesanan: ' . $e->getMessage(),
+            ]);
         }
     }
 
@@ -294,7 +293,8 @@ class OrderController extends Controller
 
         $payload = array_merge($payload, $methodConfig);
         $response = CoreApi::charge($payload);
-        // dd($response);
+        dd($response);
+        // dd($payload);
 
         $updateData = [
             'transaction_id' => $response->transaction_id ?? null,
