@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 Carbon::setLocale('id');
 
-class DashboardController extends Controller
+class AdminDashboardController extends Controller
 {
     public function index($outletParam)
     {
@@ -38,19 +38,35 @@ class DashboardController extends Controller
         // Chart data
         $labels = [];
         $data = [];
+        $outlets = Outlet::all();
 
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::today()->subDays($i);
-            $labels[] = $date->format('D');
+        foreach ($outlets as $outlet) {
+            // per Day
+            // $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($today, $outlet) {
+            //         $query->where('outlet_id', $outlet->id)
+            //               ->whereDate('created_at', $today);
+            //     })
+            //     ->sum('quantity');
 
-            $total = Order::whereDate('created_at', $date)
-                ->where('outlet_id', $outlet->id)
-                ->sum('total_price');
+            $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($outlet) {
+                $query->where('outlet_id', $outlet->id);
+            })
+            ->sum('quantity');
 
-            $data[] = $total;
+            $labels[] = $outlet->name;
+            $data[] = $jumlahMenu ?? 0;
         }
 
-        return view('dashboard.index', compact('outlet', 'user', 'labels', 'data', 'todayFormatted'));
+        // Latest Order
+        $latestOrders = Order::where('outlet_id', $user->outlet_id)->latest()->take(5)->get();
+
+        return view('dashboard.index', [
+            'user' => $user,
+            'todayFormatted' => $todayFormatted,
+            'labels' => $labels,
+            'data' => $data,
+            'latestOrders' => $latestOrders
+        ]);
     }
 
     public function indexAdministrator(Request $request)

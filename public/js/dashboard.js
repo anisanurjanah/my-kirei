@@ -7,12 +7,11 @@
     const ctx = document.getElementById('outletSalesChart')
     if (!ctx) return;
 
-    const outletSalesChart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'bar',
         data: {
             labels: chartLabels,
             datasets: [{
-                // label: 'Jumlah Menu Terjual (Hari Ini)',
                 label: 'Jumlah Menu Terjual',
                 data: chartData,
                 backgroundColor: '#C60E2A',
@@ -67,4 +66,77 @@
             }
         }
     })
-})()
+})();
+
+(() => {
+    const outletLinks = document.querySelectorAll('.outlet-filter');
+    const ctx = document.getElementById('orderLineChart').getContext('2d');
+    let chart;
+
+    function renderChart(labels, data) {
+        if (chart) chart.destroy();
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Pesanan per Hari',
+                    data: data,
+                    fill: false,
+                    borderColor: '#C60E2A',
+                    tension: 0.3,
+                    pointBackgroundColor: '#C60E2A',
+                    pointBorderColor: '#C60E2A',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Jumlah Pesanan'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Tanggal'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        padding: 8
+                    }
+                }
+            }
+        });
+    }
+
+    outletLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const outletId = this.dataset.outletId;
+            const outletName = this.textContent.trim();
+
+            document.getElementById('selectedOutletName').textContent = outletName;
+            fetch(`/dashboard/orders-by-outlet?outlet_id=${outletId}`)
+                .then(response => response.json())
+                .then(result => {
+                    renderChart(result.labels, result.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching outlet data:', error);
+                });
+        });
+    });
+
+    renderChart(chartOrderLabels, chartOrderData);
+})();
