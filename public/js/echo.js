@@ -24,6 +24,6 @@ if (username === 'administrator') {
 } else if (userRole === 'kasir' || userRole === 'produksi') {
     window.Echo.private(`orders.outlet.${outletCode}.${userRole}`)
         .listen('NewOrderEvent', e => {
-            alert(`Pesanan baru untuk ${userRole}: #${e.order.order_number}`);
+            alert('Pesanan baru #' + e.order.order_number);
         });
 }

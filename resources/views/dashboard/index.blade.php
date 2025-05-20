@@ -182,11 +182,13 @@
                         Lihat Semua <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
-
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex justify-content-center p-4 bg-white">
+                    <img src="{{ secure_asset('img/logo-kirei-sum.jpg') }}" alt="Logo Kirei Sum" class="img-fluid opacity-50" style="max-width: 320px;">
+                </div>
             </div>
         </div>
-
     </div>
-
 
 @endsection

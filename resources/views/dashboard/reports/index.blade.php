@@ -161,20 +161,12 @@
 
         <div class="row">
             <div class="col-lg-8">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-top-2 p-3 bg-white">
-                    <div class="input-group w-25">
-                        <input type="text" class="form-control" placeholder="Cari" style="font-size: 12px;">
-                        <button class="btn btn-outline-secondary" type="button" id="search" name="search" style="font-size: 12px;">Cari</button>
-                    </div>
-                    @if (auth()->user()->isAdministrator())
-                        <select class="form-select w-25 ms-auto" name="outlet_id" style="font-size: 12px;">
-                            @foreach ($outlets as $outlet)
-                                <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
-                                    Outlet: {{ $outlet->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    @endif
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-4 p-3 bg-white">
+                    <h5 class="h5">Pesanan</h5>
+
+                    <a href="{{ getModuleUrl('orders', null, 'create') }}" class="text-decoration-none text-danger mb-3" style="font-size: 14px">
+                        <small><i class="bi bi-plus me-1"></i>Tambah Pesanan</small>
+                    </a>
                 </div>
 
                 @include('dashboard.components.table-reports')
@@ -184,6 +176,11 @@
                         Menampilkan {{ $reports->firstItem() }} sampai {{ $reports->lastItem() }} dari {{ $reports->total() }} data
                     </small>
                     {{ $reports->links('vendor.custom-pagination') }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex justify-content-center p-4 bg-white">
+                    <img src="{{ secure_asset('img/logo-kirei-sum.jpg') }}" alt="Logo Kirei Sum" class="img-fluid opacity-50" style="max-width: 300px;">
                 </div>
             </div>
         </div>

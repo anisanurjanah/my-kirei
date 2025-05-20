@@ -69,8 +69,11 @@
 })();
 
 (() => {
+    const canvas = document.getElementById('orderLineChart');
+    if (!canvas) return;
+
     const outletLinks = document.querySelectorAll('.outlet-filter');
-    const ctx = document.getElementById('orderLineChart').getContext('2d');
+    const ctx = canvas.getContext('2d');
     let chart;
 
     function renderChart(labels, data) {

@@ -19,7 +19,7 @@
                         @if (auth()->user()->isAdministrator())
                             <td>{{ $report->outlet->name }}</td>
                         @endif
-                        <td>{{ \Carbon\Carbon::parse($report->date)->format('d M Y') }}</td>
+                        <td>{{ $report->date }}</td>
                         <td>{{ $report->total_order }} Pesanan</td>
                         <td>Rp{{ number_format($report->total_revenue, 0, ',', '.') }}</td>
                     </tr>

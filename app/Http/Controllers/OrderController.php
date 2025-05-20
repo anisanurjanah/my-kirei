@@ -293,7 +293,7 @@ class OrderController extends Controller
 
         $payload = array_merge($payload, $methodConfig);
         $response = CoreApi::charge($payload);
-        dd($response);
+        // dd($response);
         // dd($payload);
 
         $updateData = [
