@@ -10,12 +10,14 @@
         <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png">
         <link rel="apple-touch-icon" sizes="512x512" href="/icons/android-chrome-512x512.png">
 
-        @viteReactRefresh
+        {{-- @viteReactRefresh
         @vite('resources/css/app.css')
-        @vite('resources/js/app.jsx')
+        @vite('resources/js/app.jsx') --}}
+        <link rel="stylesheet" href="{{ secure_asset('build/assets/app-BjMGVxGu.css') }}">
         @inertiaHead
     </head>
 <body>
     @inertia
+    <script type="module" src="{{ secure_asset('build/assets/app-CaX-cgjv.js') }}"></script>
 </body>
 </html>
