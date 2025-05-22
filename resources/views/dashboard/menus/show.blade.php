@@ -130,9 +130,16 @@
                                                         <span class="badge text-bg-warning">Perbarui</span>
                                                     </a>
 
-                                                    <button type="button" class="bg-transparent border-0" data-bs-toggle="modal" data-bs-target="#confirmModal"
-                                                        data-bs-url="/dashboard/prices/{{ $menu->pricePromo->id }}" data-bs-name="{{ $menu->name }}" data-action="delete">
-                                                        <span class="badge text-bg-danger">Hapus</span>
+                                                    <button
+                                                        type="button"
+                                                        class="bg-transparent border-0"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirmModal"
+                                                        data-bs-url="{{ getModuleUrl('prices', optional($menu->pricePromo)->id) }}"
+                                                        data-bs-name="{{ $menu->name }}"
+                                                        data-action="delete"
+                                                    >
+                                                            <span class="badge text-bg-danger">Hapus</span>
                                                     </button>
                                                 </div>
                                             </div>

@@ -154,7 +154,7 @@ class AdminMenuController extends Controller
     {
         [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
 
-        $menu = Menu::where('slug', $slug)->firstOrFail();
+        $menu = Menu::with(['stock', 'pricePromo'])->where('slug', $slug)->firstOrFail();
 
         return view('dashboard.menus.show', [
             'menu' => $menu,
@@ -169,7 +169,7 @@ class AdminMenuController extends Controller
     {
         [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
 
-        $menu = Menu::where('slug', $slug)->firstOrFail();
+        $menu = Menu::with(['stock', 'pricePromo'])->where('slug', $slug)->firstOrFail();
 
         return view('/dashboard.menus.edit', [
             'menu' => $menu,
@@ -250,7 +250,7 @@ class AdminMenuController extends Controller
     {
         [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
 
-        $menu = Menu::where('slug', $slug)->firstOrFail();
+        $menu = Menu::with(['stock', 'pricePromo'])->where('slug', $slug)->firstOrFail();
         if($menu->image) {
             Storage::delete($menu->image);
         }

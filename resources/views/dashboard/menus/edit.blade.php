@@ -35,7 +35,6 @@
 
         <form
             method="post"
-            {{-- action="/dashboard/menus/{{ $menu->slug }}" --}}
             action="{{ getModuleUrl('menus', $menu->slug) }}"
             enctype="multipart/form-data"
         >

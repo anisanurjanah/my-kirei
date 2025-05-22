@@ -20,12 +20,12 @@ if (username === 'administrator') {
     window.Echo.private('orders.administrator')
         .listen('NewOrderEvent', e => {
             // alert('Pesanan baru: #' + e.order.order_number);
-            showToastAndReload('Nomor pesanan: #' + e.order.order_number + ' dari ' + e.order.outlet.name);
+            showToastAndReload('Nomor pesanan: #' + e.order.order_number);
         });
 } else if (userRole === 'kasir' || userRole === 'produksi') {
     window.Echo.private(`orders.outlet.${outletCode}.${userRole}`)
         .listen('NewOrderEvent', e => {
-            showToastAndReload('Nomor pesanan: #' + e.order.order_number + ' dari ' + e.order.outlet.name);
+            showToastAndReload('Nomor pesanan: #' + e.order.order_number);
         });
 }
 

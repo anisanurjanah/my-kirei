@@ -79,7 +79,6 @@ class PaymentController extends Controller
                 $order->update(['order_status' => 'Dalam Proses']);
                 $order->payment->update(['payment_status' => 'Lunas']);
 
-                Log::info('Broadcasting NewOrderEvent for order', ['order_number' => $order->order_number]);
                 $this->broadcastNewOrder($order);
                 break;
 

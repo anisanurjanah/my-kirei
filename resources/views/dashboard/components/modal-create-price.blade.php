@@ -11,11 +11,11 @@
                 <div class="card border-0 w-100">
                     <div class="card-body">
 
-                        <form method="post" action="/dashboard/prices">
+                        <form method="post" action="{{ getModuleUrl('prices') }}">
                             @csrf
 
                             <input type="hidden" name="menu_id" value="{{ $menu->id }}">
-                            
+
                             <div class="mb-3">
                                 <label for="price_promo" class="form-label">Potongan Harga</label>
                                 <div class="input-group">
@@ -28,25 +28,23 @@
                                     </div>
                                 @enderror
                             </div>
-                            <div id="promo_dates" class="d-none">
-                                <div class="mb-3">
-                                    <label for="promo_start_date" class="form-label">Waktu Mulai</label>
-                                    <input type="date" class="form-control @error('promo_start_date') is-invalid @enderror" id="promo_start_date" name="promo_start_date" value="{{ old('promo_start_date') }}" required>
-                                    @error('promo_start_date')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label for="promo_end_date" class="form-label">Waktu Selesai</label>
-                                    <input type="date" class="form-control @error('promo_end_date') is-invalid @enderror" id="promo_end_date" name="promo_end_date" value="{{ old('promo_end_date') }}" required>
-                                    @error('promo_end_date')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
+                            <div class="mb-3">
+                                <label for="promo_start_date" class="form-label">Waktu Mulai</label>
+                                <input type="date" class="form-control @error('promo_start_date') is-invalid @enderror" id="promo_start_date" name="promo_start_date" value="{{ old('promo_start_date') }}" required>
+                                @error('promo_start_date')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="promo_end_date" class="form-label">Waktu Selesai</label>
+                                <input type="date" class="form-control @error('promo_end_date') is-invalid @enderror" id="promo_end_date" name="promo_end_date" value="{{ old('promo_end_date') }}" required>
+                                @error('promo_end_date')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 
                             <div class="d-flex justify-content-end">
