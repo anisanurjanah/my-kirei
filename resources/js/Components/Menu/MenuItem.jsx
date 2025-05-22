@@ -15,7 +15,9 @@ export default function MenuItem({ menu, onClickDetail, onClick }) {
                                 className="absolute -top-px -right-px rounded-tr-3xl rounded-bl-3xl bg-yellow-500
                                     p-2 md:px-6 md:py-4 text-xs md:text-md font-medium tracking-widest text-white uppercase"
                             >
-                                Hemat { Math.round(((menu.price - menu.price_promo.price_promo) / menu.price) * 100) }%
+
+
+                                Hemat { Math.round(menu.price_promo?.price_promo / menu.price * 100) }%
                             </span>
                         )
                     }

@@ -9,6 +9,9 @@
 
     <title>My Kirei | Dashboard</title>
 
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/android-chrome-512x512.png">
+
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -38,6 +41,9 @@
                 @include('dashboard.layouts.footer')
             </main>
 
+            <div aria-live="polite" aria-atomic="true" class="position-relative">
+                <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;"></div>
+            </div>
         </div>
     </div>
 

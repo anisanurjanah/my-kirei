@@ -1,18 +1,17 @@
-import { Inertia } from "@inertiajs/inertia";
-import { CircleCheck, UtensilsCrossed, ShoppingBasket, CreditCard, ReceiptText } from "lucide-react";
+import { CircleCheck, UtensilsCrossed, ShoppingBasket, BadgeDollarSign, ReceiptText } from "lucide-react";
 
-export default function OrderProgressSteps() {
+export default function OrderProgressSteps({ goToMenu }) {
     const steps = [
-        { label: "Menu", icon: "UtensilsCrossed" },
+        { label: "Menu", icon: "UtensilsCrossed", action: goToMenu },
         { label: "Keranjang", icon: "ShoppingBasket" },
-        { label: "Pembayaran", icon: "CreditCard" },
+        { label: "Pembayaran", icon: "BadgeDollarSign" },
         { label: "Ringkasan", icon: "ReceiptText" }
     ];
 
     const icons = {
         UtensilsCrossed: UtensilsCrossed,
         ShoppingBasket: ShoppingBasket,
-        CreditCard: CreditCard,
+        BadgeDollarSign: BadgeDollarSign,
         ReceiptText: ReceiptText,
     };
 
@@ -32,6 +31,7 @@ export default function OrderProgressSteps() {
                                             className="relative flex flex-col items-center justify-center text-[#C60E2A]"
                                         >
                                             <button
+                                                onClick={step.action}
                                                 className="flex flex-col items-center gap-1 cursor-pointer"
                                             >
                                                 <span className="absolute -bottom-[1.75rem] rounded-full text-white bg-[#C60E2A]">

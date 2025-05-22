@@ -24,7 +24,7 @@ export default function OrderDetailPage() {
             <Head title={`Ringkasan Pesanan - ${outletCode.toUpperCase()}`} />
             <Header />
             <Main>
-                <OrderProgressSteps />
+                <OrderProgressSteps goToMenu={ goToMenu } />
                 <section className="p-4">
                     <div className="bg-white w-full">
                         <OrderSummary
