@@ -143,7 +143,7 @@ class AdminMenuController extends Controller
         ]);
 
         // Redirect to menus
-        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
             ->with('success', 'Menu berhasil ditambahkan!');
     }
 
@@ -152,7 +152,7 @@ class AdminMenuController extends Controller
      */
     public function show($param1, $param2 = null)
     {
-        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+        [$outlet_code, $slug] = $this->parseOutletAndUnique($param1, $param2);
 
         $menu = Menu::with(['stock', 'pricePromo'])->where('slug', $slug)->firstOrFail();
 
@@ -167,7 +167,7 @@ class AdminMenuController extends Controller
      */
     public function edit($param1, $param2 = null)
     {
-        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+        [$outlet_code, $slug] = $this->parseOutletAndUnique($param1, $param2);
 
         $menu = Menu::with(['stock', 'pricePromo'])->where('slug', $slug)->firstOrFail();
 
@@ -239,7 +239,7 @@ class AdminMenuController extends Controller
         }
 
         // Redirect to menus
-        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
             ->with('success', 'Menu berhasil diperbarui!');
     }
 
@@ -248,7 +248,7 @@ class AdminMenuController extends Controller
      */
     public function destroy($param1, $param2 = null)
     {
-        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+        [$outlet_code, $slug] = $this->parseOutletAndUnique($param1, $param2);
 
         $menu = Menu::with(['stock', 'pricePromo'])->where('slug', $slug)->firstOrFail();
         if($menu->image) {
@@ -258,7 +258,7 @@ class AdminMenuController extends Controller
         Menu::destroy($menu->id);
 
         // Redirect to menus
-        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
             ->with('success', 'Menu berhasil dihapus!');
     }
 }

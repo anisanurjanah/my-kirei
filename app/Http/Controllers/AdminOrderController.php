@@ -20,17 +20,10 @@ class AdminOrderController extends Controller
      */
     public function index()
     {
-        $user = Auth::guard('web')->user();
-
         // Orders
         $queryOrders = Order::query();
 
-        if ($user->username !== 'administrator') {
-            $user = User::where('outlet_id', $user->outlet_id)->get();
-            $queryOrders->where('outlet_id', $user->outlet_id);
-        }
-
-        $orders = (clone $queryOrders)->with(['outlet', 'customer', 'user'])->latest()->paginate(10)->withQueryString();
+        $orders = (clone $queryOrders)->with(['outlet', 'customer', 'payment'])->latest()->paginate(10)->withQueryString();
         $totalOrders = (clone $queryOrders)->count();
         $totalTransactions = (clone $queryOrders)->whereDate('created_at', today())->count();
         $monthlyRevenue = (clone $queryOrders)->whereMonth('created_at', now()->month)->sum('total_price');
@@ -42,22 +35,13 @@ class AdminOrderController extends Controller
             ->orderByDesc('total_orders')
             ->first()?->outlet->name;
 
-        $topStaff = (clone $queryOrders)
-            ->selectRaw('user_id, COUNT(*) as total_orders')
-            ->with('user')
-            ->groupBy('user_id')
-            ->orderByDesc('total_orders')
-            ->first()?->user->name;
-
         return view('dashboard.orders.index', [
             'orders' => $orders,
             'outlets' => Outlet::all(),
-            'users' => $user,
             'totalOrders' => $totalOrders,
             'totalTransactions' => $totalTransactions,
             'monthlyRevenue' => $monthlyRevenue,
             'topOutlet' => $topOutlet,
-            'topStaff' => $topStaff,
         ]);
     }
 
@@ -69,8 +53,7 @@ class AdminOrderController extends Controller
        return view('dashboard.orders.create', [
             'outlets' => Outlet::all(),
             'customers' => Customer::latest()->get(),
-            'users' => User::all(),
-            'menus' => Menu::with('pricePromo')->get(),
+            'menus' => Menu::with(['stock', 'pricePromo'])->get(),
 
             'orderTypes' => Order::ORDER_TYPES,
             'orderStatuses' => Order::ORDER_STATUSES,
@@ -81,9 +64,9 @@ class AdminOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $outlet_code = null)
     {
-        // dd($request->all());
+        dd($request->all());
 
         // Remove Price's Dot
         $request->merge([
@@ -112,7 +95,6 @@ class AdminOrderController extends Controller
             'total_price' => 'required|integer|min:0',
             'order_type' => 'required|string|in:Dine In,Take Away',
             'order_status' => 'required|string|in:Selesai,Dibatalkan',
-            'payment_status' => 'required|string|in:Lunas,Belum Lunas',
         ]);
 
         // Generate Order Number
@@ -136,7 +118,6 @@ class AdminOrderController extends Controller
             'total_price' => $validatedData['total_price'],
             'order_type' => $validatedData['order_type'],
             'order_status' => $validatedData['order_status'],
-            'payment_status' => $validatedData['payment_status'],
         ]);
 
         if (count($request->menu_id) !== count($request->quantity) || count($request->menu_id) !== count($request->price)) {
@@ -153,45 +134,54 @@ class AdminOrderController extends Controller
         }
 
         // Redirect to orders
-        return redirect('/dashboard/orders')->with('success', 'Pesanan berhasil ditambahkan!');
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/orders"))
+            ->with('success', 'Pesanan berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show($param1, $param2 = null)
     {
+        [$outlet_code, $order_number] = $this->parseOutletAndUnique($param1, $param2);
+
+        $order = Order::with(['outlet', 'customer', 'payment'])->where('order_number', $order_number)->firstOrFail();
+        $orderItems = OrderItem::latest()->with('menu')->where('order_id', $order->id);
+
         return view('dashboard.orders.show', [
             'order' => $order,
-            'orderItems' => OrderItem::latest()->where('order_id', $order->id)->paginate(10)->withQueryString(),
+            'orderItems' => $orderItems,
+            'outlet_code' => $outlet_code
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Order $order)
+    public function edit($param1, $param2 = null)
     {
-        // dd($order->orderItems);
+
+        [$outlet_code, $order_number] = $this->parseOutletAndUnique($param1, $param2);
+
+        $order = Order::with(['outlet', 'customer', 'payment'])->where('order_number', $order_number)->firstOrFail();
 
         return view('dashboard.orders.edit', [
             'order' => $order,
             'outlets' => Outlet::all(),
-            'customers' => Customer::latest()->get(),
-            'users' => User::all(),
+            'customers' => Customer::all(),
             'menus' => Menu::with('pricePromo')->get(),
+            'outlet_code' => $outlet_code,
             'orderTypes' => Order::ORDER_TYPES,
             'orderStatuses' => Order::ORDER_STATUSES,
-            // 'paymentStatuses' => Order::PAYMENT_STATUSES
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, $outlet_code = null, Order $order)
     {
-        // dd($request->all());
+        dd($request->all());
 
         // Remove Price's Dot
         $request->merge([
@@ -220,7 +210,6 @@ class AdminOrderController extends Controller
             'total_price' => 'required|integer|min:0',
             'order_type' => 'required|string|in:Dine In,Take Away',
             'order_status' => 'required|string|in:Selesai,Dibatalkan',
-            'payment_status' => 'required|string|in:Lunas,Belum Lunas',
         ]);
 
         $previousStatus = $order->order_status;
@@ -236,7 +225,6 @@ class AdminOrderController extends Controller
             'total_price' => $validatedData['total_price'],
             'order_type' => $validatedData['order_type'],
             'order_status' => $validatedData['order_status'],
-            'payment_status' => $validatedData['payment_status'],
         ]);
 
         if (count($request->menu_id) !== count($request->quantity) || count($request->menu_id) !== count($request->price)) {
@@ -268,31 +256,36 @@ class AdminOrderController extends Controller
         }
 
         // Redirect to orders
-        return redirect('/dashboard/orders')->with('success', 'Pesanan berhasil diperbarui!');
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
+            ->with('success', 'Pesanan berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order $order)
+    public function destroy($param1, $param2 = null)
     {
+        [$outlet_code, $order_number] = $this->parseOutletAndUnique($param1, $param2);
+
+        $order = Order::with(['outlet', 'customer', 'payment'])->where('order_number', $order_number)->firstOrFail();
         Order::destroy($order->id);
 
         // Redirect to orders
-        return redirect('/dashboard/orders')->with('success', 'Pesanan berhasil dihapus!');
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
+            ->with('success', 'Pesanan berhasil dihapus!');
     }
 
-    public function getUsers($outletCode)
-    {
-        $outlet = Outlet::where('outlet_code', $outletCode)->first();
+    // public function getUsers($outletCode)
+    // {
+    //     $outlet = Outlet::where('outlet_code', $outletCode)->first();
 
-        if (!$outlet) {
-            return response()->json(['message' => 'Outlet tidak ditemukan'], 404);
-        }
+    //     if (!$outlet) {
+    //         return response()->json(['message' => 'Outlet tidak ditemukan'], 404);
+    //     }
 
-        $users = User::where('outlet_id', $outlet->id)->get();
-        return response()->json($users);
-    }
+    //     $users = User::where('outlet_id', $outlet->id)->get();
+    //     return response()->json($users);
+    // }
 
     public function getMenus($outletCode)
     {

@@ -78,7 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/dashboard/orderitems', AdminOrderItemController::class);
     Route::get('/dashboard/reports', [AdminReportController::class, 'index']);
 
-    Route::get('/get-users/{outletCode}', [AdminOrderController::class, 'getUsers']);
+    // Route::get('/get-users/{outletCode}', [AdminOrderController::class, 'getUsers']);
     Route::get('/get-menus/{outletCode}', [AdminOrderController::class, 'getMenus']);
     Route::get('/dashboard/orders-by-outlet', [AdminReportController::class, 'ordersByOutlet']);
 

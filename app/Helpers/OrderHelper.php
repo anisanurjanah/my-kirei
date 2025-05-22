@@ -26,4 +26,17 @@ class OrderHelper
         $class = $classes[$status] ?? 'secondary';
         return '<span class="badge text-bg-' . $class . '">' . e($status) . '</span>';
     }
+
+    public static function badgePaymentStatus($status)
+    {
+        $classes = [
+            'Kadaluarsa' => 'warning',
+            'Lunas' => 'success',
+            'Gagal' => 'danger',
+            'Ditunda' => 'info',
+        ];
+
+        $class = $classes[$status] ?? 'secondary';
+        return '<span class="badge text-bg-' . $class . '">' . e($status) . '</span>';
+    }
 }

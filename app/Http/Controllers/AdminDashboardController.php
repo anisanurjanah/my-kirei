@@ -58,7 +58,7 @@ class AdminDashboardController extends Controller
         }
 
         // Latest Order
-        $latestOrders = Order::where('outlet_id', $user->outlet_id)->latest()->take(5)->get();
+        $latestOrders = Order::with('payment')->where('outlet_id', $user->outlet_id)->latest()->take(5)->get();
 
         return view('dashboard.index', [
             'user' => $user,
@@ -108,7 +108,7 @@ class AdminDashboardController extends Controller
         }
 
         // Latest Order
-        $latestOrders = Order::latest()->take(5)->get();
+        $latestOrders = Order::with('payment')->latest()->take(5)->get();
 
         return view('dashboard.index', [
             'user' => $user,

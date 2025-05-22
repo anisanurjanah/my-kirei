@@ -26,7 +26,7 @@
                     <div class="col-6 col-sm-6 mb-3 mb-md-0">
                         <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
                             <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-fire text-danger h3 mx-2 mb-auto"></i>
+                                <i class="bi bi-coin text-danger h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
                                     <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp. {{ number_format($monthlyRevenue, 0, ',', '.') }}</h5>
                                     <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp. {{ number_format($monthlyRevenue, 0, ',', '.') }}</h6>
@@ -38,7 +38,7 @@
                     <div class="col-6 col-sm-6 mb-3 mb-md-0">
                         <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
                             <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-cart-check-fill text-primary h3 mx-2 mb-auto"></i>
+                                <i class="bi bi-cart text-primary h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
                                     <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $monthlyOrderCount }}</h5>
                                     <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $monthlyOrderCount }}</h6>
@@ -55,7 +55,7 @@
                     <div class="col-6 col-sm-6 mb-3 mb-md-0">
                         <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
                             <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-graph-up-arrow text-success h3 mx-2 mb-auto"></i>
+                                <i class="bi bi-bar-chart-line-fill text-success h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
                                     <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp. {{ number_format($averageDailyRevenue, 0, ',', '.') }}</h5>
                                     <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp. {{ number_format($averageDailyRevenue, 0, ',', '.') }}</h6>
@@ -67,7 +67,7 @@
                     <div class="col-6 col-sm-6 mb-3 mb-md-0">
                         <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
                             <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-exclamation-diamond-fill text-warning h3 mx-2 mb-auto"></i>
+                                <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
                                     <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($topOutlet->outlet->name, 12, '...') }}</h5>
                                     <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($topOutlet->outlet->name, 12, '...') }}</h6>

@@ -142,7 +142,7 @@
                                 @endif
                                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL</th>
                                 <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PESANAN</th>
-                                {{-- <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PEMBAYARAN</th> --}}
+                                <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PEMBAYARAN</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -158,7 +158,7 @@
                                         @endif
                                         <td>Rp. {{ number_format($order->total_price, 0, ',', '.') }}</td>
                                         <td>{!! \App\Helpers\OrderHelper::badgeOrderStatus($order->order_status) !!}</td>
-                                        {{-- <td>{{ $order->payment_status }}</td> --}}
+                                        <td>{!! \App\Helpers\OrderHelper::badgePaymentStatus($order->payment->payment_status) !!}</td>
                                         <td class="text-center" style="width: 64px">
                                             <div class="dropdown mx-auto">
                                                 <a href="{{ getModuleUrl('orders', strtolower($order->order_number)) }}" class="text-decoration-none text-black">

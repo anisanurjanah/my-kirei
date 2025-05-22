@@ -79,15 +79,9 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    @if (auth()->user()->isAdministrator())
-                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($topOutlet, 12, '...') }}</h5>
-                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($topOutlet, 12, '...') }}</h6>
-                                        <small class="card-text m-0">Pesanan Terbanyak</small>
-                                    @else
-                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($topStaff, 12, '...') }}</h5>
-                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($topStaff, 12, '...') }}</h6>
-                                        <small class="card-text m-0">Staf Teraktif</small>
-                                    @endif
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($topOutlet, 12, '...') }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($topOutlet, 12, '...') }}</h6>
+                                    <small class="card-text m-0">Pesanan Terbanyak</small>
                                 </div>
                             </div>
                         </div>
@@ -108,14 +102,6 @@
                             @foreach ($outlets as $outlet)
                                 <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
                                     Outlet: {{ $outlet->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    @else
-                        <select class="form-select w-25 ms-auto" name="user_id" style="font-size: 12px;">
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                    Staff: {{ $user->name }}
                                 </option>
                             @endforeach
                         </select>
