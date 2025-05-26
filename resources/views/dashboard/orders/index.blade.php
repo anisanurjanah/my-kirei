@@ -38,8 +38,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-cart-fill text-danger h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalOrders }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalOrders }}</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalOrders ?? '0' }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalOrders ?? '0' }}</h6>
                                     <small class="card-text m-0">Total Pesanan</small>
                                 </div>
                             </div>
@@ -50,8 +50,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-receipt-cutoff text-primary h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalTransactions }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalTransactions }}</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalTransactions ?? '0' }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalTransactions ?? '0' }}</h6>
                                     <small class="card-text m-0">Pesanan Hari Ini</small>
                                 </div>
                             </div>
@@ -67,8 +67,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-cash-stack text-success h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp {{ number_format($monthlyRevenue, 0, ',', '.') }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp {{ number_format($monthlyRevenue, 0, ',', '.') }}</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp {{ number_format($monthlyRevenue, 0, ',', '.') ?? '0' }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp {{ number_format($monthlyRevenue, 0, ',', '.') ?? '0' }}</h6>
                                     <small class="card-text m-0">Pendapatan Bulan Ini</small>
                                 </div>
                             </div>
@@ -79,8 +79,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($topOutlet, 12, '...') }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($topOutlet, 12, '...') }}</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit(optional($topOutlet)->name ?? 'none', 12, '...') }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit(optional($topOutlet)->name ?? 'none', 12, '...') }}</h6>
                                     <small class="card-text m-0">Pesanan Terbanyak</small>
                                 </div>
                             </div>

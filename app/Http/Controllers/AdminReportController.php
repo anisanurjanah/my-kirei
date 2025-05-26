@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Outlet;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -96,5 +97,45 @@ class AdminReportController extends Controller
             'labels' => $labels,
             'data' => $data
         ]);
+    }
+
+    public function downloadPDF()
+    {
+        $user = Auth::guard('web')->user();
+        $ownerName = $user->name;
+
+        $startOfMonth = now()->startOfMonth()->translatedFormat('d');
+        $endOfMonth = now()->endOfMonth()->translatedFormat('d F Y');
+        $reportPeriod = $startOfMonth . '–' . $endOfMonth;
+
+        $reportTitle = 'Laporan Penjualan Bulan ' . now()->translatedFormat('F Y');
+
+        $reportData = Order::with('outlet')
+            ->select([
+                'outlet_id',
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('COUNT(*) as total_orders'),
+                DB::raw('SUM(total_price) as total_income'),
+            ])
+            ->groupBy('outlet_id', DB::raw('DATE(created_at)'))
+            ->orderBy('date')
+            ->get()
+            ->map(function($item) {
+                return [
+                    'outlet' => $item->outlet->name ?? 'Unknown Outlet',
+                    'date' => $item->date,
+                    'total_orders' => $item->total_orders,
+                    'total_income' => $item->total_income,
+                ];
+            });
+
+        $pdf = Pdf::loadView('pdf.sales-report', compact(
+            'reportTitle',
+            'reportData',
+            'ownerName',
+            'reportPeriod'
+        ))->setPaper('a4', 'portrait');
+
+        return $pdf->stream('laporan-penjualan.pdf');
     }
 }

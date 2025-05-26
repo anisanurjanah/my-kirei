@@ -16,14 +16,14 @@
                         </div>
                     </a>
                     <ul class="dropdown-menu text-small shadow">
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        {{-- <li><a class="dropdown-item" href="#">Settings</a></li> --}}
+                        {{-- <li><a class="dropdown-item" href="#">Profile</a></li> --}}
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form action="/logout" method="post">
                                 @csrf
                                 <button type="submit" class="dropdown-item">
-                                    Sign out
+                                    Keluar
                                 </button>
                             </form>
                         </li>

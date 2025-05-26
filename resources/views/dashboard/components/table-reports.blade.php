@@ -9,6 +9,7 @@
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TANGGAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL PESANAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL PENDAPATAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                <th scope="col" class="text-secondary" style="font-size: 12px;">PDF <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +23,11 @@
                         <td>{{ $report->date }}</td>
                         <td>{{ $report->total_order }} Pesanan</td>
                         <td>Rp{{ number_format($report->total_revenue, 0, ',', '.') }}</td>
+                        <td>
+                            <a href="{{ secure_url('/laporan-penjualan/pdf') }}" class="text-danger" target="_blank">
+                                <i class="bi bi-filetype-pdf"></i>
+                            </a>
+                        </td>
                     </tr>
                 @endforeach
             @else

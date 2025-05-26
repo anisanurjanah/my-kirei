@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Helpers\WhatsappHelper;
 use App\Models\Order;
 use App\Models\Payment;
-use Illuminate\Http\Request;
 use App\Events\NewOrderEvent;
-use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
@@ -30,21 +31,6 @@ class PaymentController extends Controller
         ]);
     }
 
-    // public function handleCallback(Request $request, $order_number)
-    // {
-    //     $payload = $request->all();
-
-    //     if (isset($payload['transaction_status']) && $payload['transaction_status'] === 'settlement') {
-    //         Payment::whereHas('order', function ($query) use ($order_number) {
-    //             $query->where('order_number', $order_number);
-    //         })->update([
-    //             'payment_status' => 'Lunas',
-    //         ]);
-    //     }
-
-    //     return response()->json(['message' => 'Callback handled'], 200);
-    // }
-
     public function handleWebhook(Request $request)
     {
         $serverKey = config('services.midtrans.server_key');
@@ -60,7 +46,7 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Invalid signature key'], 403);
         }
 
-        $order = Order::where('order_number', $request['order_id'])->first();
+        $order = Order::with(['outlet', 'customer', 'payment'])->where('order_number', $request['order_id'])->first();
         if (!$order) {
             return response()->json(['message' => 'Transaction not found'], 404);
         }
@@ -80,6 +66,7 @@ class PaymentController extends Controller
                 $order->payment->update(['payment_status' => 'Lunas']);
 
                 $this->broadcastNewOrder($order);
+                WhatsappHelper::sendOrderPdfToWhatsapp($order);
                 break;
 
             case 'cancel':

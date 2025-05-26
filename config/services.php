@@ -42,4 +42,8 @@ return [
         'is_sanitized' => true,
         'is_3ds' => true,
     ],
+
+    'wablas' => [
+        'token' => env('WABLAS_TOKEN'),
+    ],
 ];

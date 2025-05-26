@@ -28,6 +28,7 @@ return new class extends Migration
             $table->decimal('total_price');
             $table->string('order_type')->default('Ditunda');
             $table->string('order_status')->default('Ditunda');
+            $table->string('pdf_path')->nullable();
             $table->timestamps();
         });
     }
