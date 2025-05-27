@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use App\Helpers\WhatsappHelper;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Events\NewOrderEvent;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Events\NewOrderEvent;
+use App\Helpers\WhatsappHelper;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
 {
@@ -33,6 +34,8 @@ class PaymentController extends Controller
 
     public function handleWebhook(Request $request)
     {
+        Log::info('Webhook Received:', $request->all());
+
         $serverKey = config('services.midtrans.server_key');
 
         $signatureKey = hash("sha512",
@@ -41,6 +44,8 @@ class PaymentController extends Controller
             $request->gross_amount .
             $serverKey
         );
+
+        Log::info('Calculated Signature:', ['signatureKey' => $signatureKey, 'requestSignature' => $request->signature_key]);
 
         if ($signatureKey !== $request->signature_key) {
             return response()->json(['message' => 'Invalid signature key'], 403);

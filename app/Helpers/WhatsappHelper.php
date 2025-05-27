@@ -13,7 +13,6 @@ class WhatsappHelper
     public static function sendOrderPdfToWhatsapp($order)
     {
         try {
-            // Generate PDF
             $pdf = Pdf::loadView('pdf.order-summary', ['order' => $order]);
             $pdfPath = 'orders/order-' . $order->order_number . '.pdf';
             Storage::disk('public')->put($pdfPath, $pdf->output());

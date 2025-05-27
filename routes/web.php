@@ -10,6 +10,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderPdfController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminLoginController;
@@ -59,7 +60,6 @@ Route::post('/clear-payment-session', function () {
     session()->forget('selected_payment_method');
 });
 
-// Route::post('/payment/webhook', [PaymentController::class, 'handleWebhook']);
 
 
 // DASHBOARD
@@ -96,51 +96,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/{outlet_code}/dashboard/orders', AdminOrderController::class);
     Route::resource('/{outlet_code}/dashboard/orderitems', AdminOrderItemController::class);
     Route::get('/{outlet_code}/dashboard/reports', [AdminReportController::class, 'index']);
-    
+
     Route::get('/laporan-penjualan/pdf', [AdminReportController::class, 'downloadPDF']);
 });
 
-
-Route::get('/preview-pesanan', function () {
-    $order = (object)[
-        'order_number' => 'INV-20240701001',
-        'order_date' => now(),
-        'order_type' => 'Dine In',
-        'customer' => (object)[
-            'name' => 'Budi Santoso',
-            'phone' => '081234567890',
-        ],
-        'outlet' => (object)[
-            'name' => 'Kopi Kenangan Mantan',
-        ],
-        'payment' => (object)[
-            'payment_number' => 'PMT-8822',
-            'payment_method' => (object)[
-                'method' => (object)[
-                    'name' => 'QRIS'
-                ]
-            ],
-            'amount' => 50000,
-        ],
-        'orderItems' => [
-            (object)[
-                'menu' => (object)[
-                    'name' => 'Kopi Susu Gula Aren',
-                    'price' => 18000,
-                ],
-                'quantity' => 2,
-                'price' => 18000,
-            ],
-            (object)[
-                'menu' => (object)[
-                    'name' => 'Roti Bakar Keju',
-                    'price' => 14000,
-                ],
-                'quantity' => 1,
-                'price' => 14000,
-            ],
-        ],
-    ];
-
-    return view('pdf.order-summary', compact('order'));
-});
+// Route::get('/preview-pesanan/{orderNumber}', [OrderPdfController::class, 'preview']);
