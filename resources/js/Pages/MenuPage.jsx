@@ -89,26 +89,19 @@ export default function MenuPage() {
         const menuAlreadyAdded = Array.isArray(selectedMenus) && selectedMenus.some((selected) => selected?.id === menu.id);
         if (menuAlreadyAdded) return;
 
-        const storedMenus = JSON.parse(sessionStorage.getItem("selectedMenus")) || [];
-        const storedQuantities = JSON.parse(sessionStorage.getItem("quantities")) || {};
-
-        const updatedQuantities = { ...storedQuantities };
-        storedMenus.forEach(menu => {
-            if (!updatedQuantities[menu.id]) {
-                updatedQuantities[menu.id] = 1;
-            }
-        });
+        const updatedMenus = [...selectedMenus, menu];
+        const updatedQuantities = { ...quantities };
 
         if (!updatedQuantities[menu.id]) {
             updatedQuantities[menu.id] = 1;
         }
 
-        sessionStorage.setItem("selectedMenus", JSON.stringify(storedMenus));
-        sessionStorage.setItem("quantities", JSON.stringify(updatedQuantities));
-
-        setSelectedMenus((prev) => [...prev, menu]);
+        setSelectedMenus(updatedMenus);
         setQuantities(updatedQuantities);
         setShowQuantity(prev => ({ ...prev, [menu.id]: true }));
+
+        sessionStorage.setItem("selectedMenus", JSON.stringify(updatedMenus));
+        sessionStorage.setItem("quantities", JSON.stringify(updatedQuantities));
     }
 
     const handleMenuDetail = (menu) => {
@@ -156,7 +149,7 @@ export default function MenuPage() {
                 showAlert && (
                     <div className="fixed h-screen inset-0 flex items-center justify-center bg-transparent backdrop-blur-md animate-fade-in z-50">
                         <LogoutAlert
-                            title="Konfirmasi Logout"
+                            title="Konfirmasi Keluar"
                             message="Apakah Anda yakin ingin keluar?"
                             onClose={ () => setShowAlert(false) }
                             onConfirm={ handleSubmit }

@@ -4,7 +4,7 @@ export default function OrderSummary({ order, payment, order_items, onClick }) {
     const orders = [
         { title: 'Outlet', subtitle: order.outlet.name },
         { title: 'Telepon', subtitle: order.customer.phone },
-        { title: 'Nomor Pesanan', subtitle: order.order_number },
+        // { title: 'Nomor Pesanan', subtitle: order.order_number },
         { title: 'Nomor Bayar', subtitle: order.payment.payment_number },
         { title: 'Metode Bayar', subtitle: payment.payment_method.method.name },
         { title: 'Tipe Pesanan', subtitle: order.order_type  },

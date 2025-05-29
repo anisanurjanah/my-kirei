@@ -69,7 +69,7 @@ class AdminDashboardController extends Controller
         ]);
     }
 
-    public function indexAdministrator(Request $request)
+    public function indexAdministrator()
     {
         $user = Auth::guard('web')->user();
 

@@ -10,7 +10,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
-                            <a href="/dashboard" class="text-decoration-none text-black">
+                            <a href="{{ getDashboardUrl() }}" class="text-decoration-none text-black">
                                 <i class="bi bi-house-fill"></i>
                             </a>
                         </li>
@@ -19,7 +19,7 @@
                 </nav>
             </div>
 
-            <a href="/dashboard/orders/create" class="btn btn-danger ms-auto my-3">
+            <a href="{{ getModuleUrl('orders', null, 'create') }}" class="btn btn-danger ms-auto my-3">
                 <i class="bi bi-plus-circle-fill fs-6 me-2"></i>Tambah Pesanan
             </a>
         </div>
@@ -97,7 +97,7 @@
                         <input type="text" class="form-control" placeholder="Cari pesanan.." style="font-size: 12px;">
                         <button class="btn btn-outline-secondary" type="button" id="search" name="search" style="font-size: 12px;">Cari</button>
                     </div>
-                    @if (auth()->user()->isAdministrator())
+                    {{-- @if (auth()->user()->isAdministrator())
                         <select class="form-select w-25 ms-auto" name="outlet_id" style="font-size: 12px;">
                             @foreach ($outlets as $outlet)
                                 <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
@@ -105,7 +105,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    @endif
+                    @endif --}}
                 </div>
 
                 @include('dashboard.components.table-orders')

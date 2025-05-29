@@ -22,13 +22,24 @@ export default function PaymentDetails({ selectedPaymentMethod, payment, payment
 
                         {
                             ( selectedPaymentMethod.type === 'QR Code' || selectedPaymentMethod.type === 'E-Wallet') && (
-                                <div className="flex justify-center my-4 text-center">
-                                    <img
-                                        src={ `${ payment?.qr_code_url }` }
-                                        alt="QR Code"
-                                        className="w-48 h-48 mx-auto"
-                                    />
-                                </div>
+                                <>
+                                    <div className="flex justify-center my-4 text-center">
+                                        <img
+                                            src={ `${ payment?.qr_code_url }` }
+                                            alt="QR Code"
+                                            className="w-48 h-48 mx-auto"
+                                        />
+
+                                    </div>
+
+                                    <p className="text-sm md:text-md text-center">Atau klik tautan di bawah ini.</p>
+
+                                    <div className="flex justify-center">
+                                        <div className="rounded-md shadow mx-4 p-4 text-center w-fit">
+                                            <button className="text-xs text-[#333] cursor-pointer">{ payment.qr_code_url }</button>
+                                        </div>
+                                    </div>
+                                </>
                             )
                         }
 

@@ -6,7 +6,7 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap py-3">
             <div class="d-block">
                 <h1 class="h2">
-                    <a href="/dashboard/orders" class="text-decoration-none text-danger">
+                    <a href="{{ getModuleUrl('orders') }}" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
                     Perbarui Pesanan {{ $order->order_number }}
@@ -15,12 +15,12 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
-                            <a href="/dashboard" class="text-decoration-none text-black">
+                            <a href="{{ getDashboardUrl() }}" class="text-decoration-none text-black">
                                 <i class="bi bi-house-fill"></i>
                             </a>
                         </li>
                         <li class="breadcrumb-item" aria-current="page">
-                            <a href="/dashboard/orders" class="text-decoration-none text-black">
+                            <a href="{{ getModuleUrl('orders') }}" class="text-decoration-none text-black">
                                 Pesanan
                             </a>
                         </li>
@@ -33,11 +33,11 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/orders/{{ $order->order_number }}">
+        <form method="post" action="{{ getModuleUrl('orders', $order->order_number) }}">
             @method('PUT')
             @csrf
 
-            <input type="hidden" id="selectedUserId" value="{{ old('selectedUserId', $order->user_id ?? '') }}">
+            {{-- <input type="hidden" id="selectedUserId" value="{{ old('selectedUserId', $order->user_id ?? '') }}"> --}}
 
             <div class="row p-2">
                 <div class="col-lg-12 mb-3 mb-md-0">
@@ -183,7 +183,7 @@
                             <label for="customer_name" class="form-label">Nama Pelanggan</label>
                             <input type="text" class="form-control" id="customer_name" name="customer_name" value="{{ old('customer_name', $order->customer->name) }}" readonly>
                         </div>
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="user_id" class="form-label">Staff</label>
                             <select class="form-select select2" id="user_id" name="user_id" required>
                                 <option value="" disabled selected>Pilih Staff</option>
@@ -193,7 +193,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="mb-3">
                             <label for="order_date" class="form-label">Tanggal</label>
                             <input type="datetime-local" class="form-control @error('order_date') is-invalid @enderror" id="order_date" name="order_date" value="{{ old('order_date', $order->order_date) }}" required>

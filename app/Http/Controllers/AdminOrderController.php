@@ -82,7 +82,7 @@ class AdminOrderController extends Controller
         $validatedData = $request->validate([
             'outlet_id' => 'required|exists:outlets,id',
             'customer_id' => 'required|exists:customers,id',
-            'user_id' => 'required|exists:users,id',
+            // 'user_id' => 'required|exists:users,id',
             'order_date' => 'required|date',
             'menu_id' => 'required|array',
             'menu_id.*' => 'exists:menus,id',
@@ -110,7 +110,7 @@ class AdminOrderController extends Controller
         $order = Order::create([
             'outlet_id' => $validatedData['outlet_id'],
             'customer_id' => $validatedData['customer_id'],
-            'user_id' => $validatedData['user_id'],
+            // 'user_id' => $validatedData['user_id'],
             'order_number' => $validatedData['order_number'],
             'order_date' => $validatedData['order_date'],
             'sub_total' => $validatedData['sub_total'],
@@ -197,7 +197,7 @@ class AdminOrderController extends Controller
         $validatedData = $request->validate([
             'outlet_id' => 'required|exists:outlets,id',
             'customer_id' => 'required|exists:customers,id',
-            'user_id' => 'required|exists:users,id',
+            // 'user_id' => 'required|exists:users,id',
             'order_date' => 'required|date',
             'menu_id' => 'required|array',
             'menu_id.*' => 'exists:menus,id',
@@ -218,7 +218,7 @@ class AdminOrderController extends Controller
         $order->update([
             'outlet_id' => $validatedData['outlet_id'],
             'customer_id' => $validatedData['customer_id'],
-            'user_id' => $validatedData['user_id'],
+            // 'user_id' => $validatedData['user_id'],
             'order_date' => $validatedData['order_date'],
             'sub_total' => $validatedData['sub_total'],
             'discount' => $validatedData['discount'],

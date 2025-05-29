@@ -88,7 +88,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Kasir, Produksi
     Route::get('/{outlet_code}/dashboard', [AdminDashboardController::class, 'index'])
-        ->where('outlet_code', '[a-zA-Z0-9-_]+');
+        ->where('outlet_code', '^(?!dashboard$)[a-zA-Z0-9-_]+');
 
     Route::resource('/{outlet_code}/dashboard/menus', AdminMenuController::class);
     Route::resource('/{outlet_code}/dashboard/stocks', AdminStockController::class);

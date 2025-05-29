@@ -16,8 +16,6 @@ export default function Home() {
         menus
     } = usePage().props;
 
-    console.log(usePage().props)
-
     const handleScroll = (id) => {
         const element = document.getElementById(id);
         if (element) {

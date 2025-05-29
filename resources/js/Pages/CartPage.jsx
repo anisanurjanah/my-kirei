@@ -11,11 +11,13 @@ import CartList from "@/Components/Cart/CartList";
 import CartPaymentMethod from "@/Components/Cart/CartPaymentMethod";
 import CartProgressSteps from "@/Components/Cart/CartProgressSteps";
 import CartSummary from "@/Components/Cart/CartSummary";
+import ErrorAlert from "@/Components/AlertError";
 
 export default function CartPage() {
     const {
         outlet_code: outletCode,
         selectedPaymentMethod: paymentMethods,
+        flash,
         customer
     } = usePage().props;
 
@@ -60,6 +62,14 @@ export default function CartPage() {
             }
         });
     }
+
+    // Alert
+    const [flashMsg, setFlashMsg] = useState(flash);
+    useEffect(() => {
+        if (flash) {
+            setFlashMsg(flash);
+        }
+    }, [flash]);
 
     // Menu List
     useEffect(() => {
@@ -179,6 +189,11 @@ export default function CartPage() {
             <Head title={`Keranjang - ${outletCode.toUpperCase()}`} />
             <Header />
             <Main>
+                { flashMsg?.order_failed && (
+                    <ErrorAlert
+                        message={ { body: flashMsg.order_failed } }
+                    />
+                )}
                 <CartProgressSteps goToMenu={ goToMenu } />
                 <section className="p-4">
                     <div className="bg-white w-full">

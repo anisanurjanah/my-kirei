@@ -13,6 +13,7 @@ use App\Models\OrderItem;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\TransactionRepositoryInterface;
@@ -101,8 +102,10 @@ class OrderController extends Controller
             return redirect()->to(secure_url('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . Str::slug($order->order_number)));
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors([
-                'midtrans_error' => 'Gagal membuat pesanan: ' . $e->getMessage(),
+            Log::error('Gagal membuat pesanan: ' . $e->getMessage());
+            
+            return redirect()->back()->with([
+                'order_failed' => 'Maaf, terjadi kesalahan saat membuat pesanan. Silakan coba lagi.',
             ]);
         }
     }

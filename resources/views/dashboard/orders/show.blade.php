@@ -6,7 +6,7 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap py-3">
             <div class="d-block">
                 <h1 class="h2">
-                    <a href="/dashboard/orders" class="text-decoration-none text-danger">
+                    <a href="{{ getModuleUrl('orders') }}" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
                     {{ Str::upper($order->order_number) }}
@@ -15,12 +15,12 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
-                            <a href="/dashboard" class="text-decoration-none text-black">
+                            <a href="{{ getDashboardUrl() }}" class="text-decoration-none text-black">
                                 <i class="bi bi-house-fill"></i>
                             </a>
                         </li>
                         <li class="breadcrumb-item" aria-current="page">
-                            <a href="/dashboard/orders" class="text-decoration-none text-black">
+                            <a href="{{ getModuleUrl('orders') }}" class="text-decoration-none text-black">
                                 Pesanan
                             </a>
                         </li>
@@ -59,9 +59,9 @@
                             <td>:</td>
                             <td>{{ $order->outlet->name }}</td>
 
-                            <th scope="row">Staff</th>
+                            {{-- <th scope="row">Staff</th>
                             <td>:</td>
-                            <td>{{ $order->user->name }}</td>
+                            <td>{{ $order->user->name }}</td> --}}
                         </tr>
                         <tr>
                             <th scope="row">Total</th>

@@ -6,9 +6,9 @@
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NOMOR PESANAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TANGGAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TELEPON <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                @if (auth()->user()->isAdministrator())
+                {{-- @if (auth()->user()->isAdministrator())
                     <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                @endif
+                @endif --}}
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PESANAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PEMBAYARAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
@@ -24,9 +24,9 @@
                         <td>{{ $order->order_number }}</td>
                         <td>{{ $order->order_date }}</td>
                         <td>{{ $order->customer->phone }}</td>
-                        @if (auth()->user()->isAdministrator())
+                        {{-- @if (auth()->user()->isAdministrator())
                             <td>{{ $order->outlet->name }}</td>
-                        @endif
+                        @endif --}}
                         <td>Rp. {{ number_format($order->total_price, 0, ',', '.') }}</td>
                         <td>{!! \App\Helpers\OrderHelper::badgeOrderStatus($order->order_status) !!}</td>
                         <td>{!! \App\Helpers\OrderHelper::badgePaymentStatus($order->payment->payment_status) !!}</td>
@@ -42,19 +42,25 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/orders/{{ Str::lower($order->order_number) }}">
+                                        <a class="dropdown-item" href="{{ getModuleUrl('orders', Str::slug($order->order_number)) }}">
                                             <i class="bi bi-eye mx-2" style="font-size: 16px"></i>Lihat
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/dashboard/orders/{{ Str::lower($order->order_number) }}/edit">
+                                        <a class="dropdown-item" href="/dashboard/orders/{{ getModuleUrl('orders', Str::slug($order->order_number), 'edit') }}/edit">
                                             <i class="bi bi-pencil-square mx-2" style="font-size: 16px"></i>Perbarui
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmModal"
-                                            data-bs-url="/dashboard/orders/{{ $order->order_number }}" data-bs-name="{{ $order->order_number }}" data-action="delete">
+                                        <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmModal"
+                                            data-bs-url="{{ getModuleUrl('orders', $order->order_number) }}"
+                                            data-bs-name="{{ $order->order_number }}"
+                                            data-action="delete">
                                             <i class="bi bi-trash mx-2" style="font-size: 16px"></i>Hapus
                                         </button>
                                     </li>
