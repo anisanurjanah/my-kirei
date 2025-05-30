@@ -37,12 +37,14 @@ class WhatsappHelper
                 ],
             ];
 
-            Log::info('Payload Wablas:', $payload);
+            Log::info('Wablas Phone:', ['phone' => $phone]);
+            Log::info('Wablas Token:', ['token' => substr($token, 0, 10) . '...']); // jangan full token di log
+            Log::info('Wablas Payload:', $payload);
 
             $response = Http::withToken($token)
                 ->post('https://texas.wablas.com/api/v2/send-document', $payload);
 
-            Log::info('Response test kirim teks:', ['body' => $response->body()]);
+            Log::info('Wablas Response:', ['status' => $response->status(), 'body' => $response->body()]);
 
             if (!$response->successful()) {
                 Log::error('Gagal kirim WA PDF', ['response' => $response->body()]);

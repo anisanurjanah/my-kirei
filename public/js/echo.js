@@ -11,8 +11,9 @@ window.Echo = new Echo({
     encrypted: true,
     auth: {
         headers: {
-            'X-CSRF-TOKEN': csrfToken
-        }
+            'X-CSRF-TOKEN': csrfToken,
+        },
+        withCredentials: true
     }
 });
 

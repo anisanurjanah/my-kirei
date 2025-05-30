@@ -8,7 +8,6 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Events\NewOrderEvent;
 use App\Helpers\WhatsappHelper;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
@@ -34,8 +33,6 @@ class PaymentController extends Controller
 
     public function handleWebhook(Request $request)
     {
-        Log::info('Webhook Received:', $request->all());
-
         $serverKey = config('services.midtrans.server_key');
 
         $signatureKey = hash("sha512",
@@ -45,13 +42,14 @@ class PaymentController extends Controller
             $serverKey
         );
 
-        Log::info('Calculated Signature:', ['signatureKey' => $signatureKey, 'requestSignature' => $request->signature_key]);
-
         if ($signatureKey !== $request->signature_key) {
             return response()->json(['message' => 'Invalid signature key'], 403);
         }
 
-        $order = Order::with(['outlet', 'customer', 'payment'])->where('order_number', $request['order_id'])->first();
+        $order = Order::with(['outlet', 'customer', 'payment.payment_method', 'orderItems'])
+            ->where('order_number', $request['order_id'])
+            ->first();
+
         if (!$order) {
             return response()->json(['message' => 'Transaction not found'], 404);
         }

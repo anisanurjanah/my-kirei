@@ -84,7 +84,6 @@
     </style>
 </head>
 <body>
-
     <div style="text-align: center; margin-bottom: 20px;">
         <img src="{{ public_path('img/logo-kirei-sum.jpg') }}" alt="Logo Kirei Sum" style="max-width: 180px;">
     </div>
@@ -143,8 +142,7 @@
     </div>
 
     <div class="footer">
-        &copy; {{ date('Y') }}. Semua hak dilindungi.
+        &copy; Kirei Sum {{ date('Y') }}. Semua hak dilindungi.
     </div>
-
 </body>
 </html>

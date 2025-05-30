@@ -1,7 +1,5 @@
 <?php
 
-use Carbon\Carbon;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -10,7 +8,6 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\OrderPdfController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminLoginController;

@@ -93,52 +93,35 @@
             }
         }
     </style>
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 </head>
-<body>
-    <div class="container">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <img src="{{ secure_asset('img/logo-kirei-sum.jpg') }}" alt="Logo {{ $order->outlet->name }}" style="max-width: 180px;">
+<body class="bg-light py-4">
+
+    <div class="container bg-white rounded shadow-sm p-4" style="max-width: 600px;">
+        <div class="text-center mb-4">
+            <img src="{{ public_path('img/logo-kirei-sum.jpg') }}" alt="Logo Kirei Sum" class="img-fluid" style="max-width: 180px;">
         </div>
 
-        <h2>Ringkasan Pesanan</h2>
-        <table class="info-table border-0">
-            <tr>
-                <td><strong>Nomor Pesanan:</strong></td>
-                <td>: {{ $order->order_number }}</td>
-            </tr>
-            <tr>
-                <td><strong>Outlet</strong></td>
-                <td>: {{ $order->outlet->name }}</td>
-            </tr>
-            <tr>
-                <td><strong>Nama</strong></td>
-                <td>: {{ $order->customer->name }}</td>
-            </tr>
-            <tr>
-                <td><strong>Telepon</strong></td>
-                <td>: {{ $order->customer->phone }}</td>
-            </tr>
-            <tr>
-                <td><strong>Nomor Bayar</strong></td>
-                <td>: {{ $order->payment->payment_number }}</td>
-            </tr>
-            <tr>
-                <td><strong>Metode Bayar</strong></td>
-                <td>: {{ $order->payment->payment_method->method->name }}</td>
-            </tr>
-            <tr>
-                <td><strong>Tipe Pesanan</strong></td>
-                <td>: {{ $order->order_type }}</td>
-            </tr>
-            <tr>
-                <td><strong>Waktu Pesanan</strong></td>
-                <td>: {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('l, d F Y - H:i') }}</td>
-            </tr>
+        <h2 class="text-dark">Ringkasan Pesanan</h2>
+
+        <table class="table table-borderless">
+            <tbody>
+                <tr><th>Nomor Pesanan</th><td>: {{ $order->order_number }}</td></tr>
+                <tr><th>Outlet</th><td>: {{ $order->outlet->name }}</td></tr>
+                <tr><th>Telepon</th><td>: {{ $order->customer->phone }}</td></tr>
+                <tr><th>Nomor Bayar</th><td>: {{ $order->payment->payment_number }}</td></tr>
+                <tr><th>Metode Bayar</th><td>: {{ $order->payment?->payment_method?->method['name'] ?? 'N/A' }}</td></tr>
+                <tr><th>Tipe Pesanan</th><td>: {{ $order->order_type }}</td></tr>
+                <tr><th>Waktu Pesanan</th><td>: {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('l, d F Y - H:i') }}</td></tr>
+            </tbody>
         </table>
 
-        <h4>Detail Produk</h4>
-        <table>
-            <thead>
+        <h4 class="mt-4">Detail Produk</h4>
+        <table class="table table-bordered">
+            <thead class="table-light">
                 <tr>
                     <th>Produk</th>
                     <th>Qty</th>
@@ -156,17 +139,18 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="3" class="total">Total</td>
-                    <td class="total">Rp{{ number_format($order->payment->amount, 0, ',', '.') }}</td>
+                    <td colspan="3" class="fw-bold">Total</td>
+                    <td class="fw-bold">Rp{{ number_format($order->payment->amount, 0, ',', '.') }}</td>
                 </tr>
             </tbody>
         </table>
 
-        <p>Terima kasih telah memesan di <strong>{{ $order->outlet->name }}</strong>!</p>
+        <p class="mt-3">Terima kasih telah memesan di <strong>{{ $order->outlet->name }}</strong>!</p>
 
-        <div class="footer">
-            &copy; {{ date('Y') }} {{ $order->outlet->name }}. All rights reserved.
+        <div class="text-center text-muted mt-4">
+            &copy; Kirei Sum {{ date('Y') }}. All rights reserved.
         </div>
     </div>
+
 </body>
 </html>

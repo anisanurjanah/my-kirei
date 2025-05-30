@@ -29,13 +29,6 @@ class NewOrderEvent implements ShouldBroadcast
         $this->role = $role;
         $this->username = $username;
         $this->outlet_code = $outlet_code;
-
-        Log::info('NewOrderEvent constructed', [
-            'order_number' => $order->order_number,
-            'role' => $role,
-            'username' => $username,
-            'outlet_code' => $outlet_code
-        ]);
     }
 
     public function broadcastOn()

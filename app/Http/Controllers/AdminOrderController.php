@@ -64,9 +64,10 @@ class AdminOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $outlet_code = null)
+    public function store(Request $request, $param1, $param2 = null)
     {
         dd($request->all());
+        [$outlet_code, $order_number] = $this->parseOutletAndUnique($param1, $param2);
 
         // Remove Price's Dot
         $request->merge([
@@ -102,9 +103,9 @@ class AdminOrderController extends Controller
         $formattedDate = Carbon::parse($validatedData['order_date'])->format('Ymd');
         $randomNumber = mt_rand(100000, 999999);
 
-        $orderNumber = $formattedDate . Str::slug($outlet->outlet_code) . $randomNumber;
+        $order_number = $formattedDate . Str::slug($outlet->outlet_code) . $randomNumber;
 
-        $validatedData['order_number'] = $orderNumber;
+        $validatedData['order_number'] = $order_number;
 
         // Insert Data
         $order = Order::create([
@@ -179,9 +180,13 @@ class AdminOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $outlet_code = null, Order $order)
+    public function update(Request $request, $param1, $param2 = null)
     {
         dd($request->all());
+
+        [$outlet_code, $order_number] = $this->parseOutletAndUnique($param1, $param2);
+
+        $order = Order::with(['orderItems'])->where('order_number', $order_number)->firstOrFail();
 
         // Remove Price's Dot
         $request->merge([
@@ -267,7 +272,7 @@ class AdminOrderController extends Controller
     {
         [$outlet_code, $order_number] = $this->parseOutletAndUnique($param1, $param2);
 
-        $order = Order::with(['outlet', 'customer', 'payment'])->where('order_number', $order_number)->firstOrFail();
+        $order = Order::where('order_number', $order_number)->firstOrFail();
         Order::destroy($order->id);
 
         // Redirect to orders
