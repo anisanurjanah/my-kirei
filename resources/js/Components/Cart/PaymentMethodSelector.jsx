@@ -86,7 +86,7 @@ export default function PaymentMethodSelector({ paymentMethod, totalPrice, onSel
                                                         isMethodDisabled(method.id) && (
                                                             <span className="inline-flex items-center justify-center gap-2 rounded-full bg-red-100 px-2.5 py-0.5 text-red-700">
                                                                 <TriangleAlert size={16} />
-                                                                <p className="text-sm whitespace-nowrap">Tidak tersedia</p>
+                                                                <p className="text-sm whitespace-nowrap">Dalam Perbaikan</p>
                                                             </span>
                                                         )
                                                     }

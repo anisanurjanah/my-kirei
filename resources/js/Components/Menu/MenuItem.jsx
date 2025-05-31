@@ -7,7 +7,7 @@ export default function MenuItem({ menu, onClickDetail, onClick }) {
             >
                 <button
                     onClick={ () => onClickDetail(menu) }
-                    className="relative p-0 w-full text-left"
+                    className="relative p-0 w-full text-left cursor-pointer"
                 >
                     {
                         menu.price_promo?.price_promo && menu.stock.current_stock != 0 && (
@@ -27,7 +27,7 @@ export default function MenuItem({ menu, onClickDetail, onClick }) {
                             ? `/storage/${ menu.image }`
                             : `/${menu.image}` }
                         alt={ menu.name }
-                        className={ `w-full h-24 md:h-48 object-cover
+                        className={ `w-full h-32 md:h-64 object-cover
                             ${ menu.stock.current_stock == 0 ? "blur-md brightness-70" : "" }
                             ${ menu.price_promo?.price_promo && menu.stock.current_stock != 0 ? "rounded-tr-3xl" : "" }` }
                     />
@@ -41,7 +41,7 @@ export default function MenuItem({ menu, onClickDetail, onClick }) {
                     }
 
                     <div className="p-2 flex flex-col flex-grow">
-                        <div className="min-h-[64px] md:min-h-[96px] flex items-start">
+                        <div className="min-h-[48px] md:min-h-[72px] flex items-start">
                             <strong className="text-md md:text-2xl font-medium text-[#333]">{ menu.name }</strong>
                         </div>
 
@@ -56,7 +56,7 @@ export default function MenuItem({ menu, onClickDetail, onClick }) {
                 <div className="mt-auto px-2 pb-2">
                     <button
                         onClick={ () => onClick(menu) }
-                        className={ `mt-4 w-full block rounded-md border py-2 text-sm md:text-md font-medium tracking-widest text-white uppercase transition-colors hover:bg-[#333] hover:border-[#333] hover:text-[#ffffff] cursor-pointer
+                        className={ `mt-4 w-full block rounded-md border py-2 md:py-3 text-sm md:text-md font-medium tracking-widest text-white uppercase transition-colors hover:bg-[#333] hover:border-[#333] hover:text-[#ffffff] cursor-pointer
                             ${ menu.stock.current_stock == 0 ? "border-[#333] bg-[#333] opacity-50 cursor-not-allowed pointer-events-none" : "border-[#C60E2A] bg-[#C60E2A]"}` }
                     >
                         Tambah

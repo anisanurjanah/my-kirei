@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminOutletController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ServiceWorkerController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderItemController;
 
@@ -57,6 +58,7 @@ Route::post('/clear-payment-session', function () {
     session()->forget('selected_payment_method');
 });
 
+Route::get('/sw.js', [ServiceWorkerController::class, 'index']);
 
 
 // DASHBOARD

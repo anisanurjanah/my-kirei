@@ -13,11 +13,11 @@
         {{-- @viteReactRefresh
         @vite('resources/css/app.css')
         @vite('resources/js/app.jsx') --}}
-        <link rel="stylesheet" href="{{ secure_asset('build/assets/app-W8Yq9JH-.css') }}">
+        <link rel="stylesheet" href="{{ secure_asset('build/assets/app-BUrPCSVk.css') }}">
         @inertiaHead
     </head>
 <body>
     @inertia
-    <script type="module" src="{{ secure_asset('build/assets/app-CyQPV1wy.js') }}"></script>
+    <script type="module" src="{{ secure_asset('build/assets/app-CPqo74Jr.js') }}"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 import { Head, usePage } from "@inertiajs/react";
 
 import Header from "@/Layouts/Header";
-import Jumbotron from "@/Layouts/Jumbotron";
+import Hero from "@/Layouts/Hero";
 import Main from "@/Layouts/Main";
 
 import About from "@/Layouts/Home/About";
@@ -30,7 +30,7 @@ export default function Home() {
                 handleScroll={ handleScroll }
                 outlets={ outlets }
             />
-            <Jumbotron />
+            <Hero />
             <Main>
                 <About />
                 <Menu menus={ menus }/>
