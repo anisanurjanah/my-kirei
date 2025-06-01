@@ -17,18 +17,21 @@ class ServiceWorkerController extends Controller
 
         $manifest = json_decode(File::get($manifestPath), true);
 
-        $assets = [];
-        foreach ($manifest as $file => $info) {
+        $assets = collect($manifest)->flatMap(function ($info) {
+            $files = [];
+
             if (isset($info['file'])) {
-                $assets[] = '/build/' . $info['file'];
+                $files[] = '/build/' . $info['file'];
             }
 
             if (isset($info['css'])) {
                 foreach ($info['css'] as $cssFile) {
-                    $assets[] = '/build/' . $cssFile;
+                    $files[] = '/build/' . $cssFile;
                 }
             }
-        }
+
+            return $files;
+        })->values()->unique()->toArray();
 
         $staticAssets = [
             '/',
@@ -36,8 +39,6 @@ class ServiceWorkerController extends Controller
             '/icons/favicon.ico',
             '/icons/android-chrome-192x192.png',
             '/icons/android-chrome-512x512.png',
-            "/build/assets/app-CPqo74Jr.js",
-            "/build/assets/app-BUrPCSVk.css"
         ];
 
         $allAssets = array_merge($staticAssets, $assets);

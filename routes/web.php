@@ -58,7 +58,7 @@ Route::post('/clear-payment-session', function () {
     session()->forget('selected_payment_method');
 });
 
-Route::get('/sw.js', [ServiceWorkerController::class, 'index']);
+Route::get('/service-worker.js', [ServiceWorkerController::class, 'index']);
 
 
 // DASHBOARD

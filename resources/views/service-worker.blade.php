@@ -1,5 +1,5 @@
 const CACHE_NAME = "{{ $cacheName }}";
-const ASSETS = {!! json_encode($assets) !!};
+const ASSETS = {!! json_encode($assets, JSON_UNESCAPED_SLASHES) !!};
 
 self.addEventListener("install", (event) => {
     self.skipWaiting();
