@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Menu;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Outlet;
 use App\Models\OrderItem;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 
 Carbon::setLocale('id');
@@ -32,7 +35,12 @@ class AdminDashboardController extends Controller
             }
         }
 
-        // Formatted date
+        // Cards
+        $totalOutlets = Outlet::count();
+        $totalUsers = User::count() + Customer::count();
+        $totalMenus = Menu::count();
+        $totalOrdersToday = Order::whereDate('created_at', Carbon::today())->count();
+
         $todayFormatted = Carbon::now('Asia/Jakarta')->translatedFormat('l, d F Y, H:i') . ' WIB';
 
         // Chart data
@@ -41,13 +49,6 @@ class AdminDashboardController extends Controller
         $outlets = Outlet::all();
 
         foreach ($outlets as $outlet) {
-            // per Day
-            // $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($today, $outlet) {
-            //         $query->where('outlet_id', $outlet->id)
-            //               ->whereDate('created_at', $today);
-            //     })
-            //     ->sum('quantity');
-
             $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($outlet) {
                 $query->where('outlet_id', $outlet->id);
             })
@@ -62,6 +63,10 @@ class AdminDashboardController extends Controller
 
         return view('dashboard.index', [
             'user' => $user,
+            'totalOutlets' => $totalOutlets,
+            'totalUsers' => $totalUsers,
+            'totalMenus' => $totalMenus,
+            'totalOrdersToday' => $totalOrdersToday,
             'todayFormatted' => $todayFormatted,
             'labels' => $labels,
             'data' => $data,
@@ -81,23 +86,20 @@ class AdminDashboardController extends Controller
             abort(403, 'Akses tidak valid.');
         }
 
-        // Formatted date
+        // Cards
+        $totalOutlets = Outlet::count();
+        $totalUsers = User::count() + Customer::count();
+        $totalMenus = Menu::count();
+        $totalOrdersToday = Order::whereDate('created_at', Carbon::today())->count();
+
         $todayFormatted = Carbon::now('Asia/Jakarta')->translatedFormat('l, d F Y, H:i') . ' WIB';
 
         // Chart data
         $labels = [];
         $data = [];
         $outlets = Outlet::all();
-        // $today = Carbon::today();
 
         foreach ($outlets as $outlet) {
-            // per Day
-            // $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($today, $outlet) {
-            //         $query->where('outlet_id', $outlet->id)
-            //               ->whereDate('created_at', $today);
-            //     })
-            //     ->sum('quantity');
-
             $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($outlet) {
                 $query->where('outlet_id', $outlet->id);
             })
@@ -112,6 +114,10 @@ class AdminDashboardController extends Controller
 
         return view('dashboard.index', [
             'user' => $user,
+            'totalOutlets' => $totalOutlets,
+            'totalUsers' => $totalUsers,
+            'totalMenus' => $totalMenus,
+            'totalOrdersToday' => $totalOrdersToday,
             'todayFormatted' => $todayFormatted,
             'labels' => $labels,
             'data' => $data,

@@ -88,7 +88,7 @@
                     data: data,
                     fill: false,
                     borderColor: '#C60E2A',
-                    tension: 0.3,
+                    tension: 0.5,
                     pointBackgroundColor: '#C60E2A',
                     pointBorderColor: '#C60E2A',
                 }]
@@ -128,8 +128,16 @@
             e.preventDefault();
             const outletId = this.dataset.outletId;
             const outletName = this.textContent.trim();
+            const activeLink = document.querySelector('.outlet-filter.active');
+            const outletNameTitle = document.getElementById('selectedOutletNameTitle');
+            const outletNameDropdown = document.getElementById('selectedOutletNameDropdown');
 
-            document.getElementById('selectedOutletName').textContent = outletName;
+            outletLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+
+            if (outletNameTitle) outletNameTitle.textContent = outletName;
+            if (outletNameDropdown) outletNameDropdown.textContent = outletName;
+
             fetch(`/dashboard/orders-by-outlet?outlet_id=${outletId}`)
                 .then(response => response.json())
                 .then(result => {
@@ -141,5 +149,23 @@
         });
     });
 
-    renderChart(chartOrderLabels, chartOrderData);
+    const defaultLink = document.querySelector('.outlet-filter[data-outlet-id="1"]');
+    if (defaultLink) {
+        defaultLink.classList.add('active');
+        const outletName = defaultLink.textContent.trim();
+        const outletNameTitle = document.getElementById('selectedOutletNameTitle');
+        const outletNameDropdown = document.getElementById('selectedOutletNameDropdown');
+
+        if (outletNameTitle) outletNameTitle.textContent = outletName;
+        if (outletNameDropdown) outletNameDropdown.textContent = outletName;
+
+        fetch(`/dashboard/orders-by-outlet?outlet_id=1`)
+            .then(response => response.json())
+            .then(result => {
+                renderChart(result.labels, result.data);
+            })
+            .catch(error => {
+                console.error('Error fetching default outlet data:', error);
+            });
+    }
 })();

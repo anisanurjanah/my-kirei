@@ -24,7 +24,7 @@
                         <td>{{ $report->total_order }} Pesanan</td>
                         <td>Rp{{ number_format($report->total_revenue, 0, ',', '.') }}</td>
                         <td>
-                            <a href="{{ secure_url('/laporan-penjualan/pdf') }}" class="text-danger" target="_blank">
+                            <a href="{{ secure_url('/sales-report/' . Str::lower($report->outlet->outlet_code) . '/' . $report->date . '/pdf') }}" class="text-danger" target="_blank">
                                 <i class="bi bi-filetype-pdf"></i>
                             </a>
                         </td>

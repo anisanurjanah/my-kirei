@@ -82,7 +82,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/reports', [AdminReportController::class, 'index']);
 
     // Route::get('/get-users/{outletCode}', [AdminOrderController::class, 'getUsers']);
-    Route::get('/get-menus/{outletCode}', [AdminOrderController::class, 'getMenus']);
+    Route::get('/get-menus/{outlet_code}', [AdminOrderController::class, 'getMenus']);
     Route::get('/dashboard/orders-by-outlet', [AdminReportController::class, 'ordersByOutlet']);
 
     // Kasir, Produksi
@@ -96,7 +96,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/{outlet_code}/dashboard/orderitems', AdminOrderItemController::class);
     Route::get('/{outlet_code}/dashboard/reports', [AdminReportController::class, 'index']);
 
-    Route::get('/laporan-penjualan/pdf', [AdminReportController::class, 'downloadPDF']);
+    Route::get('/sales-report/{outlet_code}/{date}/pdf', [AdminReportController::class, 'downloadPDF']);
 });
-
-// Route::get('/preview-pesanan/{orderNumber}', [OrderPdfController::class, 'preview']);

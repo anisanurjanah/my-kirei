@@ -3,146 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Penjualan</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            font-size: 14px;
-            padding: 20px;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        h2, h4 {
-            text-align: center;
-            margin: 0;
-        }
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-        .info-table {
-            margin: 20px 0;
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .info-table td {
-            padding: 4px 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f0f0f0;
-        }
-
-        .right {
-            text-align: right;
-        }
-
-        .center {
-            text-align: center;
-        }
-
-        .footer {
-            margin-top: 40px;
-            font-size: 12px;
-            text-align: center;
-        }
-
-        .note {
-            margin-top: 20px;
-            font-size: 12px;
-            font-style: italic;
-            text-align: center;
-        }
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .info-table td {
-            padding: 6px 8px;
-            border: none;
-        }
-
-        .info-table th {
-            border: none;
-        }
-
-        .info-table.border-0,
-        .info-table.border-0 td,
-        .info-table.border-0 th {
-            border: none !important;
-        }
-    </style>
+    <link href="{{ public_path('css/pdf-styles.css') }}" rel="stylesheet">
 </head>
-<body>
-    <div style="text-align: center; margin-bottom: 20px;">
-        <img src="{{ public_path('img/logo-kirei-sum.jpg') }}" alt="Logo Kirei Sum" style="max-width: 180px;">
-    </div>
+<body class="py-4">
 
-    <h2>Laporan Penjualan</h2>
-    <h4>{{ $reportTitle }}</h4>
+    <div class="container bg-white rounded shadow-sm p-4">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="{{ public_path('img/logo-kirei-sum.jpg') }}" alt="Logo Kirei Sum" class="img-fluid" style="max-width: 240px;">
+        </div>
 
-    <table class="info-table border-0">
-        <tr>
-            <td><strong>Nama Pengguna</strong></td>
-            <td>: {{ $ownerName ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td><strong>Periode Laporan</strong></td>
-            <td>: {{ $reportPeriod ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td><strong>Tanggal Unduh</strong></td>
-            <td>: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</td>
-        </tr>
-    </table>
+        <h2 class="text-dark">Laporan Penjualan Harian</h2>
 
-    <table>
-        <thead>
-            <tr>
-                <th>NO</th>
-                <th>OUTLET</th>
-                <th>TANGGAL</th>
-                <th>TOTAL PESANAN</th>
-                <th>TOTAL PENDAPATAN</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php $no = 1; @endphp
-            @foreach($reportData as $data)
+        <p class="mt-4 text-justify" style="font-size: 16px;">
+            Dengan hormat, <br><br>
+            Laporan ini disusun untuk memberikan gambaran menyeluruh terkait hasil penjualan yang terjadi pada tanggal <strong>{{ \Carbon\Carbon::parse($reportData->first()['date'] ?? '-')->translatedFormat('l, d F Y') }}</strong> di outlet <strong>{{ $reportData->first()['outlet'] ?? '-' }}</strong>. Informasi dalam laporan ini mencakup jumlah total pesanan yang diterima serta total pendapatan yang diperoleh pada periode tersebut. Data ini diambil secara langsung dari sistem dan telah diverifikasi untuk menjaga akurasi dan keandalannya. <br><br>
+        </p>
+
+        <table class="info-table border-0">
+            <tbody>
                 <tr>
-                    <td class="center">{{ $no++ }}</td>
-                    <td>{{ $data['outlet'] }}</td>
-                    <td>{{ \Carbon\Carbon::parse($data['date'])->translatedFormat('d F Y') }}</td>
-                    <td>{{ $data['total_orders'] }} Pesanan</td>
-                    <td class="right">Rp{{ number_format($data['total_income'], 0, ',', '.') }}</td>
+                    <th>Nama Pengguna</th>
+                    <td>: {{ $ownerName ?? '-' }}</td>
                 </tr>
-            @endforeach
-        </tbody>
-        <tfoot>
-            <tr>
-                <th colspan="3" class="right">Total</th>
-                <th>{{ $reportData->sum('total_orders') }} Pesanan</th>
-                <th class="right">Rp{{ number_format($reportData->sum('total_income'), 0, ',', '.') }}</th>
-            </tr>
-        </tfoot>
-    </table>
+                <tr>
+                    <th>Outlet</th>
+                    <td>: {{ $reportData->first()['outlet'] ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <th>Tanggal</th>
+                    <td>: {{ \Carbon\Carbon::parse($reportData->first()['date'] ?? '-')->translatedFormat('l, d F Y') }}</td>
+                </tr>
+                <tr>
+                    <th>Total Pesanan</th>
+                    <td>: {{ $reportData->first()['total_orders'] ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <th>Total Pendapatan</th>
+                    <td>: Rp {{ number_format($reportData->first()['total_income'] ?? '-', 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <th>Tanggal Unduh</th>
+                    <td>: {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y - H:i') }} WIB</td>
+                </tr>
+            </tbody>
+        </table>
 
-    <div class="note">
-        Laporan ini dihasilkan otomatis oleh sistem dan tidak memerlukan tanda tangan.
+        <p class="mt-4 text-justify" style="font-size: 16px;">
+            Berikut adalah rincian menu yang terjual pada periode laporan. Data ini mencakup jumlah tiap menu yang terjual serta total pendapatan yang diperoleh dari penjualan tersebut.
+        </p>
+
+        <table class="table table-bordered py-4">
+            <thead class="table-light">
+                <tr>
+                    <th>No</th>
+                    <th>Menu</th>
+                    <th>Jumlah Terjual</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php $no = 1; @endphp
+                @foreach ($menuSummary as $menu)
+                    <tr>
+                        <td>{{ $no++ }}</td>
+                        <td>{{ $menu['name'] }}</td>
+                        <td>{{ $menu['quantity'] }}</td>
+                        <td>Rp {{ number_format($menu['total_price'], 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3">Total Pendapatan</th>
+                    <th>Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</th>
+                </tr>
+            </tfoot>
+        </table>
+
+        <p class="mt-4 text-justify" style="font-size: 16px;">
+            Laporan ini diharapkan dapat digunakan sebagai bahan evaluasi dan pengambilan keputusan strategis demi peningkatan layanan dan performa penjualan di masa yang akan datang.
+        </p>
+
+        <div class="note">
+            Laporan ini dihasilkan otomatis oleh sistem dan tidak memerlukan tanda tangan.
+        </div>
+
+        <div class="footer">
+            &copy; Kirei Sum {{ date('Y') }}. Semua hak dilindungi.
+        </div>
     </div>
 
-    <div class="footer">
-        &copy; Kirei Sum {{ date('Y') }}. Semua hak dilindungi.
-    </div>
 </body>
 </html>

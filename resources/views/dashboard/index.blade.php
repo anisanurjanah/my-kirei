@@ -28,8 +28,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-fire text-danger h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">TEST</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">TEST</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalOutlets }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalOutlets }}</h6>
                                     <small class="card-text m-0">Jumlah Outlet</small>
                                 </div>
                             </div>
@@ -40,8 +40,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-cart-check-fill text-primary h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">TEST</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">TEST</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalUsers }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalUsers }}</h6>
                                     <small class="card-text m-0">Jumlah Pengguna</small>
                                 </div>
                             </div>
@@ -57,8 +57,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-graph-up-arrow text-success h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">TEST</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">TEST</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalMenus }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalMenus }}</h6>
                                     <small class="card-text m-0">Jumlah Menu</small>
                                 </div>
                             </div>
@@ -69,8 +69,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-exclamation-diamond-fill text-warning h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">TEST</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">TEST</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalOrdersToday }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalOrdersToday }}</h6>
                                     <small class="card-text m-0">Total Order Hari Ini</small>
                                 </div>
                             </div>
