@@ -21,6 +21,7 @@ use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ServiceWorkerController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderItemController;
+use App\Http\Controllers\OrderPdfController;
 
 // VIEWS
 Route::get('/', [IndexController::class, 'index'])->middleware('guest');
@@ -96,5 +97,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/{outlet_code}/dashboard/orderitems', AdminOrderItemController::class);
     Route::get('/{outlet_code}/dashboard/reports', [AdminReportController::class, 'index']);
 
+    Route::post('/order/{order_number}/complete', [AdminOrderController::class, 'markAsComplete']);
+    Route::get('/order/preview/{order_number}/pdf', [OrderPdfController::class, 'preview']);
     Route::get('/sales-report/{outlet_code}/{date}/pdf', [AdminReportController::class, 'downloadPDF']);
 });

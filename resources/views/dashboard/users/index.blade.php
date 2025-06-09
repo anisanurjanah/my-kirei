@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Daftar Pengguna')
 @section('container')
 
     <div class="px-md-2">

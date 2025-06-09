@@ -10,9 +10,9 @@
 
     <link href="{{ public_path('css/pdf-styles.css') }}" rel="stylesheet">
 </head>
-<body class="bg-light py-4">
+<body class="py-4">
 
-    <div class="container bg-white rounded shadow-sm p-4" style="max-width: 600px;">
+    <div class="container p-4">
         <div style="text-align: center; margin-bottom: 20px;">
             <img src="{{ public_path('img/logo-kirei-sum.jpg') }}" alt="Logo Kirei Sum" class="img-fluid" style="max-width: 180px;">
         </div>
@@ -50,16 +50,16 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="3" class="fw-bold">Total</td>
-                    <td class="fw-bold">Rp{{ number_format($order->payment->amount, 0, ',', '.') }}</td>
+                    <th colspan="3" class="fw-bold">Total</th>
+                    <th class="fw-bold">Rp{{ number_format($order->payment->amount, 0, ',', '.') }}</th>
                 </tr>
             </tbody>
         </table>
 
         <p class="mt-3">Terima kasih telah memesan di <strong>{{ $order->outlet->name }}</strong>!</p>
 
-        <div class="text-center text-muted mt-4">
-            &copy; Kirei Sum {{ date('Y') }}. All rights reserved.
+        <div class="footer">
+            &copy; Kirei Sum {{ date('Y') }}. Semua hak dilindungi.
         </div>
     </div>
 

@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Perbarui Pesanan')
 @section('container')
 
     <div class="row px-md-2" style="background-color: #FFFFFF">
@@ -183,17 +184,6 @@
                             <label for="customer_name" class="form-label">Nama Pelanggan</label>
                             <input type="text" class="form-control" id="customer_name" name="customer_name" value="{{ old('customer_name', $order->customer->name) }}" readonly>
                         </div>
-                        {{-- <div class="mb-3">
-                            <label for="user_id" class="form-label">Staff</label>
-                            <select class="form-select select2" id="user_id" name="user_id" required>
-                                <option value="" disabled selected>Pilih Staff</option>
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" {{ old('user_id', $order->user_id) == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div> --}}
                         <div class="mb-3">
                             <label for="order_date" class="form-label">Tanggal</label>
                             <input type="datetime-local" class="form-control @error('order_date') is-invalid @enderror" id="order_date" name="order_date" value="{{ old('order_date', $order->order_date) }}" required>
@@ -242,7 +232,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="order_status" class="form-label">Status Pesanan</label>
-                            <select class="form-select" id="order_status" name="order_status" required>
+                            <select class="form-select" id="order_status" name="order_status" required {{ $order->order_status === 'Selesai' ? 'disabled' : '' }}>
                                 @foreach ($orderStatuses as $key => $status)
                                     <option value="{{ $key }}" {{ old('order_status', $order->order_status) == $key ? 'selected' : '' }}>
                                         {{ $status }}

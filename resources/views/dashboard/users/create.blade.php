@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Tambah Pengguna')
 @section('container')
 
     <div class="row px-md-2" style="background-color: #FFFFFF">

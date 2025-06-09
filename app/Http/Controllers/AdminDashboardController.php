@@ -16,10 +16,10 @@ Carbon::setLocale('id');
 
 class AdminDashboardController extends Controller
 {
-    public function index($outletParam)
+    public function index($outlet_code)
     {
         $user = Auth::guard('web')->user();
-        $outlet = Outlet::whereRaw('LOWER(outlet_code) = ?', [strtolower($outletParam)])->first();
+        $outlet = Outlet::whereRaw('LOWER(outlet_code) = ?', [strtolower($outlet_code)])->first();
 
         if (!$user) {
             abort(403, 'Unauthorized');

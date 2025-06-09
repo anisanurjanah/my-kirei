@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Dashboard')
 @section('container')
 
     <div class="px-md-2">

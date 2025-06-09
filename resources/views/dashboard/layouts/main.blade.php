@@ -7,7 +7,7 @@
     <meta name="author" content="Anisa Nurjanah">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>My Kirei | Dashboard</title>
+    <title>My Kirei | @yield('title')</title>
 
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png">
     <link rel="apple-touch-icon" sizes="512x512" href="/icons/android-chrome-512x512.png">

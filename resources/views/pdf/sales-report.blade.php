@@ -12,7 +12,7 @@
 </head>
 <body class="py-4">
 
-    <div class="container bg-white rounded shadow-sm p-4">
+    <div class="container p-4">
         <div style="text-align: center; margin-bottom: 20px;">
             <img src="{{ public_path('img/logo-kirei-sum.jpg') }}" alt="Logo Kirei Sum" class="img-fluid" style="max-width: 240px;">
         </div>
@@ -27,7 +27,7 @@
         <table class="info-table border-0">
             <tbody>
                 <tr>
-                    <th>Nama Pengguna</th>
+                    <th>Nama</th>
                     <td>: {{ $ownerName ?? '-' }}</td>
                 </tr>
                 <tr>

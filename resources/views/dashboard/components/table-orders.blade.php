@@ -6,9 +6,9 @@
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NOMOR PESANAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TANGGAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TELEPON <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                {{-- @if (auth()->user()->isAdministrator())
+                @if (auth()->user()->isAdministrator())
                     <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
-                @endif --}}
+                @endif
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PESANAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">STATUS PEMBAYARAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
@@ -24,16 +24,36 @@
                         <td>{{ $order->order_number }}</td>
                         <td>{{ $order->order_date }}</td>
                         <td>{{ $order->customer->phone }}</td>
-                        {{-- @if (auth()->user()->isAdministrator())
+                        @if (auth()->user()->isAdministrator())
                             <td>{{ $order->outlet->name }}</td>
-                        @endif --}}
+                        @endif
                         <td>Rp. {{ number_format($order->total_price, 0, ',', '.') }}</td>
                         <td>{!! \App\Helpers\OrderHelper::badgeOrderStatus($order->order_status) !!}</td>
                         <td>{!! \App\Helpers\OrderHelper::badgePaymentStatus($order->payment->payment_status) !!}</td>
                         <td>
-                            <a class="text-danger" href="">
+                            <a
+                                data-bs-toggle="tooltip"
+                                title="Lihat PDF"
+                                class="text-danger"
+                                href="{{ secure_url('/order/preview/' . Str::lower($order->order_number) . '/pdf') }}"
+                                target="_blank"
+                            >
                                 <i class="bi bi-filetype-pdf"></i>
                             </a>
+                        </td>
+                        <td>
+                            @if ($order->order_status === 'Selesai')
+                                <i class="bi bi-check2-square text-muted"></i>
+                            @else
+                                <div data-bs-toggle="tooltip" title="Tandai pesanan ini sudah selesai">
+                                    <form action="{{ secure_url('/order/' . $order->order_number . '/complete') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline text-success">
+                                            <i class="bi bi-check2-square"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
                         </td>
                         <td class="text-center" style="width: 64px">
                             <div class="dropdown mx-auto">

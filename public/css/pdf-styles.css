@@ -1,16 +1,12 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f6f6f6;
     margin: 0;
-    padding: 20px;
+    padding: 16px;
 }
 
 .container {
-    background-color: #ffffff;
-    max-width: 600px;
     margin: auto;
     border-radius: 8px;
-    padding: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 

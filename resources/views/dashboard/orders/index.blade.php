@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Daftar Pesanan')
 @section('container')
 
     <div class="px-md-2">
@@ -77,11 +78,21 @@
                     <div class="col-6 col-sm-6 mb-3 mb-md-0">
                         <div class="card shadow border-0 w-100 h-100">
                             <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
+                                @if(auth()->user()->isAdministrator())
+                                    <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
+                                @else
+                                    <i class="bi bi-coin text-warning h3 mx-2 mb-auto"></i>
+                                @endif
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit(optional($topOutlet)->name ?? 'none', 12, '...') }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit(optional($topOutlet)->name ?? 'none', 12, '...') }}</h6>
-                                    <small class="card-text m-0">Pesanan Terbanyak</small>
+                                    @if(auth()->user()->isAdministrator())
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit(optional($topOutlet)->name ?? 'none', 12, '...') }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit(optional($topOutlet)->name ?? 'none', 12, '...') }}</h6>
+                                        <small class="card-text m-0">Pesanan Terbanyak</small>
+                                    @else
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp {{ number_format($dailyRevenue, 0, ',', '.') ?? '0' }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp {{ number_format($dailyRevenue, 0, ',', '.') ?? '0' }}</h6>
+                                        <small class="card-text m-0">Pendapatan Hari Ini</small>
+                                    @endif
                                 </div>
                             </div>
                         </div>

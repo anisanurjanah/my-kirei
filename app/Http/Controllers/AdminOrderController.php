@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Menu;
-use App\Models\User;
 use App\Models\Order;
 use App\Models\Outlet;
 use App\Models\Customer;
 use App\Models\OrderItem;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class AdminOrderController extends Controller
@@ -20,12 +20,22 @@ class AdminOrderController extends Controller
      */
     public function index()
     {
+        $user = Auth::guard('web')->user();
+        if (!$user) {
+            abort(403, 'Unauthorized');
+        }
+
         // Orders
         $queryOrders = Order::query();
+
+        if ($user->username !== 'administrator') {
+            $queryOrders->where('outlet_id', $user->outlet_id);
+        }
 
         $orders = (clone $queryOrders)->with(['outlet', 'customer', 'payment'])->latest()->paginate(10)->withQueryString();
         $totalOrders = (clone $queryOrders)->count();
         $totalTransactions = (clone $queryOrders)->whereDate('created_at', today())->count();
+        $dailyRevenue = (clone $queryOrders)->whereDate('created_at', now())->sum('total_price');
         $monthlyRevenue = (clone $queryOrders)->whereMonth('created_at', now()->month)->sum('total_price');
 
         $topOutlet = (clone $queryOrders)
@@ -41,6 +51,7 @@ class AdminOrderController extends Controller
             'totalOrders' => $totalOrders,
             'totalTransactions' => $totalTransactions,
             'monthlyRevenue' => $monthlyRevenue,
+            'dailyRevenue' => $dailyRevenue,
             'topOutlet' => $topOutlet,
         ]);
     }
@@ -186,7 +197,7 @@ class AdminOrderController extends Controller
 
         [$outlet_code, $order_number] = $this->parseOutletAndUnique($param1, $param2);
 
-        $order = Order::with(['orderItems'])->where('order_number', $order_number)->firstOrFail();
+        $order = Order::with(['orderItems', 'payment'])->where('order_number', $order_number)->firstOrFail();
 
         // Remove Price's Dot
         $request->merge([
@@ -202,7 +213,6 @@ class AdminOrderController extends Controller
         $validatedData = $request->validate([
             'outlet_id' => 'required|exists:outlets,id',
             'customer_id' => 'required|exists:customers,id',
-            // 'user_id' => 'required|exists:users,id',
             'order_date' => 'required|date',
             'menu_id' => 'required|array',
             'menu_id.*' => 'exists:menus,id',
@@ -214,16 +224,13 @@ class AdminOrderController extends Controller
             'discount' => 'nullable|integer|min:0',
             'total_price' => 'required|integer|min:0',
             'order_type' => 'required|string|in:Dine In,Take Away',
-            'order_status' => 'required|string|in:Selesai,Dibatalkan',
+            'order_status' => 'required|string|in:Selesai,Dibatalkan,Dalam Proses,Ditunda',
         ]);
-
-        $previousStatus = $order->order_status;
 
         // Insert Data
         $order->update([
             'outlet_id' => $validatedData['outlet_id'],
             'customer_id' => $validatedData['customer_id'],
-            // 'user_id' => $validatedData['user_id'],
             'order_date' => $validatedData['order_date'],
             'sub_total' => $validatedData['sub_total'],
             'discount' => $validatedData['discount'],
@@ -239,13 +246,15 @@ class AdminOrderController extends Controller
         // Decrease menu stock
         if ($previousStatus !== 'Selesai' && $validatedData['order_status'] === 'Selesai') {
             foreach ($request->menu_id as $index => $menuId) {
-                $menu = Menu::find($menuId);
-                if ($menu) {
-                    $menu->stock -= $request->quantity[$index];
-                    if ($menu->stock < 0) {
-                        $menu->stock = 0;
+                $menu = Menu::with('stock')->find($menuId);
+                $stock = $menu?->stock;
+
+                if ($menu && $stock) {
+                    $stock->current_stock -= $request->quantity[$index];
+                    if ($stock->current_stock < 0) {
+                        $stock->current_stock = 0;
                     }
-                    $menu->save();
+                    $stock->save();
                 }
             }
         }
@@ -261,7 +270,7 @@ class AdminOrderController extends Controller
         }
 
         // Redirect to orders
-        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/orders"))
             ->with('success', 'Pesanan berhasil diperbarui!');
     }
 
@@ -276,7 +285,7 @@ class AdminOrderController extends Controller
         Order::destroy($order->id);
 
         // Redirect to orders
-        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/orders"))
             ->with('success', 'Pesanan berhasil dihapus!');
     }
 
@@ -305,5 +314,30 @@ class AdminOrderController extends Controller
             ->get();
 
         return response()->json($menus);
+    }
+
+    public function markAsComplete($order_number)
+    {
+        $order = Order::with(['orderItems.menu.stock'])->where('order_number', $order_number)->firstOrFail();
+
+        if ($order->order_status !== 'Selesai') {
+            foreach ($order->orderItems as $item) {
+                $menu = $item->menu;
+                $stock = $menu->stock;
+
+                if ($menu && $stock) {
+                    $stock->current_stock -= $item->quantity;
+                    if ($stock->current_stock < 0) {
+                        $stock->current_stock = 0;
+                    }
+                    $stock->save();
+                }
+            }
+
+            $order->order_status = 'Selesai';
+            $order->save();
+        }
+
+        return back()->with('success', 'Pesanan ditandai sebagai selesai.');
     }
 }

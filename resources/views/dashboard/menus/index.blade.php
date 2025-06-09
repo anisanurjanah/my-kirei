@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Daftar Menu')
 @section('container')
 
     <div class="px-md-2">
