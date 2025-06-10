@@ -38,36 +38,40 @@
                 <table class="table table-sm table-borderless">
                     <tbody>
                         <tr>
-                            <th scope="row" style="width: 25%">Tanggal</th>
-                            <td>:</td>
-                            <td>{{ $order->order_date }}</td>
-
-                            <th scope="row" style="width: 25%">Status Pesanan</th>
-                            <td>:</td>
-                            <td>{{ $order->order_status }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Nama</th>
-                            <td>:</td>
-                            <td>{{ $order->customer->name ?? "Name" }}</td>
-
-                            <th scope="row">Status Pembayaran</th>
-                            <td>:</td>
-                            <td>{{ $order->payment_status }}</td>
-                        </tr>
-                        <tr>
                             <th scope="row">Outlet</th>
                             <td>:</td>
                             <td>{{ $order->outlet->name }}</td>
 
-                            {{-- <th scope="row">Staff</th>
-                            <td>:</td>
-                            <td>{{ $order->user->name }}</td> --}}
-                        </tr>
-                        <tr>
                             <th scope="row">Total</th>
                             <td>:</td>
-                            <td>Rp. {{ number_format($order->total_price, 0, ',', '.') }}</td>
+                            <td>Rp. {{ number_format($order->payment->amount, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Telepon</th>
+                            <td>:</td>
+                            <td>{{ $order->customer->phone }}</td>
+
+                            <th scope="row">Tipe Pesanan</th>
+                            <td>:</td>
+                            <td>{{ $order->order_type }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" style="width: 25%">Metode Bayar</th>
+                            <td>:</td>
+                            <td>{{ $order->payment->payment_method?->method['name'] ?? 'N/A' }}</td>
+
+                            <th scope="row" style="width: 25%">Status Pesanan</th>
+                            <td>:</td>
+                            <td>{!! \App\Helpers\OrderHelper::badgeOrderStatus($order->order_status) !!}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" style="width: 25%">Waktu Pesanan</th>
+                            <td>:</td>
+                            <td>{{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('l, d F Y - H:i') }}</td>
+
+                            <th scope="row">Status Pembayaran</th>
+                            <td>:</td>
+                            <td>{!! \App\Helpers\OrderHelper::badgePaymentStatus($order->payment->payment_status) !!}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -92,13 +96,6 @@
                             </div>
 
                             @include('dashboard.components.table-order-items')
-
-                            <div class="d-flex justify-content-between align-items-center py-3">
-                                <small class="text-muted">
-                                    Menampilkan {{ $orderItems->firstItem() }} sampai {{ $orderItems->lastItem() }} dari {{ $orderItems->total() }} data
-                                </small>
-                                {{ $orderItems->links('vendor.custom-pagination') }}
-                            </div>
                         </div>
                     </div>
                 </div>

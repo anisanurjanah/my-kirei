@@ -5,6 +5,9 @@
     <title>Ringkasan Pesanan</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/android-chrome-512x512.png">
+
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -18,6 +21,10 @@
         </div>
 
         <h2 class="text-dark">Ringkasan Pesanan</h2>
+
+        <p class="mt-4 text-justify" style="font-size: 16px;">
+            Berikut adalah ringkasan pesanan Anda. Mohon periksa kembali informasi berikut untuk memastikan semua sudah sesuai.
+        </p>
 
         <table class="info-table border-0">
             <tbody>
@@ -37,7 +44,6 @@
                     <th>Menu</th>
                     <th>Jumlah</th>
                     <th>Harga</th>
-                    <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,18 +51,27 @@
                     <tr>
                         <td>{{ $item->menu->name }}</td>
                         <td>{{ $item->quantity }}</td>
-                        <td>Rp{{ number_format($item->menu->price, 0, ',', '.') }}</td>
-                        <td>Rp{{ number_format($item->price * $item->quantity, 0, ',', '.') }}</td>
+                        <td>Rp. {{ number_format($item->menu->price, 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
                 <tr>
-                    <th colspan="3" class="fw-bold">Total</th>
-                    <th class="fw-bold">Rp{{ number_format($order->payment->amount, 0, ',', '.') }}</th>
+                    <th colspan="2" class="fw-bold">Sub Total</th>
+                    <th class="fw-bold">Rp. {{ number_format($order->sub_total, 0, ',', '.') }}</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="fw-bold">Diskon</th>
+                    <th class="fw-bold">Rp. {{ number_format($order->discount, 0, ',', '.') }}</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="fw-bold">Total</th>
+                    <th class="fw-bold">Rp. {{ number_format($order->payment->amount, 0, ',', '.') }}</th>
                 </tr>
             </tbody>
         </table>
 
-        <p class="mt-3">Terima kasih telah memesan di <strong>{{ $order->outlet->name }}</strong>!</p>
+        <p class="mt-4 text-justify" style="font-size: 16px;">
+            Terima kasih telah melakukan pemesanan di <strong>{{ $order->outlet->name }}</strong>. Kami menyusun informasi ini untuk memastikan pesanan Anda sesuai dan dapat menjadi bukti transaksi jika diperlukan. Jika ada pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami.
+        </p>
 
         <div class="footer">
             &copy; Kirei Sum {{ date('Y') }}. Semua hak dilindungi.

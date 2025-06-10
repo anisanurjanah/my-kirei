@@ -18,17 +18,7 @@ class AdminReportController extends Controller
     public function index()
     {
         $user = Auth::guard('web')->user();
-
-        // Reports
-        $reports = Order::with('outlet')
-            ->select(['outlet_id',
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('COUNT(*) as total_order'),
-                DB::raw('SUM(total_price) as total_revenue')
-            ])
-            ->groupBy('outlet_id', DB::raw('DATE(created_at)'))
-            ->orderByDesc('date')
-            ->paginate(5)->withQueryString();
+        $outletId = $user->outlet_id;
 
         // Cards
         $monthlyRevenue = Order::whereMonth('created_at', now()->month)
@@ -49,14 +39,38 @@ class AdminReportController extends Controller
             ->first();
 
         // Chart
-        $ordersPerDay = Order::selectRaw('DATE(created_at) as date, COUNT(*) as total')
-                ->whereMonth('created_at', now()->month)
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
+        $chartDataQuery = Order::select([
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as total_order'),
+        ])
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date');
 
-        $labels = $ordersPerDay->pluck('date')->map(fn($d) => Carbon::parse($d)->format('d M'));
-        $data = $ordersPerDay->pluck('total');
+        if ($user->username !== 'administrator') {
+            $chartDataQuery->where('outlet_id', $outletId);
+        }
+
+        $chartData = $chartDataQuery->get();
+
+        $labels = $chartData->pluck('date');
+        $data = $chartData->pluck('total_order');
+
+        // Reports
+        $reportQuery = Order::with('outlet')
+            ->select([
+                'outlet_id',
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('COUNT(*) as total_order'),
+                DB::raw('SUM(total_price) as total_revenue'),
+            ])
+            ->groupBy('outlet_id', DB::raw('DATE(created_at)'))
+            ->orderByDesc('date');
+
+        if ($user->username !== 'administrator') {
+            $reportQuery->where('outlet_id', $outletId);
+        }
+
+        $reports = $reportQuery->paginate(5)->withQueryString();
 
         // Latest Orders
         if ($user->username === 'administrator') {

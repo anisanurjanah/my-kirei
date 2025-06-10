@@ -8,10 +8,12 @@ use App\Models\Order;
 use App\Models\Outlet;
 use App\Models\Customer;
 use App\Models\OrderItem;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
+
+Carbon::setLocale('id');
 
 class AdminOrderController extends Controller
 {
@@ -61,14 +63,33 @@ class AdminOrderController extends Controller
      */
     public function create()
     {
-       return view('dashboard.orders.create', [
+        $user = Auth::guard('web')->user();
+        if (!$user) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Menus
+        $queryMenus = Menu::query();
+
+        if ($user->username !== 'administrator') {
+            $queryMenus->where('outlet_id', $user->outlet_id);
+        }
+
+        $menus = (clone $queryMenus)->with(['stock', 'pricePromo'])->get();
+
+        $paymentMethods = collect(config('payment_methods'))
+            ->whereIn('id', ['8', '9'])
+            ->pluck('method.name', 'method.name')
+            ->toArray();
+
+        return view('dashboard.orders.create', [
             'outlets' => Outlet::all(),
             'customers' => Customer::latest()->get(),
-            'menus' => Menu::with(['stock', 'pricePromo'])->get(),
-
+            'menus' => $menus,
             'orderTypes' => Order::ORDER_TYPES,
             'orderStatuses' => Order::ORDER_STATUSES,
-            // 'paymentStatuses' => Order::PAYMENT_STATUSES
+            'paymentMethods' => $paymentMethods,
+            'paymentStatuses' => Payment::PAYMENT_STATUSES
         ]);
     }
 
@@ -77,8 +98,11 @@ class AdminOrderController extends Controller
      */
     public function store(Request $request, $param1, $param2 = null)
     {
-        dd($request->all());
+        // dd($request->all());
+
         [$outlet_code, $order_number] = $this->parseOutletAndUnique($param1, $param2);
+
+        // $order = Order::with(['orderItems', 'payment'])->where('order_number', $order_number)->firstOrFail();
 
         // Remove Price's Dot
         $request->merge([
@@ -94,7 +118,6 @@ class AdminOrderController extends Controller
         $validatedData = $request->validate([
             'outlet_id' => 'required|exists:outlets,id',
             'customer_id' => 'required|exists:customers,id',
-            // 'user_id' => 'required|exists:users,id',
             'order_date' => 'required|date',
             'menu_id' => 'required|array',
             'menu_id.*' => 'exists:menus,id',
@@ -106,30 +129,47 @@ class AdminOrderController extends Controller
             'discount' => 'nullable|integer|min:0',
             'total_price' => 'required|integer|min:0',
             'order_type' => 'required|string|in:Dine In,Take Away',
-            'order_status' => 'required|string|in:Selesai,Dibatalkan',
+            'order_status' => 'Dalam Proses',
+            'payment_method' => 'required|string|in:Tunai,Kartu Kredit',
+            'payment_status' => 'required|string|in:Lunas,Gagal,Ditunda,Kadaluarsa',
         ]);
 
         // Generate Order Number
-        $outlet = Outlet::find($request->outlet_id);
-        $formattedDate = Carbon::parse($validatedData['order_date'])->format('Ymd');
-        $randomNumber = mt_rand(100000, 999999);
+        // $outlet = Outlet::find($request->outlet_id);
+        // $formattedDate = Carbon::parse($validatedData['order_date'])->format('Ymd');
+        // $randomNumber = mt_rand(100000, 999999);
 
-        $order_number = $formattedDate . Str::slug($outlet->outlet_code) . $randomNumber;
+        // $order_number = $formattedDate . Str::slug($outlet->outlet_code) . $randomNumber;
 
-        $validatedData['order_number'] = $order_number;
+        // $validatedData['order_number'] = $order_number;
 
         // Insert Data
         $order = Order::create([
             'outlet_id' => $validatedData['outlet_id'],
             'customer_id' => $validatedData['customer_id'],
-            // 'user_id' => $validatedData['user_id'],
-            'order_number' => $validatedData['order_number'],
+            'order_number' => $this->generateOrderNumber($validatedData),
             'order_date' => $validatedData['order_date'],
             'sub_total' => $validatedData['sub_total'],
             'discount' => $validatedData['discount'],
             'total_price' => $validatedData['total_price'],
             'order_type' => $validatedData['order_type'],
-            'order_status' => $validatedData['order_status'],
+            'order_status' => 'Dalam Proses',
+        ]);
+
+        $methods = collect(config('payment_methods'));
+        $method = $methods->firstWhere('method.name', $request->payment_method);
+        if (!$method) {
+            return back()->withErrors(['payment_method' => 'Metode pembayaran tidak valid']);
+        }
+
+        $paymentMethodId = $method['id'];
+
+        $order->payment()->create([
+            'payment_method_id' => $paymentMethodId,
+            'payment_number' => $this->generatePaymentNumber($order),
+            'payment_date' => $validatedData['order_date'],
+            'amount' => $validatedData['total_price'],
+            'payment_status' => $validatedData['payment_status'],
         ]);
 
         if (count($request->menu_id) !== count($request->quantity) || count($request->menu_id) !== count($request->price)) {
@@ -157,8 +197,11 @@ class AdminOrderController extends Controller
     {
         [$outlet_code, $order_number] = $this->parseOutletAndUnique($param1, $param2);
 
-        $order = Order::with(['outlet', 'customer', 'payment'])->where('order_number', $order_number)->firstOrFail();
-        $orderItems = OrderItem::latest()->with('menu')->where('order_id', $order->id);
+        $order = Order::with(['outlet', 'customer', 'payment', 'orderItems.menu'])
+            ->where('order_number', $order_number)
+            ->firstOrFail();
+
+        $orderItems = $order->orderItems;
 
         return view('dashboard.orders.show', [
             'order' => $order,
@@ -300,6 +343,24 @@ class AdminOrderController extends Controller
     //     $users = User::where('outlet_id', $outlet->id)->get();
     //     return response()->json($users);
     // }
+
+    private function generateOrderNumber(array $validatedData)
+    {
+        $outlet = Outlet::find($validatedData['outlet_id']);
+        $formattedDate = Carbon::parse($validatedData['order_date'])->format('Ymd');
+        $randomNumber = mt_rand(100000, 999999);
+
+        return $formattedDate . $outlet->outlet_code . $randomNumber;
+    }
+
+    private function generatePaymentNumber(Order $order)
+    {
+        $outlet = $order->outlet;
+        $timestamp = now()->format('YmdHis');
+        $randomNumber = mt_rand(1000, 9999);
+
+        return 'PY' . $outlet->outlet_code . $timestamp . $randomNumber;
+    }
 
     public function getMenus($outletCode)
     {

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
+
+Carbon::setLocale('id');
 
 class OrderPdfController extends Controller
 {

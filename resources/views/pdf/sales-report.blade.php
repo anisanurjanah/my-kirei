@@ -5,6 +5,9 @@
     <title>Laporan Penjualan</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/android-chrome-512x512.png">
+
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -73,14 +76,14 @@
                         <td>{{ $no++ }}</td>
                         <td>{{ $menu['name'] }}</td>
                         <td>{{ $menu['quantity'] }}</td>
-                        <td>Rp {{ number_format($menu['total_price'], 0, ',', '.') }}</td>
+                        <td>Rp. {{ number_format($menu['total_price'], 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
                     <th colspan="3">Total Pendapatan</th>
-                    <th>Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</th>
+                    <th>Rp. {{ number_format($totalPendapatan, 0, ',', '.') }}</th>
                 </tr>
             </tfoot>
         </table>

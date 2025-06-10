@@ -21,73 +21,79 @@
             </div>
         </div>
 
-        <div class="row py-3">
-            <div class="col-md-6">
-                <div class="row align-items-stretch">
-                    <div class="col-6 col-sm-6 mb-3 mb-md-0">
-                        <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
-                            <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-coin text-danger h3 mx-2 mb-auto"></i>
-                                <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp. {{ number_format($monthlyRevenue, 0, ',', '.') ?? '0' }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp. {{ number_format($monthlyRevenue, 0, ',', '.') ?? '0' }}</h6>
-                                    <small class="card-text m-0">Total Pendapatan Bulan Ini</small>
+        @if (auth()->user()->isAdministrator())
+            <div class="row py-3">
+                <div class="col-md-6">
+                    <div class="row align-items-stretch">
+                        <div class="col-6 col-sm-6 mb-3 mb-md-0">
+                            <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
+                                <div class="card-body d-flex align-items-start">
+                                    <i class="bi bi-coin text-danger h3 mx-2 mb-auto"></i>
+                                    <div class="ms-4 border-start ps-3">
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp. {{ number_format($monthlyRevenue, 0, ',', '.') ?? '0' }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp. {{ number_format($monthlyRevenue, 0, ',', '.') ?? '0' }}</h6>
+                                        <small class="card-text m-0">Total Pendapatan Bulan Ini</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-6 col-sm-6 mb-3 mb-md-0">
-                        <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
-                            <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-cart text-primary h3 mx-2 mb-auto"></i>
-                                <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $monthlyOrderCount }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $monthlyOrderCount }}</h6>
-                                    <small class="card-text m-0">Total Transaksi Bulan Ini</small>
+                        <div class="col-6 col-sm-6 mb-3 mb-md-0">
+                            <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
+                                <div class="card-body d-flex align-items-start">
+                                    <i class="bi bi-cart text-primary h3 mx-2 mb-auto"></i>
+                                    <div class="ms-4 border-start ps-3">
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $monthlyOrderCount }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $monthlyOrderCount }}</h6>
+                                        <small class="card-text m-0">Total Transaksi Bulan Ini</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-6">
-                <div class="row align-items-stretch">
-                    <div class="col-6 col-sm-6 mb-3 mb-md-0">
-                        <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
-                            <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-bar-chart-line-fill text-success h3 mx-2 mb-auto"></i>
-                                <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp. {{ number_format($averageDailyRevenue, 0, ',', '.') }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp. {{ number_format($averageDailyRevenue, 0, ',', '.') }}</h6>
-                                    <small class="card-text m-0">Rata-rata Penjualan Harian</small>
+                <div class="col-md-6">
+                    <div class="row align-items-stretch">
+                        <div class="col-6 col-sm-6 mb-3 mb-md-0">
+                            <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
+                                <div class="card-body d-flex align-items-start">
+                                    <i class="bi bi-bar-chart-line-fill text-success h3 mx-2 mb-auto"></i>
+                                    <div class="ms-4 border-start ps-3">
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp. {{ number_format($averageDailyRevenue, 0, ',', '.') }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp. {{ number_format($averageDailyRevenue, 0, ',', '.') }}</h6>
+                                        <small class="card-text m-0">Rata-rata Penjualan Harian</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-6 col-sm-6 mb-3 mb-md-0">
-                        <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
-                            <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
-                                <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit(optional(optional($topOutlet)->outlet)->name ?? 'none', 12, '...') }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit(optional(optional($topOutlet)->outlet)->name ?? 'none', 12, '...') }}</h6>
-                                    <small class="card-text m-0">Transaksi Terbanyak Bulan Ini</small>
+                        <div class="col-6 col-sm-6 mb-3 mb-md-0">
+                            <div class="card shadow border-0 w-100 h-100 d-flex flex-column">
+                                <div class="card-body d-flex align-items-start">
+                                    <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
+                                    <div class="ms-4 border-start ps-3">
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit(optional(optional($topOutlet)->outlet)->name ?? 'none', 12, '...') }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit(optional(optional($topOutlet)->outlet)->name ?? 'none', 12, '...') }}</h6>
+                                        <small class="card-text m-0">Transaksi Terbanyak Bulan Ini</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
 
         <div class="row mb-3 mb-md-0">
             <div class="col-lg-8">
                 <div class="rounded-top-2 p-3">
                     <div class="d-flex justify-content-between mb-3">
-                        <h1 class="h4"><span id="selectedOutletNameTitle">{{ $outlets->first()->name ?? 'Outlet' }}</span></h1>
+                        <h1 class="h4">
+                            <span id="selectedOutletNameTitle">
+                                {{ auth()->user()->isAdministrator() ? ($outlets->first()->name ?? 'Outlet') : auth()->user()->outlet->name }}
+                            </span>
+                        </h1>
 
-                        {{-- @if (auth()->user()->isAdministrator()) --}}
+                        @if (auth()->user()->isAdministrator())
                             <div class="btn-toolbar">
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -111,7 +117,7 @@
                                     </ul>
                                 </div>
                             </div>
-                        {{-- @endif --}}
+                        @endif
                     </div>
 
                     <script>
@@ -171,7 +177,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-4 p-3 bg-white">
-                    <h5 class="h5">Pesanan</h5>
+                    <h5 class="h5">Ringkasan Penjualan</h5>
 
                     <a href="{{ getModuleUrl('orders', null, 'create') }}" class="text-decoration-none text-danger mb-3" style="font-size: 14px">
                         <small><i class="bi bi-plus me-1"></i>Tambah Pesanan</small>

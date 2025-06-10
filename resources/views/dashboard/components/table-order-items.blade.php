@@ -13,7 +13,8 @@
             @if ($orderItems->isNotEmpty())
                 @foreach ($orderItems as $orderItem)
                     <tr>
-                        <td>{{ ($orderItems->currentPage() - 1) * $orderItems->perPage() + $loop->iteration }}</td>
+                        {{-- <td>{{ ($orderItems->currentPage() - 1) * $orderItems->perPage() + $loop->iteration }}</td> --}}
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $orderItem->menu->name }}</td>
                         <td>{{ $orderItem->quantity }}</td>
                         <td>Rp. {{ number_format($orderItem->price, 0, ',', '.') }}</td>
@@ -44,6 +45,18 @@
                         </td>
                     </tr>
                 @endforeach
+                <tr>
+                    <th colspan="3" class="fw-bold">Sub Total</th>
+                    <th colspan="2" class="fw-bold">Rp. {{ number_format($order->sub_total, 0, ',', '.') }}</th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="fw-bold">Diskon</th>
+                    <th colspan="2" class="fw-bold">Rp. {{ number_format($order->discount, 0, ',', '.') }}</th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="fw-bold">Total</th>
+                    <th colspan="2" class="fw-bold">Rp. {{ number_format($order->payment->amount, 0, ',', '.') }}</th>
+                </tr>
             @else
                 <tr>
                     <td colspan="7" class="text-center">Data tidak tersedia.</td>

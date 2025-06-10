@@ -149,23 +149,27 @@
         });
     });
 
-    const defaultLink = document.querySelector('.outlet-filter[data-outlet-id="1"]');
-    if (defaultLink) {
-        defaultLink.classList.add('active');
-        const outletName = defaultLink.textContent.trim();
-        const outletNameTitle = document.getElementById('selectedOutletNameTitle');
-        const outletNameDropdown = document.getElementById('selectedOutletNameDropdown');
+    if (outletLinks.length > 0) {
+        const defaultLink = document.querySelector('.outlet-filter[data-outlet-id="1"]');
+        if (defaultLink) {
+            defaultLink.classList.add('active');
+            const outletName = defaultLink.textContent.trim();
+            const outletNameTitle = document.getElementById('selectedOutletNameTitle');
+            const outletNameDropdown = document.getElementById('selectedOutletNameDropdown');
 
-        if (outletNameTitle) outletNameTitle.textContent = outletName;
-        if (outletNameDropdown) outletNameDropdown.textContent = outletName;
+            if (outletNameTitle) outletNameTitle.textContent = outletName;
+            if (outletNameDropdown) outletNameDropdown.textContent = outletName;
 
-        fetch(`/dashboard/orders-by-outlet?outlet_id=1`)
-            .then(response => response.json())
-            .then(result => {
-                renderChart(result.labels, result.data);
-            })
-            .catch(error => {
-                console.error('Error fetching default outlet data:', error);
-            });
+            fetch(`/dashboard/orders-by-outlet?outlet_id=1`)
+                .then(response => response.json())
+                .then(result => {
+                    renderChart(result.labels, result.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching default outlet data:', error);
+                });
+            }
+    } else {
+        renderChart(chartOrderLabels, chartOrderData);
     }
 })();
