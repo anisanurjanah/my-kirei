@@ -80,8 +80,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-exclamation-diamond-fill text-warning h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($emptyStock->name, 12, '...') }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($emptyStock->name, 12, '...') }}</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($emptyStock->name ?? 'none', 12, '...') }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($emptyStock->name ?? 'none', 12, '...') }}</h6>
                                     <small class="card-text m-0">Stok Hampir Habis</small>
                                 </div>
                             </div>

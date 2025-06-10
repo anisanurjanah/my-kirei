@@ -83,7 +83,7 @@
             </div>
         @endif
 
-        <div class="row">
+        <div class="row py-3">
             <div class="col">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap">
                     <small class="text-muted">
@@ -94,10 +94,10 @@
         </div>
 
         @if (auth()->user()->isAdministrator())
-            <div class="row py-3">
+            <div class="row">
                 <div class="col-lg-12 mb-3 mb-md-0">
                     <div class="rounded-top-2 p-3">
-                        <div class="d-flex justify-content-end mb-3">
+                        {{-- <div class="d-flex justify-content-end mb-3">
                             <div class="btn-toolbar">
                                 <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -110,7 +110,7 @@
                                     Minggu ini
                                 </button>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <script>
                             window.chartLabels = @json($labels);

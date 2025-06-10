@@ -16,6 +16,10 @@ class OrderHelper
 
     public static function badgeOrderStatus($status)
     {
+        if (!$status) {
+            return '<span class="badge bg-secondary">Belum ada pembayaran</span>';
+        }
+
         $classes = [
             'Ditunda' => 'warning',
             'Selesai' => 'success',
@@ -29,6 +33,10 @@ class OrderHelper
 
     public static function badgePaymentStatus($status)
     {
+        if (!$status) {
+            return '<span class="badge bg-secondary">Belum ada pembayaran</span>';
+        }
+
         $classes = [
             'Kadaluarsa' => 'warning',
             'Lunas' => 'success',

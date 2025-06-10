@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 
@@ -70,7 +69,7 @@ class ServiceWorkerController extends Controller
 
         $allAssets = array_merge($staticAssets, $assets, $menuImages);
 
-        $cacheName = 'my-kirei-cache-v1';
+        $cacheName = 'my-kirei-cache-v3';
 
         return response()
             ->view('service-worker', [

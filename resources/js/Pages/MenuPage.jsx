@@ -21,6 +21,9 @@ export default function MenuPage() {
     const {
         outlet_code: outletCode,
         menus,
+        recommendedMenus,
+        promoMenus,
+        newMenus,
         customer,
         flash
     } = usePage().props;
@@ -176,8 +179,51 @@ export default function MenuPage() {
             {/* <MenuNavigation /> */}
             <Main>
                 <section className="p-4">
-                    <div className="bg-white w-full">
+                    <div className="bg-white w-full mb-3">
                         <Titles title="Rekomendasi Menu Untuk Kamu" />
+                        <MenuList
+                            menus={ recommendedMenus }
+                            onClickDetail={ handleMenuDetail }
+                            onClick={ handleAddMenu }
+                        />
+                        <MenuButton
+                            selectedMenus={ selectedMenus }
+                            totalPrice={ totalPrice }
+                            onClick={ goToCart }
+                        />
+                    </div>
+                    { promoMenus.length > 0 && (
+                        <div className="bg-white w-full py-3 mb-3">
+                            <Titles title="Diskon Spesial Buat Kamu" />
+                            <MenuList
+                                menus={ promoMenus }
+                                onClickDetail={ handleMenuDetail }
+                                onClick={ handleAddMenu }
+                            />
+                            <MenuButton
+                                selectedMenus={ selectedMenus }
+                                totalPrice={ totalPrice }
+                                onClick={ goToCart }
+                            />
+                        </div>
+                    )}
+                    { newMenus.length > 0 && (
+                        <div className="bg-white w-full py-3 mb-3">
+                            <Titles title="Menu Terbaru di Outlet Ini" />
+                            <MenuList
+                                menus={ newMenus }
+                                onClickDetail={ handleMenuDetail }
+                                onClick={ handleAddMenu }
+                            />
+                            <MenuButton
+                                selectedMenus={ selectedMenus }
+                                totalPrice={ totalPrice }
+                                onClick={ goToCart }
+                            />
+                        </div>
+                    )}
+                    <div className="bg-white w-full py-3">
+                        <Titles title="Semua Menu" />
                         <MenuList
                             menus={ menus }
                             onClickDetail={ handleMenuDetail }

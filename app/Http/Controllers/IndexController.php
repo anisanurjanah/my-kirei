@@ -12,7 +12,7 @@ class IndexController extends Controller
     {
         return Inertia::render('Home', [
             'outlets' => Outlet::all(),
-            'menus' => Menu::latest()->get()
+            'menus' => Menu::all()->unique('name')->values()
         ]);
     }
 }

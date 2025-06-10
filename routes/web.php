@@ -86,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-menus/{outlet_code}', [AdminOrderController::class, 'getMenus']);
     Route::get('/dashboard/orders-by-outlet', [AdminReportController::class, 'ordersByOutlet']);
 
+
     // Kasir, Produksi
     Route::get('/{outlet_code}/dashboard', [AdminDashboardController::class, 'index'])
         ->where('outlet_code', '^(?!dashboard$)[a-zA-Z0-9-_]+');

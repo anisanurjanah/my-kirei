@@ -2,11 +2,14 @@
 
 namespace App\Helpers;
 
+use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+
+Carbon::setLocale('id');
 
 class WhatsappHelper
 {

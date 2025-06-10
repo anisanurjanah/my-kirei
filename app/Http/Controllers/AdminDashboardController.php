@@ -36,40 +36,40 @@ class AdminDashboardController extends Controller
         }
 
         // Cards
-        $totalOutlets = Outlet::count();
-        $totalUsers = User::count() + Customer::count();
-        $totalMenus = Menu::count();
-        $totalOrdersToday = Order::whereDate('created_at', Carbon::today())->count();
+        // $totalOutlets = Outlet::count();
+        // $totalUsers = User::count() + Customer::count();
+        // $totalMenus = Menu::count();
+        // $totalOrdersToday = Order::whereDate('created_at', Carbon::today())->count();
 
         $todayFormatted = Carbon::now('Asia/Jakarta')->translatedFormat('l, d F Y, H:i') . ' WIB';
 
         // Chart data
-        $labels = [];
-        $data = [];
-        $outlets = Outlet::all();
+        // $labels = [];
+        // $data = [];
+        // $outlets = Outlet::all();
 
-        foreach ($outlets as $outlet) {
-            $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($outlet) {
-                $query->where('outlet_id', $outlet->id);
-            })
-            ->sum('quantity');
+        // foreach ($outlets as $outlet) {
+        //     $jumlahMenu = OrderItem::whereHas('order', function ($query) use ($outlet) {
+        //         $query->where('outlet_id', $outlet->id);
+        //     })
+        //     ->sum('quantity');
 
-            $labels[] = $outlet->name;
-            $data[] = $jumlahMenu ?? 0;
-        }
+        //     $labels[] = $outlet->name;
+        //     $data[] = $jumlahMenu ?? 0;
+        // }
 
         // Latest Order
         $latestOrders = Order::with('payment')->where('outlet_id', $user->outlet_id)->latest()->take(5)->get();
 
         return view('dashboard.index', [
             'user' => $user,
-            'totalOutlets' => $totalOutlets,
-            'totalUsers' => $totalUsers,
-            'totalMenus' => $totalMenus,
-            'totalOrdersToday' => $totalOrdersToday,
+            // 'totalOutlets' => $totalOutlets,
+            // 'totalUsers' => $totalUsers,
+            // 'totalMenus' => $totalMenus,
+            // 'totalOrdersToday' => $totalOrdersToday,
             'todayFormatted' => $todayFormatted,
-            'labels' => $labels,
-            'data' => $data,
+            // 'labels' => $labels,
+            // 'data' => $data,
             'latestOrders' => $latestOrders
         ]);
     }
@@ -110,7 +110,11 @@ class AdminDashboardController extends Controller
         }
 
         // Latest Order
-        $latestOrders = Order::with('payment')->latest()->take(5)->get();
+        $latestOrders = Order::with('payment')
+            ->has('payment')
+            ->latest()
+            ->take(5)
+            ->get();
 
         return view('dashboard.index', [
             'user' => $user,

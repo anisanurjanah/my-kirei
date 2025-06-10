@@ -33,10 +33,10 @@ export default function PaymentMethodSelector({ paymentMethod, totalPrice, onSel
         <>
             <div className="w-full max-w-md mx-auto mt-4">
                 {/* E-Wallets */}
-                <div className="py-3">
+                <div className="mb-3">
                     <button
                         onClick={() => setShowEwallets(!showEwallets)}
-                        className="w-full flex items-center justify-between gap-4 cursor-pointer rounded border border-gray-100 bg-white p-3 shadow-sm transition-colors hover:bg-gray-50 has-checked:border-[#C60E2A] has-checked:ring-1 has-checked:ring-[#C60E2A]"
+                        className="w-full flex items-center justify-between gap-4 cursor-pointer rounded border border-gray-100 bg-white p-4 shadow-sm transition-colors hover:bg-gray-50 has-checked:border-[#C60E2A] has-checked:ring-1 has-checked:ring-[#C60E2A]"
                     >
                         <div className="flex justify-center items-center gap-4 text-yellow-500">
                             <Wallet2 size={20} />
@@ -61,7 +61,7 @@ export default function PaymentMethodSelector({ paymentMethod, totalPrice, onSel
                                                 onClick={() => {
                                                     if (!isMethodDisabled(method.id)) handleSelect(method);
                                                 }}
-                                                className={`flex items-center justify-between gap-4 p-3 rounded border transition-colors
+                                                className={`flex items-center justify-between gap-4 p-4 rounded border transition-colors
                                                     ${ isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100' }
                                                     ${ isMethodDisabled(method.id) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }
                                                 `}
@@ -104,7 +104,7 @@ export default function PaymentMethodSelector({ paymentMethod, totalPrice, onSel
                 <div className="mb-3">
                     <button
                         onClick={() => setBankTransfers(!showBankTransfers)}
-                        className="w-full flex items-center justify-between gap-4 cursor-pointer rounded border border-gray-100 bg-white p-3 shadow-sm transition-colors hover:bg-gray-50 has-checked:border-[#C60E2A] has-checked:ring-1 has-checked:ring-[#C60E2A]"
+                        className="w-full flex items-center justify-between gap-4 cursor-pointer rounded border border-gray-100 bg-white p-4 shadow-sm transition-colors hover:bg-gray-50 has-checked:border-[#C60E2A] has-checked:ring-1 has-checked:ring-[#C60E2A]"
                     >
                         <div className="flex justify-center items-center gap-4 text-green-600">
                             <ArrowRightLeft size={20} />
@@ -129,7 +129,7 @@ export default function PaymentMethodSelector({ paymentMethod, totalPrice, onSel
                                                 onClick={() => {
                                                     if (!isMethodDisabled(method.id)) handleSelect(method);
                                                 }}
-                                                className={`flex items-center justify-between gap-4 p-3 rounded border transition-colors
+                                                className={`flex items-center justify-between gap-4 p-4 rounded border transition-colors
                                                     ${ isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100' }
                                                     ${ isMethodDisabled(method.id) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }
                                                 `}
@@ -172,13 +172,13 @@ export default function PaymentMethodSelector({ paymentMethod, totalPrice, onSel
                 <div className="mb-3">
                     <button className="w-full rounded border border-gray-100 bg-white shadow-sm transition-colors hover:bg-gray-50 has-checked:border-[#C60E2A] has-checked:ring-1 has-checked:ring-[#C60E2A]">
                         {
-                            paymentMethod.filter((method) => method.type !== 'Bank Transfer' && method.type !== 'E-Wallet').map((method) => {
+                            paymentMethod.filter((method) => method.type === 'QR Code').map((method) => {
                                 const isSelected = selectedMethod?.id === method.id;
                                 return (
                                     <div
                                         key={method.id}
                                         onClick={() => handleSelect(method)}
-                                        className={`flex items-center justify-between gap-4 p-3 rounded border cursor-pointer transition-colors
+                                        className={`flex items-center justify-between gap-4 p-4 rounded border cursor-pointer transition-colors
                                             ${isSelected ? 'border-[#C60E2A] ring-1 ring-[#C60E2A] bg-[#FFF0F1]' : 'border-gray-100 bg-white hover:bg-gray-100'}`}
                                     >
                                         <div className="flex justify-center items-center gap-4 text-blue-700">

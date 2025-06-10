@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Menu;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Outlet;
+use App\Models\Payment;
 use App\Models\Customer;
 use App\Models\OrderItem;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 
 Carbon::setLocale('id');
@@ -23,9 +26,6 @@ class AdminOrderController extends Controller
     public function index()
     {
         $user = Auth::guard('web')->user();
-        if (!$user) {
-            abort(403, 'Unauthorized');
-        }
 
         // Orders
         $queryOrders = Order::query();
@@ -34,7 +34,12 @@ class AdminOrderController extends Controller
             $queryOrders->where('outlet_id', $user->outlet_id);
         }
 
-        $orders = (clone $queryOrders)->with(['outlet', 'customer', 'payment'])->latest()->paginate(10)->withQueryString();
+        $orders = (clone $queryOrders)
+            ->has('payment')
+            ->with(['outlet', 'customer', 'payment'])
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
         $totalOrders = (clone $queryOrders)->count();
         $totalTransactions = (clone $queryOrders)->whereDate('created_at', today())->count();
         $dailyRevenue = (clone $queryOrders)->whereDate('created_at', now())->sum('total_price');
