@@ -21,9 +21,13 @@ class Payment extends Model
         return $this->belongsTo(Order::class);
     }
 
+    const PAYMENT_METHODS = [
+        'Tunai' => 'Tunai',
+        'Kartu Kredit' => 'Kartu Kredit',
+    ];
+
     const PAYMENT_STATUSES = [
         'Lunas' => 'Lunas',
-        'Belum Lunas' => 'Belum Lunas',
         'Kadaluarsa' => 'Kadaluarsa',
         'Gagal' => 'Gagal',
         'Ditunda' => 'Ditunda',

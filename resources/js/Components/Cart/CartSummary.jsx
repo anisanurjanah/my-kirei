@@ -8,28 +8,30 @@ export default function CartSummary({ menus, subTotal, discount, totalPrice, onS
                     <dl className="space-y-0.5 text-sm text-[#333]">
                         <div className="flex justify-between">
                             <dt>Subtotal</dt>
-                            <dd>IDR { subTotal.toLocaleString() }</dd>
+                            <dd>IDR { Number(subTotal).toLocaleString() }</dd>
                         </div>
 
                         <div className="flex justify-between">
                             <dt>Diskon</dt>
-                            <dd>- IDR { typeof discount === 'number' ? discount.toLocaleString() : 0 }</dd>
+                            <dd>- { typeof discount === 'number' ? Number(discount).toLocaleString() : 0 }</dd>
                         </div>
 
                         <div className="flex justify-between !text-base font-medium">
                             <dt>Total</dt>
-                            <dd>IDR { totalPrice.toLocaleString() }</dd>
+                            <dd>IDR { Number(totalPrice).toLocaleString() }</dd>
                         </div>
                     </dl>
 
-                    {menus.some((menu) => Number(menu.price_promo?.price_promo) > 0) && (
-                        <div className="flex justify-end">
-                            <span className="inline-flex items-center justify-center rounded-full bg-green-200 px-2.5 py-0.5 text-green-700">
-                                <Ticket className="me-1.5" size={16} />
-                                <p className="text-xs whitespace-nowrap">Harga spesial berhasil kamu dapatkan!</p>
-                            </span>
-                        </div>
-                    )}
+                    {
+                        menus.some((menu) => Number(menu.price_promo?.price_promo) > 0) && (
+                            <div className="flex justify-end">
+                                <span className="inline-flex items-center justify-center rounded-full bg-green-200 px-2.5 py-0.5 text-green-700">
+                                    <Ticket className="me-1.5" size={16} />
+                                    <p className="text-xs whitespace-nowrap">Harga spesial berhasil kamu dapatkan!</p>
+                                </span>
+                            </div>
+                        )
+                    }
 
                     <div className="flex justify-end">
                         <button

@@ -1,18 +1,17 @@
-import { Inertia } from "@inertiajs/inertia";
-import { CircleCheck, UtensilsCrossed, ShoppingBasket, CreditCard, ReceiptText } from "lucide-react";
+import { CircleCheck, UtensilsCrossed, ShoppingBasket, BadgeDollarSign, ReceiptText } from "lucide-react";
 
 export default function PaymentProgressSteps({ outletCode }) {
     const steps = [
-        { label: "Menu", icon: "UtensilsCrossed", href: `` },
-        { label: "Keranjang", icon: "ShoppingBasket", href: `` },
-        { label: "Pembayaran", icon: "CreditCard", href: `` },
-        { label: "Ringkasan", icon: "ReceiptText", href: `` }
+        { label: "Menu", icon: "UtensilsCrossed" },
+        { label: "Keranjang", icon: "ShoppingBasket" },
+        { label: "Pembayaran", icon: "BadgeDollarSign" },
+        { label: "Ringkasan", icon: "ReceiptText" }
     ];
 
     const icons = {
         UtensilsCrossed: UtensilsCrossed,
         ShoppingBasket: ShoppingBasket,
-        CreditCard: CreditCard,
+        BadgeDollarSign: BadgeDollarSign,
         ReceiptText: ReceiptText,
     };
 
@@ -34,7 +33,6 @@ export default function PaymentProgressSteps({ outletCode }) {
                                             }`}
                                         >
                                             <button
-                                                onClick={() => Inertia.visit( step.href )}
                                                 className="flex flex-col items-center gap-1 cursor-pointer"
                                             >
                                                 <span className={`absolute -bottom-[1.75rem] rounded-full text-white ${

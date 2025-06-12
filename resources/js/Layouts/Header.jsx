@@ -4,7 +4,7 @@ import { Menu } from "lucide-react";
 
 import OutletList from "@/Components/OutletList";
 
-export default function Header({ handleScroll }) {
+export default function Header({ handleScroll, outlets }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
@@ -52,16 +52,21 @@ export default function Header({ handleScroll }) {
                                     Masuk
                                 </button>
 
-                                {isModalOpen && <OutletList onClose={() => setIsModalOpen(false)} />}
+                                { isModalOpen &&
+                                    <OutletList
+                                        outlets={ outlets }
+                                        onClose={ () => setIsModalOpen(false) }
+                                    />
+                                }
                             </div>
 
-                            <div className="block md:hidden">
+                            {/* <div className="block md:hidden">
                                 <button
                                     className="rounded-sm p-2 text-[#C60E2A] transition hover:text-[#C60E2A]"
                                 >
                                     <Menu />
                                 </button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

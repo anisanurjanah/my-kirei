@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Daftar Pesanan')
 @section('container')
 
     <div class="px-md-2">
@@ -10,7 +11,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
-                            <a href="/dashboard" class="text-decoration-none text-black">
+                            <a href="{{ getDashboardUrl() }}" class="text-decoration-none text-black">
                                 <i class="bi bi-house-fill"></i>
                             </a>
                         </li>
@@ -19,7 +20,7 @@
                 </nav>
             </div>
 
-            <a href="/dashboard/orders/create" class="btn btn-danger ms-auto my-3">
+            <a href="{{ getModuleUrl('orders', null, 'create') }}" class="btn btn-danger ms-auto my-3">
                 <i class="bi bi-plus-circle-fill fs-6 me-2"></i>Tambah Pesanan
             </a>
         </div>
@@ -38,8 +39,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-cart-fill text-danger h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalOrders }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalOrders }}</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalOrders ?? '0' }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalOrders ?? '0' }}</h6>
                                     <small class="card-text m-0">Total Pesanan</small>
                                 </div>
                             </div>
@@ -50,8 +51,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-receipt-cutoff text-primary h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalTransactions }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalTransactions }}</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ $totalTransactions ?? '0' }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ $totalTransactions ?? '0' }}</h6>
                                     <small class="card-text m-0">Pesanan Hari Ini</small>
                                 </div>
                             </div>
@@ -67,8 +68,8 @@
                             <div class="card-body d-flex align-items-start">
                                 <i class="bi bi-cash-stack text-success h3 mx-2 mb-auto"></i>
                                 <div class="ms-4 border-start ps-3">
-                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp {{ number_format($monthlyRevenue, 0, ',', '.') }}</h5>
-                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp {{ number_format($monthlyRevenue, 0, ',', '.') }}</h6>
+                                    <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp {{ number_format($monthlyRevenue, 0, ',', '.') ?? '0' }}</h5>
+                                    <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp {{ number_format($monthlyRevenue, 0, ',', '.') ?? '0' }}</h6>
                                     <small class="card-text m-0">Pendapatan Bulan Ini</small>
                                 </div>
                             </div>
@@ -77,16 +78,20 @@
                     <div class="col-6 col-sm-6 mb-3 mb-md-0">
                         <div class="card shadow border-0 w-100 h-100">
                             <div class="card-body d-flex align-items-start">
-                                <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
+                                @if(auth()->user()->isAdministrator())
+                                    <i class="bi bi-shop text-warning h3 mx-2 mb-auto"></i>
+                                @else
+                                    <i class="bi bi-coin text-warning h3 mx-2 mb-auto"></i>
+                                @endif
                                 <div class="ms-4 border-start ps-3">
-                                    @if (auth()->user()->isAdministrator())
-                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($topOutlet, 12, '...') }}</h5>
-                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($topOutlet, 12, '...') }}</h6>
+                                    @if(auth()->user()->isAdministrator())
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit(optional($topOutlet)->name ?? 'none', 12, '...') }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit(optional($topOutlet)->name ?? 'none', 12, '...') }}</h6>
                                         <small class="card-text m-0">Pesanan Terbanyak</small>
                                     @else
-                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">{{ Str::limit($topStaff, 12, '...') }}</h5>
-                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">{{ Str::limit($topStaff, 12, '...') }}</h6>
-                                        <small class="card-text m-0">Staf Teraktif</small>
+                                        <h5 class="card-title fw-bold m-0 d-none d-sm-block">Rp {{ number_format($dailyRevenue, 0, ',', '.') ?? '0' }}</h5>
+                                        <h6 class="card-title fw-bold m-0 d-block d-sm-none">Rp {{ number_format($dailyRevenue, 0, ',', '.') ?? '0' }}</h6>
+                                        <small class="card-text m-0">Pendapatan Hari Ini</small>
                                     @endif
                                 </div>
                             </div>
@@ -103,7 +108,7 @@
                         <input type="text" class="form-control" placeholder="Cari pesanan.." style="font-size: 12px;">
                         <button class="btn btn-outline-secondary" type="button" id="search" name="search" style="font-size: 12px;">Cari</button>
                     </div>
-                    @if (auth()->user()->isAdministrator())
+                    {{-- @if (auth()->user()->isAdministrator())
                         <select class="form-select w-25 ms-auto" name="outlet_id" style="font-size: 12px;">
                             @foreach ($outlets as $outlet)
                                 <option value="{{ $outlet->id }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
@@ -111,15 +116,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    @else
-                        <select class="form-select w-25 ms-auto" name="user_id" style="font-size: 12px;">
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                    Staff: {{ $user->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    @endif
+                    @endif --}}
                 </div>
 
                 @include('dashboard.components.table-orders')

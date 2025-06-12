@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Perbarui Menu')
 @section('container')
 
     <div class="row px-md-2" style="background-color: #FFFFFF">
@@ -35,7 +36,6 @@
 
         <form
             method="post"
-            {{-- action="/dashboard/menus/{{ $menu->slug }}" --}}
             action="{{ getModuleUrl('menus', $menu->slug) }}"
             enctype="multipart/form-data"
         >

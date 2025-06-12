@@ -15,7 +15,6 @@ class VerifyCsrfToken extends Middleware
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     protected $except = [
-        '/midtrans/callback',
-        'payment/webhook',
+        'api/payment/webhook',
     ];
 }

@@ -11,7 +11,7 @@
                 <div class="card border-0 w-100">
                     <div class="card-body">
 
-                        <form method="post" action="/dashboard/prices/{{ optional($menu->pricePromo)->id }}">
+                        <form method="post" action="{{ getModuleFormAction('prices', optional($menu->pricePromo)->id) }}">
                             @method('PUT')
                             @csrf
 

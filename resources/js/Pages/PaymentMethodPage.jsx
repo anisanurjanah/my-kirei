@@ -38,11 +38,6 @@ export default function PaymentMethodPage() {
     };
 
     const handlePayment = () => {
-        if (!selectedPaymentMethod) {
-            alert('Pilih metode pembayaran!');
-            return;
-        }
-
         Inertia.post(`/${outletCode}/payment-method-store`, {
             payment_method_id: selectedPaymentMethod.id
         });
@@ -72,11 +67,11 @@ export default function PaymentMethodPage() {
                             <span className="h-px flex-1 bg-gray-300"></span>
                         </span>
                         <PaymentMethodSelector
-                            PaymentMethod={paymentMethods}
-                            totalPrice={totalPrice.toLocaleString()}
-                            onSelect={handleSelect}
-                            onConfirm={handlePayment}
-                            selectedPaymentMethod={selectedPaymentMethod}
+                            paymentMethod={ paymentMethods }
+                            totalPrice={ totalPrice.toLocaleString() }
+                            onSelect={ handleSelect }
+                            onConfirm={ handlePayment }
+                            selectedPaymentMethod={ selectedPaymentMethod }
                         />
                     </div>
                 </section>

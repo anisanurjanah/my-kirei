@@ -17,8 +17,6 @@ export default function PaymentPage() {
         payment,
     } = usePage().props;
 
-    console.log(usePage().props);
-
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods);
     const [paymentDetails, setPaymentDetails] = useState(null);
 
@@ -31,8 +29,8 @@ export default function PaymentPage() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (payment?.payment_status !== 'Lunas') {
-                Inertia.reload({ only: ['payment'] });
+            if (payment?.payment_status !== 'Lunas' && payment?.payment_status !== 'Gagal') {
+                Inertia.reload({ only: ['payment', 'selectedPaymentMethod'] });
             }
         }, 10000);
 
@@ -42,47 +40,10 @@ export default function PaymentPage() {
     useEffect(() => {
         if (payment?.payment_status === 'Lunas') {
             setTimeout(() => {
-                // Redirect to order detail page setelah pembayaran sukses
-                window.location.href = `/${outletCode}/order-detail-page/${payment.order.order_number}`;
-            }, 5000);
-        } else if (payment?.payment_status === 'Gagal') {
-            // Tampilkan pesan gagal atau error
-            alert('Pembayaran Gagal, silakan coba lagi.');
+                window.location.href = `/${outletCode}/orders/${ payment.order.order_number.toLowerCase() }`;
+            }, 3000);
         }
-    }, [payment]); // Pastikan payment status ter-update
-
-
-    // useEffect(() => {
-    //     console.log('Payment status:', payment?.payment_status);
-
-    //     // Jika pembayaran sudah Lunas, lakukan redirect
-    //     if (payment?.payment_status === 'Lunas') {
-    //         setTimeout(() => {
-    //             Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
-    //         }, 5000);
-    //     }
-
-    //     // Jika pembayaran Ditunda, kamu bisa menunggu atau memberikan informasi tambahan
-    //     else if (payment?.payment_status === 'Ditunda') {
-    //         console.log('Payment is delayed, waiting for status update...');
-    //         // Bisa tambahkan logic untuk memeriksa status pembaruan setiap beberapa detik
-    //     }
-    // }, [payment, outletCode]);
-
-
-    // useEffect(() => {
-    //     console.log('payment status:', payment?.payment_status);
-
-    //     if (payment?.payment_status === 'Lunas') {
-    //         setTimeout(() => {
-    //             console.log('Redirecting to:', `/${outletCode}/order-detail-page/${payment.order.order_number}`);
-    //             Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
-    //             // Inertia.visit(`/${outletCode}/order-detail-page/${payment.order.order_number}`);
-    //             // Inertia.visit(`/${outletCode}/orders/${payment.order.order_number}`);
-    //             // window.location.href = `/${outletCode}/order-detail-page/${payment.order.order_number}`;
-    //         }, 5000);
-    //     }
-    // }, [payment]);
+    }, [payment]);
 
     return (
         <>

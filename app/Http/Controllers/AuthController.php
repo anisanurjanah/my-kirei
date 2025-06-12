@@ -47,7 +47,8 @@ class AuthController extends Controller
             'phone' => $formattedPhone,
         ]);
 
-        return redirect("/{$outlet_code}/login")->with('success', 'Akun Anda berhasil didaftarkan!');
+        return redirect()->to(secure_url("/{$outlet_code}/login"))
+            ->with('success', 'Akun Anda berhasil didaftarkan!');
     }
 
     public function showLogin($outlet_code)
@@ -92,9 +93,10 @@ class AuthController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect("/{$outlet_code}/login")->with('logout_success', 'Anda berhasil keluar. Sampai jumpa!');
+            return redirect()->to(secure_url("/{$outlet_code}/login"))
+                ->with('logout_success', 'Anda berhasil keluar. Sampai jumpa!');
         }
 
-        return redirect("/{$outlet_code}/login");
+        return redirect()->to(secure_url("/{$outlet_code}/login"));
     }
 }

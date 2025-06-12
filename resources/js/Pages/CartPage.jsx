@@ -6,19 +6,20 @@ import Main from "@/Layouts/Main";
 
 import Header from "@/Components/Header";
 import Titles from "@/Components/Titles";
+import AlertPaymentMethod from "@/Components/AlertPaymentMethod";
 import CartList from "@/Components/Cart/CartList";
 import CartPaymentMethod from "@/Components/Cart/CartPaymentMethod";
 import CartProgressSteps from "@/Components/Cart/CartProgressSteps";
 import CartSummary from "@/Components/Cart/CartSummary";
+import ErrorAlert from "@/Components/AlertError";
 
 export default function CartPage() {
     const {
         outlet_code: outletCode,
         selectedPaymentMethod: paymentMethods,
+        flash,
         customer
     } = usePage().props;
-
-    console.log(usePage().props);
 
     const [menus, setMenus] = useState([]);
     const [quantities, setQuantities] = useState({});
@@ -26,6 +27,8 @@ export default function CartPage() {
     const [discount, setDiscount] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods);
+
+    const [showPaymentWarning, setShowPaymentWarning] = useState(false);
 
     const { setData, post } = useForm({
         outlet_code: outletCode,
@@ -46,15 +49,27 @@ export default function CartPage() {
 
     const handleSubmit = () => {
         if (!selectedPaymentMethod) {
-            alert('Pilih metode pembayaran!');
+            setShowPaymentWarning(true);
             return;
         }
 
-        post(`/${outletCode}/orders`);
+        post(`/${outletCode}/orders`, {
+            onSuccess: () => {
+                post('/clear-payment-session');
 
-        // sessionStorage.removeItem("selectedMenus");
-        // sessionStorage.removeItem("quantities");
+                sessionStorage.removeItem("selectedMenus");
+                sessionStorage.removeItem("quantities");
+            }
+        });
     }
+
+    // Alert
+    const [flashMsg, setFlashMsg] = useState(flash);
+    useEffect(() => {
+        if (flash) {
+            setFlashMsg(flash);
+        }
+    }, [flash]);
 
     // Menu List
     useEffect(() => {
@@ -102,10 +117,6 @@ export default function CartPage() {
     }, [menus, quantities]);
 
     useEffect(() => {
-        sessionStorage.setItem("quantities", JSON.stringify(quantities));
-    }, [quantities]);
-
-    useEffect(() => {
         const items = menus.map((menu) => ({
             menu_id: menu.id,
             quantity: quantities[menu.id] || 1,
@@ -120,6 +131,11 @@ export default function CartPage() {
             total_price: parseInt(totalPrice)
         }));
     }, [menus, quantities, subTotal, discount, totalPrice]);
+
+    useEffect(() => {
+        sessionStorage.setItem("selectedMenus", JSON.stringify(menus));
+        sessionStorage.setItem("quantities", JSON.stringify(quantities));
+    }, [menus, quantities]);
 
     useEffect(() => {
         if (paymentMethods) {
@@ -145,14 +161,20 @@ export default function CartPage() {
     // Remove menu
     const handleRemoveMenu = (id) => {
         const updatedMenus = menus.filter((menu) => menu.id !== id);
-        setMenus(updatedMenus);
-        sessionStorage.setItem("selectedMenus", JSON.stringify(updatedMenus));
-
         const updatedQuantities = { ...quantities };
+
         delete updatedQuantities[id];
+
+        setMenus(updatedMenus);
         setQuantities(updatedQuantities);
+
+        sessionStorage.setItem("selectedMenus", JSON.stringify(updatedMenus));
         sessionStorage.setItem("quantities", JSON.stringify(updatedQuantities));
     }
+
+    const goToMenu = () => {
+        Inertia.visit(`/${outletCode}/menu-page`);
+    };
 
     const goToPaymentMethod = () => {
         Inertia.visit(`/${outletCode}/payment-method-page`);
@@ -160,10 +182,19 @@ export default function CartPage() {
 
     return (
         <>
+            <AlertPaymentMethod
+                showPaymentWarning={ showPaymentWarning }
+                onClose={ () => setShowPaymentWarning(false) }
+            />
             <Head title={`Keranjang - ${outletCode.toUpperCase()}`} />
             <Header />
             <Main>
-                <CartProgressSteps outletCode={ outletCode } />
+                { flashMsg?.order_failed && (
+                    <ErrorAlert
+                        message={ { body: flashMsg.order_failed } }
+                    />
+                )}
+                <CartProgressSteps goToMenu={ goToMenu } />
                 <section className="p-4">
                     <div className="bg-white w-full">
                         <Titles title="Keranjang Pesanan" />

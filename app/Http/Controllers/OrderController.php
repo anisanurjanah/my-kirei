@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Menu;
 use Inertia\Inertia;
 use Midtrans\Config;
 use App\Models\Order;
@@ -13,29 +12,49 @@ use App\Models\Payment;
 use App\Models\OrderItem;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Repositories\TransactionRepositoryInterface;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index($order_number)
+
+    protected $transactionRepository;
+
+    public function __construct(TransactionRepositoryInterface $transactionRepository)
     {
-        // $order = Order::where('order_number', $order_number)->first();
-        // $payment = Payment::where('order_id', $order->id)->first();
+        $this->transactionRepository = $transactionRepository;
 
-        // if (!$order) {
-        //     abort(404);
-        // }
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
+    }
 
-        // return Inertia::render('OrderDetailPage', [
-        //     'order' => $order,
-        //     'payment' => $payment,
-        // ]);
+    public function index($outlet_code)
+    {
+        $outlet = Outlet::where('outlet_code', $outlet_code)->first();
+        $customer = Auth::guard('customer')->user();
+
+        $orders = Order::with(['outlet', 'customer', 'payment', 'orderItems.menu'])
+            ->where('outlet_id', $outlet->id)
+            ->where('customer_id', $customer->id)
+            ->latest()
+            ->get();
+
+        if (!$orders) {
+            abort(404);
+        }
+
+        return Inertia::render('OrderHistoryPage', [
+            'outlet_code' => $outlet_code,
+            'orders' => $orders,
+        ]);
     }
 
     /**
@@ -60,9 +79,6 @@ class OrderController extends Controller
             ], 422);
         }
 
-        $validatedData['order_type'] = 'Dine In';
-        $validatedData['order_status'] = 'Ditunda';
-
         DB::beginTransaction();
 
         try {
@@ -83,27 +99,37 @@ class OrderController extends Controller
 
             DB::commit();
 
-            session()->forget(['selectedMenus', 'quantities']);
-            // return redirect()->to('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . Str::slug($order->order_number));
-            // return redirect()->to(
-            //     url('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . Str::slug($order->order_number))
-            // );
-            return redirect()->to(secure_url('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . $order->order_number));
+            return redirect()->to(secure_url('/' . Str::slug($order->outlet->outlet_code) . '/payment-page/' . Str::slug($order->order_number)));
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'message' => 'Gagal membuat pesanan.',
-                'error' => $e->getMessage(),
-            ], 500);
+            Log::error('Gagal membuat pesanan: ' . $e->getMessage());
+            
+            return redirect()->back()->with([
+                'order_failed' => 'Maaf, terjadi kesalahan saat membuat pesanan. Silakan coba lagi.',
+            ]);
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($outlet_code, $order_number)
     {
-        //
+        $order = Order::with('outlet', 'customer', 'payment')->where('order_number', $order_number)->first();
+        $payment = Payment::with('payment_method')->where('order_id', $order->id)->first();
+        $order_items = OrderItem::with('menu')->where('order_id', $order->id)->get();
+
+        if (!$order) {
+            abort(404);
+        }
+
+        return Inertia::render('OrderDetailPage', [
+            'outlet_code' => $outlet_code,
+            'selectedPaymentMethod' => session('selected_payment_method', null),
+            'order' => $order,
+            'payment' => $payment,
+            'order_items' => $order_items,
+        ]);
     }
 
     /**
@@ -198,7 +224,7 @@ class OrderController extends Controller
             }
         }
 
-        Payment::create([
+        $this->transactionRepository->createTransaction([
             'order_id' => $order->id,
             'payment_method_id' => $paymentMethodId,
             'payment_number' => $this->generatePaymentNumber($order),
@@ -216,11 +242,6 @@ class OrderController extends Controller
 
     private function createMidtransTransaction(Order $order, array $items, int $paymentMethodId)
     {
-        Config::$serverKey = config('services.midtrans.server_key');
-        Config::$isProduction = config('services.midtrans.is_production');
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
-
         $method = collect(config('payment_methods'))->firstWhere('id', $paymentMethodId);
         $methodConfig = is_string($method['midtrans_config'])
             ? json_decode($method['midtrans_config'], true)
@@ -230,11 +251,10 @@ class OrderController extends Controller
             return redirect()->back()->withErrors(['Metode pembayaran tidak valid.']);
         }
 
+        // Items
         $totalItemPrice = array_reduce($items, function ($carry, $item) {
             return $carry + ($item['price'] * $item['quantity']);
         }, 0);
-
-        $discount = $order->total_price - $totalItemPrice;
 
         $payload = [
             'transaction_details' => [
@@ -262,21 +282,20 @@ class OrderController extends Controller
 
         $payload['item_details'][] = [
             'id' => 'DISCOUNT-' . uniqid(),
-            'price' => $discount,
+            'price' => $order->total_price - $totalItemPrice,
             'quantity' => 1,
             'name' => 'Discount',
         ];
 
-        if ($methodConfig['payment_type'] === 'shopeepay') {
-            $payload['payment_type'] = 'shopeepay';
-            $payload['shopeepay'] = [
-                'callback_url' => url("/midtrans/callback/" . $order->order_number),
-            ];
-        }
+        // if ($methodConfig['payment_type'] === 'shopeepay') {
+        //     $payload['payment_type'] = 'shopeepay';
+        //     $payload['shopeepay'] = [
+        //         'callback_url' => url("/midtrans/callback/" . $order->order_number),
+        //     ];
+        // }
 
         $payload = array_merge($payload, $methodConfig);
         $response = CoreApi::charge($payload);
-        // dd($response);
 
         $updateData = [
             'transaction_id' => $response->transaction_id ?? null,
@@ -291,9 +310,9 @@ class OrderController extends Controller
         }
 
         // Permata Virtual Account (Bank Transfer)
-        if (!empty($response->permata_va_number)) {
-            $updateData['va_number'] = $response->permata_va_number ?? null;
-        }
+        // if (!empty($response->permata_va_number)) {
+        //     $updateData['va_number'] = $response->permata_va_number ?? null;
+        // }
 
         // GoPay dan QRIS
         if (!empty($response->actions)) {

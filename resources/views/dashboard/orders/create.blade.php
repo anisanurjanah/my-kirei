@@ -1,12 +1,13 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Tambah Pesanan')
 @section('container')
 
     <div class="row px-md-2" style="background-color: #FFFFFF">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap py-3">
             <div class="d-block">
                 <h1 class="h2">
-                    <a href="/dashboard/orders" class="text-decoration-none text-danger">
+                    <a href="{{ getModuleUrl('orders') }}" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
                     Tambah Pesanan Baru
@@ -15,12 +16,12 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
-                            <a href="/dashboard" class="text-decoration-none text-black">
+                            <a href="{{ getDashboardUrl() }}" class="text-decoration-none text-black">
                                 <i class="bi bi-house-fill"></i>
                             </a>
                         </li>
                         <li class="breadcrumb-item" aria-current="page">
-                            <a href="/dashboard/orders" class="text-decoration-none text-black">
+                            <a href="{{ getModuleUrl('orders') }}" class="text-decoration-none text-black">
                                 Pesanan
                             </a>
                         </li>
@@ -33,39 +34,42 @@
 
     <div class="row px-md-2 py-3">
 
-        <form method="post" action="/dashboard/orders" data-page="create-order">
+        <form method="post" action="{{ getModuleUrl('orders') }}" data-page="create-order">
             @csrf
-            <div class="row p-2">
-                <div class="col-lg-12 mb-3 mb-md-0">
-                    <div class="accordion accordion-flush">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#outlet">
-                                    Outlet
-                                </button>
-                            </h2>
-                            <div id="outlet" class="accordion-collapse collapse show">
-                                <div class="accordion-body">
-                                    <div class="mb-3">
-                                        <select class="form-select select2 outlet-order" id="outlet_id" name="outlet_id" required autofocus>
-                                            <option value="" disabled selected>Pilih Outlet</option>
-                                            @foreach ($outlets as $outlet)
-                                                <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
-                                                    {{ $outlet->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+
+            @if (auth()->user()->isAdministrator())
+                <div class="row p-2">
+                    <div class="col-lg-12 mb-3 mb-md-0">
+                        <div class="accordion accordion-flush">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#outlet">
+                                        Outlet
+                                    </button>
+                                </h2>
+                                <div id="outlet" class="accordion-collapse collapse show">
+                                    <div class="accordion-body">
+                                        <div class="mb-3">
+                                            <select class="form-select select2 outlet-order" id="outlet_id" name="outlet_id" required autofocus>
+                                                <option value="" disabled selected>Pilih Outlet</option>
+                                                @foreach ($outlets as $outlet)
+                                                    <option value="{{ $outlet->id }}" data-code="{{ $outlet->outlet_code }}" {{ old('outlet_id') == $outlet->id ? 'selected' : '' }}>
+                                                        {{ $outlet->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
             <div class="row p-2">
                 <div class="col-md-6 mb-3 mb-md-0">
-                    <div class="order-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="order-form {{ $errors->any() ? '' : (auth()->user()->isAdministrator() ? 'd-none' : '') }}">
                         <div class="accordion accordion-flush">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -164,7 +168,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="order-form {{ $errors->any() ? '' : 'd-none' }}">
+                    <div class="order-form {{ $errors->any() ? '' : (auth()->user()->isAdministrator() ? 'd-none' : '') }}">
                         <div class="mb-3">
                             <label for="customer_id" class="form-label">No. Telepon Pelanggan</label>
                             <select class="form-select select2" id="customer_id" name="customer_id" required>
@@ -179,17 +183,6 @@
                         <div id="customer_name_wrapper" class="mb-3 d-none">
                             <label for="customer_name" class="form-label">Nama Pelanggan</label>
                             <input type="text" class="form-control" id="customer_name" name="customer_name" value="{{ old('customer_name') }}" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label for="user_id" class="form-label">Staff</label>
-                            <select class="form-select select2" id="user_id" name="user_id" required>
-                                <option value="" disabled selected>Pilih Staff</option>
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name }}
-                                    </option>
-                                @endforeach
-                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="order_date" class="form-label">Tanggal</label>
@@ -237,12 +230,15 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <hr class="mt-4">
+
                         <div class="mb-3">
-                            <label for="order_status" class="form-label">Status Pesanan</label>
-                            <select class="form-select" id="order_status" name="order_status" required>
-                                @foreach ($orderStatuses as $key => $status)
-                                    <option value="{{ $key }}" {{ old('order_status') == $key ? 'selected' : '' }}>
-                                        {{ $status }}
+                            <label for="payment_method" class="form-label">Metode Pembayaran</label>
+                            <select class="form-select" id="payment_method" name="payment_method" required>
+                                @foreach ($paymentMethods as $key => $method)
+                                    <option value="{{ $key }}" {{ old('payment_method') == $key ? 'selected' : '' }}?>
+                                        {{ $method }}
                                     </option>
                                 @endforeach
                             </select>

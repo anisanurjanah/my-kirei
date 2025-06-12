@@ -84,8 +84,10 @@ class AdminMenuController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $outlet_code = null)
+    public function store(Request $request, $param1, $param2 = null)
     {
+        [$outlet_code, $slug] = $this->parseOutletAndUnique($param1, $param2);
+
         $today = now()->toDateString();
 
         // Remove Price's Dot
@@ -99,7 +101,7 @@ class AdminMenuController extends Controller
             'outlet_id' => 'required|exists:outlets,id',
             'name' => 'required|max:32',
             'description' => 'required|max:128',
-            'image' => 'required|image|file|max:1024',
+            'image' => 'required|image|file|max:2700',
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
             'price_promo' => 'nullable|integer|min:0|max:' . $request->price,
@@ -143,7 +145,7 @@ class AdminMenuController extends Controller
         ]);
 
         // Redirect to menus
-        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
             ->with('success', 'Menu berhasil ditambahkan!');
     }
 
@@ -152,9 +154,9 @@ class AdminMenuController extends Controller
      */
     public function show($param1, $param2 = null)
     {
-        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+        [$outlet_code, $slug] = $this->parseOutletAndUnique($param1, $param2);
 
-        $menu = Menu::where('slug', $slug)->firstOrFail();
+        $menu = Menu::with(['stock', 'pricePromo'])->where('slug', $slug)->firstOrFail();
 
         return view('dashboard.menus.show', [
             'menu' => $menu,
@@ -167,9 +169,9 @@ class AdminMenuController extends Controller
      */
     public function edit($param1, $param2 = null)
     {
-        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+        [$outlet_code, $slug] = $this->parseOutletAndUnique($param1, $param2);
 
-        $menu = Menu::where('slug', $slug)->firstOrFail();
+        $menu = Menu::with(['stock', 'pricePromo'])->where('slug', $slug)->firstOrFail();
 
         return view('/dashboard.menus.edit', [
             'menu' => $menu,
@@ -181,8 +183,11 @@ class AdminMenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $outlet_code = null, Menu $menu)
+    public function update(Request $request, $param1, $param2 = null)
     {
+        [$outlet_code, $slug] = $this->parseOutletAndUnique($param1, $param2);
+
+        $menu = Menu::where('slug', $slug)->firstOrFail();
         $today = now()->toDateString();
 
         // Remove Price's Dot
@@ -196,7 +201,7 @@ class AdminMenuController extends Controller
             'outlet_id' => 'required|exists:outlets,id',
             'name' => 'required|max:32',
             'description' => 'required|max:128',
-            'image' => 'nullable|image|file|max:1024',
+            'image' => 'nullable|image|file|max:2700',
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
             'price_promo' => 'nullable|integer|min:0|max:' . $request->price,
@@ -239,7 +244,7 @@ class AdminMenuController extends Controller
         }
 
         // Redirect to menus
-        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
             ->with('success', 'Menu berhasil diperbarui!');
     }
 
@@ -248,9 +253,9 @@ class AdminMenuController extends Controller
      */
     public function destroy($param1, $param2 = null)
     {
-        [$outlet_code, $slug] = $this->parseSlugAndOutlet($param1, $param2);
+        [$outlet_code, $slug] = $this->parseOutletAndUnique($param1, $param2);
 
-        $menu = Menu::where('slug', $slug)->firstOrFail();
+        $menu = Menu::with(['stock', 'pricePromo'])->where('slug', $slug)->firstOrFail();
         if($menu->image) {
             Storage::delete($menu->image);
         }
@@ -258,7 +263,7 @@ class AdminMenuController extends Controller
         Menu::destroy($menu->id);
 
         // Redirect to menus
-        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+        return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus"))
             ->with('success', 'Menu berhasil dihapus!');
     }
 }

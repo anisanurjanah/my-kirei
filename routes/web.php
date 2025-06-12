@@ -8,19 +8,20 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminUserController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminPriceController;
 use App\Http\Controllers\AdminStockController;
 use App\Http\Controllers\AdminOutletController;
+use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ServiceWorkerController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderItemController;
-use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\OrderPdfController;
 
 // VIEWS
 Route::get('/', [IndexController::class, 'index'])->middleware('guest');
@@ -38,19 +39,14 @@ Route::middleware(['auth.customer', 'check.outlet.code'])->group(function () {
     Route::get('/{outlet_code}/cart-page', [CartController::class, 'index'])->name('cart-page');
     Route::get('/{outlet_code}/payment-page/{order_number}', [PaymentController::class, 'index'])->name('payment-page');
     Route::get('/{outlet_code}/payment-method-page', [PaymentMethodController::class, 'index'])->name('payment-method-page');
-    Route::get('/{outlet_code}/order-detail-page/{order_number}', [OrderDetailController::class, 'index'])->name('order-detail-page');
-    // Route::get('/{outlet_code}/orders/{order_number}', [OrderController::class, 'index'])->name('order-detail');
+    Route::get('/{outlet_code}/orders/history', [OrderController::class, 'index'])->name('order-history-page');
+    Route::get('/{outlet_code}/orders/{order_number}', [OrderController::class, 'show'])->name('order-detail-page');
 
-    Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
     Route::resource('/{outlet_code}/orders', OrderController::class);
 
-    // Route::post('/midtrans/callback/{order_number}', [PaymentController::class, 'handleCallback']);
-
+    Route::post('/{outlet_code}/payment-method-store', [PaymentMethodController::class, 'store']);
     Route::post('/{outlet_code}/logout', [AuthController::class, 'logout']);
 });
-
-Route::post('/payment/webhook', [PaymentController::class, 'handleWebhook']);
-// Route::post('/midtrans/callback', [MidtransController::class, 'handleNotification']);
 
 // SESSION
 Route::get('/check-session', function () {
@@ -58,6 +54,12 @@ Route::get('/check-session', function () {
         'authenticated' => Auth::guard('customer')->check()
     ]);
 });
+
+Route::post('/clear-payment-session', function () {
+    session()->forget('selected_payment_method');
+});
+
+Route::get('/service-worker.js', [ServiceWorkerController::class, 'index']);
 
 
 // DASHBOARD
@@ -68,7 +70,7 @@ Route::post('/logout', [AdminLoginController::class, 'logout'])->middleware('aut
 
 Route::middleware(['auth'])->group(function () {
     // Administrator
-    Route::get('/dashboard', [DashboardController::class, 'indexAdministrator']);
+    Route::get('/dashboard', [AdminDashboardController::class, 'indexAdministrator']);
 
     Route::resource('/dashboard/users', AdminUserController::class);
     Route::resource('/dashboard/customers', AdminCustomerController::class);
@@ -78,17 +80,25 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/dashboard/prices', AdminPriceController::class);
     Route::resource('/dashboard/orders', AdminOrderController::class);
     Route::resource('/dashboard/orderitems', AdminOrderItemController::class);
+    Route::get('/dashboard/reports', [AdminReportController::class, 'index']);
 
-    Route::get('/get-users/{outletCode}', [AdminOrderController::class, 'getUsers']);
-    Route::get('/get-menus/{outletCode}', [AdminOrderController::class, 'getMenus']);
+    // Route::get('/get-users/{outletCode}', [AdminOrderController::class, 'getUsers']);
+    Route::get('/get-menus/{outlet_code}', [AdminOrderController::class, 'getMenus']);
+    Route::get('/dashboard/orders-by-outlet', [AdminReportController::class, 'ordersByOutlet']);
+
 
     // Kasir, Produksi
-    Route::get('/{outlet_code}/dashboard', [DashboardController::class, 'index'])
-        ->where('outlet_code', '[a-zA-Z0-9-_]+');
+    Route::get('/{outlet_code}/dashboard', [AdminDashboardController::class, 'index'])
+        ->where('outlet_code', '^(?!dashboard$)[a-zA-Z0-9-_]+');
 
     Route::resource('/{outlet_code}/dashboard/menus', AdminMenuController::class);
     Route::resource('/{outlet_code}/dashboard/stocks', AdminStockController::class);
     Route::resource('/{outlet_code}/dashboard/prices', AdminPriceController::class);
     Route::resource('/{outlet_code}/dashboard/orders', AdminOrderController::class);
     Route::resource('/{outlet_code}/dashboard/orderitems', AdminOrderItemController::class);
+    Route::get('/{outlet_code}/dashboard/reports', [AdminReportController::class, 'index']);
+
+    Route::post('/order/{order_number}/complete', [AdminOrderController::class, 'markAsComplete']);
+    Route::get('/order/preview/{order_number}/pdf', [OrderPdfController::class, 'preview']);
+    Route::get('/sales-report/{outlet_code}/{date}/pdf', [AdminReportController::class, 'downloadPDF']);
 });

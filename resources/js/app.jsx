@@ -1,4 +1,5 @@
 import '../css/app.css';
+import '@/bootstrap.js';
 
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
@@ -17,7 +18,7 @@ createInertiaApp({
     }
 })
 
-if ("serviceWorker" in navigator) {
+if ('serviceWorker' in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker.register("/service-worker.js")
             .then((reg) => console.log("Service Worker Registered!", reg))

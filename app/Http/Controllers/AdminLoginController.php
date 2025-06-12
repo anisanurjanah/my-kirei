@@ -26,13 +26,13 @@ class AdminLoginController extends Controller
 
             $user = Auth::guard('web')->user();
             if ($user->username === 'administrator') {
-                return redirect("/dashboard");
+                return redirect()->to(secure_url("/dashboard"));
             }
 
             $outlet = $user->outlet->outlet_code;
             $outlet_code = strtolower($outlet);
 
-            return redirect("/{$outlet_code}/dashboard");
+            return redirect()->to(secure_url("/{$outlet_code}/dashboard"));
         }
 
         return back()->with('loginError', 'Email atau password tidak valid.');
@@ -43,6 +43,6 @@ class AdminLoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect()->to(secure_url('/login'));
     }
 }

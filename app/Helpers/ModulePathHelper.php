@@ -9,8 +9,8 @@ if (!function_exists('getDashboardUrl')) {
         $outletCode = strtolower(optional($user->outlet)->outlet_code);
 
         return $user->username === 'administrator'
-            ? url('/dashboard')
-            : url("$outletCode/dashboard");
+            ? secure_url('/dashboard')
+            : secure_url("$outletCode/dashboard");
     }
 }
 
@@ -47,7 +47,7 @@ if (!function_exists('getModuleUrl')) {
                 break;
         }
 
-        return url($fullPath);
+        return secure_url($fullPath);
     }
 }
 
@@ -60,6 +60,6 @@ if (!function_exists('getModuleFormAction')) {
             ? rtrim($basePath, '/') . '/' . ltrim($slug, '/')
             : $basePath;
 
-        return url($fullPath);
+        return secure_url($fullPath);
     }
 }

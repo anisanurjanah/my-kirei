@@ -1,27 +1,38 @@
+import { Inertia } from "@inertiajs/inertia";
+import { Head, usePage } from "@inertiajs/react";
+
 import Main from "@/Layouts/Main";
 
 import Header from "@/Components/Header";
-import Titles from "@/Components/Titles";
+import OrderProgressSteps from "@/Components/Order/OrderProgressSteps";
+import OrderSummary from "@/Components/Order/OrderSummary";
 
 export default function OrderDetailPage() {
     const {
         outlet_code: outletCode,
         order,
         payment,
-        customer
+        order_items,
     } = usePage().props;
 
-    console.log(usePage().props);
+    const goToMenu = () => {
+        Inertia.visit(`/${outletCode}/menu-page`);
+    };
 
     return (
         <>
             <Head title={`Ringkasan Pesanan - ${outletCode.toUpperCase()}`} />
             <Header />
             <Main>
-                {/* <PaymentProgressSteps outletCode={outletCode} /> */}
+                <OrderProgressSteps goToMenu={ goToMenu } />
                 <section className="p-4">
                     <div className="bg-white w-full">
-
+                        <OrderSummary
+                            order={ order }
+                            payment={ payment }
+                            order_items={ order_items }
+                            onClick={ goToMenu }
+                        />
                     </div>
                 </section>
             </Main>

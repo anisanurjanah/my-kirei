@@ -44,13 +44,11 @@ export default function PaymentDetails({ selectedPaymentMethod, payment, payment
                         <div className="text-sm md:text-md text-[#333]">
                             <p className="mt-2"><strong>Jumlah: </strong>IDR { Number(payment?.amount).toLocaleString() }</p>
                             <p className="font-bold">Detail Pembayaran:</p>
-                            <p>
-                                {
-                                    paymentDetails?.details.split('\n').map((line, idx) => (
-                                        <p key={ idx }> {line }</p>
-                                    ))
-                                }
-                            </p>
+                            {
+                                paymentDetails?.details.split('\n').map((line, idx) => (
+                                    <p key={ idx }> {line }</p>
+                                ))
+                            }
                         </div>
                     </div>
                 ) : (

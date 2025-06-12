@@ -19,14 +19,25 @@ class RedirectIfAuthenticated
         if (Auth::guard('customer')->check()) {
             $outlet_code = $request->route('outlet_code');
 
-            return redirect(url("/{$outlet_code}/menu-page"));
+            return redirect(secure_url("/{$outlet_code}/menu-page"));
         }
 
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(url("/login"));
+                $user = Auth::guard($guard)->user();
+                $outlet_code = $request->route('outlet_code');
+
+                if ($user->username === 'administrator') {
+                    return redirect(secure_url("/dashboard"));
+                }
+
+                if (in_array($user->role, ['kasir', 'produksi']) && $outlet_code) {
+                    return redirect(secure_url("/{$outlet_code}/dashboard"));
+                }
+
+                return redirect(secure_url("/login"));
             }
         }
 

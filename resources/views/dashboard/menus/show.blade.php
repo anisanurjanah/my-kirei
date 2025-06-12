@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Detail Menu')
 @section('container')
 
     <div class="row px-md-2" style="background-color: #FFFFFF">
@@ -130,9 +131,16 @@
                                                         <span class="badge text-bg-warning">Perbarui</span>
                                                     </a>
 
-                                                    <button type="button" class="bg-transparent border-0" data-bs-toggle="modal" data-bs-target="#confirmModal"
-                                                        data-bs-url="/dashboard/prices/{{ $menu->pricePromo->id }}" data-bs-name="{{ $menu->name }}" data-action="delete">
-                                                        <span class="badge text-bg-danger">Hapus</span>
+                                                    <button
+                                                        type="button"
+                                                        class="bg-transparent border-0"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirmModal"
+                                                        data-bs-url="{{ getModuleUrl('prices', optional($menu->pricePromo)->id) }}"
+                                                        data-bs-name="{{ $menu->name }}"
+                                                        data-action="delete"
+                                                    >
+                                                            <span class="badge text-bg-danger">Hapus</span>
                                                     </button>
                                                 </div>
                                             </div>

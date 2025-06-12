@@ -27,7 +27,7 @@ class AdminPriceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $outlet_code = null)
     {
         $menuPrice = Menu::where('id', $request->menu_id)->value('price');
         $today = now()->toDateString();
@@ -47,7 +47,8 @@ class AdminPriceController extends Controller
         Price::create($validatedData);
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Potongan harga berhasil ditambahkan!');
+        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+            ->with('success', 'Potongan harga berhasil ditambahkan!');
     }
 
     /**
@@ -69,7 +70,7 @@ class AdminPriceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Price $price)
+    public function update(Request $request, $outlet_code = null, Price $price)
     {
         $menuPrice = Menu::where('id', $request->menu_id)->value('price');
         $today = now()->toDateString();
@@ -93,17 +94,22 @@ class AdminPriceController extends Controller
         $price->update($validatedData);
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Potongan harga berhasil diperbarui!');
+        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+            ->with('success', 'Potongan harga berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Price $price)
+    public function destroy($param1, $param2 = null)
     {
-        Price::destroy($price->id);
+        [$outlet_code, $priceId] = $this->parseSlugAndOutlet($param1, $param2);
+
+        $price = Price::findOrFail($priceId);
+        $price->delete();
 
         // Redirect to menus
-        return redirect('/dashboard/menus')->with('success', 'Potongan harga berhasil dihapus!');
+        return redirect("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/menus")
+            ->with('success', 'Potongan harga berhasil dihapus!');
     }
 }

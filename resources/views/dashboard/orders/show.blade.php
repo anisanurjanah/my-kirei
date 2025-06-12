@@ -1,12 +1,13 @@
 @extends('dashboard.layouts.main')
 
+@section('title', 'Detail Pesanan')
 @section('container')
 
     <div class="row px-md-2" style="background-color: #FFFFFF">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap py-3">
             <div class="d-block">
                 <h1 class="h2">
-                    <a href="/dashboard/orders" class="text-decoration-none text-danger">
+                    <a href="{{ getModuleUrl('orders') }}" class="text-decoration-none text-danger">
                         <i class="bi bi-arrow-left-circle-fill text-danger me-2" style="font-size: 20px"></i>
                     </a>
                     {{ Str::upper($order->order_number) }}
@@ -15,12 +16,12 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">
-                            <a href="/dashboard" class="text-decoration-none text-black">
+                            <a href="{{ getDashboardUrl() }}" class="text-decoration-none text-black">
                                 <i class="bi bi-house-fill"></i>
                             </a>
                         </li>
                         <li class="breadcrumb-item" aria-current="page">
-                            <a href="/dashboard/orders" class="text-decoration-none text-black">
+                            <a href="{{ getModuleUrl('orders') }}" class="text-decoration-none text-black">
                                 Pesanan
                             </a>
                         </li>
@@ -37,36 +38,40 @@
                 <table class="table table-sm table-borderless">
                     <tbody>
                         <tr>
-                            <th scope="row" style="width: 25%">Tanggal</th>
-                            <td>:</td>
-                            <td>{{ $order->order_date }}</td>
-
-                            <th scope="row" style="width: 25%">Status Pesanan</th>
-                            <td>:</td>
-                            <td>{{ $order->order_status }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Nama</th>
-                            <td>:</td>
-                            <td>{{ $order->customer->name ?? "Name" }}</td>
-
-                            <th scope="row">Status Pembayaran</th>
-                            <td>:</td>
-                            <td>{{ $order->payment_status }}</td>
-                        </tr>
-                        <tr>
                             <th scope="row">Outlet</th>
                             <td>:</td>
                             <td>{{ $order->outlet->name }}</td>
 
-                            <th scope="row">Staff</th>
-                            <td>:</td>
-                            <td>{{ $order->user->name }}</td>
-                        </tr>
-                        <tr>
                             <th scope="row">Total</th>
                             <td>:</td>
-                            <td>Rp. {{ number_format($order->total_price, 0, ',', '.') }}</td>
+                            <td>Rp. {{ number_format($order->payment->amount, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Telepon</th>
+                            <td>:</td>
+                            <td>{{ $order->customer->phone }}</td>
+
+                            <th scope="row">Tipe Pesanan</th>
+                            <td>:</td>
+                            <td>{{ $order->order_type }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" style="width: 25%">Metode Bayar</th>
+                            <td>:</td>
+                            <td>{{ $order->payment->payment_method?->method['name'] ?? 'N/A' }}</td>
+
+                            <th scope="row" style="width: 25%">Status Pesanan</th>
+                            <td>:</td>
+                            <td>{!! \App\Helpers\OrderHelper::badgeOrderStatus($order->order_status) !!}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" style="width: 25%">Waktu Pesanan</th>
+                            <td>:</td>
+                            <td>{{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('l, d F Y - H:i') }}</td>
+
+                            <th scope="row">Status Pembayaran</th>
+                            <td>:</td>
+                            <td>{!! \App\Helpers\OrderHelper::badgePaymentStatus($order->payment->payment_status) !!}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -91,13 +96,6 @@
                             </div>
 
                             @include('dashboard.components.table-order-items')
-
-                            <div class="d-flex justify-content-between align-items-center py-3">
-                                <small class="text-muted">
-                                    Menampilkan {{ $orderItems->firstItem() }} sampai {{ $orderItems->lastItem() }} dari {{ $orderItems->total() }} data
-                                </small>
-                                {{ $orderItems->links('vendor.custom-pagination') }}
-                            </div>
                         </div>
                     </div>
                 </div>

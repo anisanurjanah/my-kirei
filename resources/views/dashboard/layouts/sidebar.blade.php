@@ -1,8 +1,3 @@
-@php
-    $user = auth()->user();
-    $outletCode = strtolower(optional($user->outlet)->outlet_code);
-@endphp
-
 <div class="sidebar col-md-3 col-lg-2 p-0 d-flex flex-column" style="background-color: #C60E2A">
     <div class="offcanvas-md offcanvas-end" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" style="background-color: #C60E2A">
         <div class="offcanvas-header">
@@ -16,19 +11,19 @@
                 <div class="dropdown text-center">
                     <a href="" class="d-flex align-items-center text-white text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="d-flex flex-column align-items-start">
-                            <span class="fw-bold dropdown-toggle" style="font-size: 14px;">{{ $user->name }}</span>
-                            <small class="text-light" style="font-size: 10px;">{{ $user->email }}</small>
+                            <span class="fw-bold dropdown-toggle" style="font-size: 14px;">{{ auth()->user()->name }}</span>
+                            <small class="text-light" style="font-size: 10px;">{{ auth()->user()->email }}</small>
                         </div>
                     </a>
                     <ul class="dropdown-menu text-small shadow">
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        {{-- <li><a class="dropdown-item" href="#">Settings</a></li> --}}
+                        {{-- <li><a class="dropdown-item" href="#">Profile</a></li> --}}
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form action="/logout" method="post">
                                 @csrf
                                 <button type="submit" class="dropdown-item">
-                                    Sign out
+                                    Keluar
                                 </button>
                             </form>
                         </li>
@@ -145,20 +140,13 @@
 
                 <ul class="nav flex-column mb-4">
                     <li class="nav-item">
-                        @if (auth()->user()->isAdministrator())
                             <a
                                 class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*#') || request()->is('#') ? 'active' : '' }}"
-                                href="{{ url('#') }}"
+                                href="{{ getModuleUrl('reports') }}"
                             >
-                        @else
-                            <a
-                                class="nav-link d-flex align-items-center text-white gap-2 {{ request()->is('*#') || request()->is('#') ? 'active' : '' }}"
-                                href="{{ url($outletCode . '#') }}"
-                            >
-                        @endif
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
-                                <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
-                            </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
+                                    <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
+                                </svg>
                             Laporan
                         </a>
                     </li>

@@ -26,8 +26,9 @@ return new class extends Migration
             $table->decimal('sub_total');
             $table->decimal('discount')->default(0);
             $table->decimal('total_price');
-            $table->enum('order_type', ['Dine In', 'Take Away']);
-            $table->enum('order_status', ['Ditunda', 'Dibatalkan', 'Selesai', 'Dalam Proses']);
+            $table->string('order_type')->default('Ditunda');
+            $table->string('order_status')->default('Ditunda');
+            $table->string('pdf_path')->nullable();
             $table->timestamps();
         });
     }

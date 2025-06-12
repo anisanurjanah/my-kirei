@@ -1,6 +1,6 @@
 import { ReceiptText, ChevronDown, LogOut } from "lucide-react";
 
-export default function MenuHeader({ isOpen, toggleOpen, showAlert }) {
+export default function MenuHeader({ isOpen, toggleOpen, onClick, showAlert }) {
     return (
         <>
             <header className="bg-white shadow-md top-0 left-0 w-full z-50">
@@ -15,9 +15,15 @@ export default function MenuHeader({ isOpen, toggleOpen, showAlert }) {
                         <div className="relative flex items-center text-[#C60E2A]">
                             <button
                                 className="bg-none mx-2 md:mx-4 rounded flex items-center space-x-4 cursor-pointer"
-                                onClick={ toggleOpen }
+                                onClick={ onClick }
                             >
                                 <ReceiptText />
+                            </button>
+
+                            <button
+                                className="bg-none mx-2 md:mx-4 rounded flex items-center space-x-4 cursor-pointer"
+                                onClick={ toggleOpen }
+                            >
                                 <ChevronDown />
                             </button>
                             {

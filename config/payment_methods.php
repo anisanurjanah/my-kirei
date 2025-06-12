@@ -123,4 +123,36 @@ return [
             'payment_type' => 'qris'
         ])
     ],
+
+    // Conventional
+    [
+        'id' => '8',
+        'type' => 'Tunai',
+        'icon' => 'Banknote',
+        'method' => [
+            'name' => 'Tunai',
+            'icon' => null,
+            'image' => 'img/payments/qris.png'
+        ],
+        'instruction' => null,
+        'details' => null,
+        'midtrans_config' => json_encode([
+            'payment_type' => null
+        ])
+    ],
+    [
+        'id' => '9',
+        'type' => 'Credit Card',
+        'icon' => 'Banknote',
+        'method' => [
+            'name' => 'Kartu Kredit',
+            'icon' => null,
+            'image' => 'img/payments/qris.png'
+        ],
+        'instruction' => null,
+        'details' => null,
+        'midtrans_config' => json_encode([
+            'payment_type' => null
+        ])
+    ],
 ];
