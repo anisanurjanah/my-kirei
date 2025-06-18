@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('transaction_id')->nullable();
             $table->string('payment_number')->unique();
             $table->timestamp('payment_date');
-            $table->decimal('amount');
+            $table->decimal('amount', 10, 2);
             $table->string('va_number')->nullable();
             $table->string('bank')->nullable();
             $table->string('pdf_url')->nullable();

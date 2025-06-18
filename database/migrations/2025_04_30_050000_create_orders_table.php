@@ -23,9 +23,10 @@ return new class extends Migration
                 ->onUpdate('cascade');
             $table->string('order_number')->unique();
             $table->timestamp('order_date');
-            $table->decimal('sub_total');
-            $table->decimal('discount')->default(0);
-            $table->decimal('total_price');
+            $table->decimal('sub_total', 10, 2);
+            $table->decimal('discount', 10, 2)->default(0);
+            $table->decimal('ppn', 10, 2)->default(0);
+            $table->decimal('total_price', 10, 2);
             $table->string('order_type')->default('Ditunda');
             $table->string('order_status')->default('Ditunda');
             $table->string('pdf_path')->nullable();

@@ -98,6 +98,18 @@
                             @enderror
                         </div>
                         <div class="mb-3">
+                            <label for="cost_price" class="form-label">Harga Pokok</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="text" class="form-control @error('cost_price') is-invalid @enderror" id="cost_price" name="cost_price" value="{{ number_format((int) old('cost_price', $menu->cost_price), 0, ',', '.') }}" autocomplete="off" required>
+                            </div>
+                            @error('cost_price')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
                             <label for="image" class="form-label">Gambar</label>
                             <input type="hidden" name="oldImage" value="{{ $menu->image }}">
                             @if ($menu->image && file_exists(storage_path('app/public/' . $menu->image)))
@@ -155,7 +167,7 @@
                         <div id="promo_dates" class="d-none">
                             <div class="mb-3">
                                 <label for="promo_start_date" class="form-label">Waktu Mulai</label>
-                                <input type="date" class="form-control @error('promo_start_date') is-invalid @enderror" id="promo_start_date" name="promo_start_date" value="{{ old('promo_start_date', optional($menu->pricePromo)->promo_start_date) }}" required>
+                                <input type="date" class="form-control @error('promo_start_date') is-invalid @enderror" id="promo_start_date" name="promo_start_date" value="{{ old('promo_start_date', optional($menu->pricePromo)->promo_start_date) }}" min="{{ \Carbon\Carbon::today()->toDateString() }}" required>
                                 @error('promo_start_date')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -164,7 +176,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="promo_end_date" class="form-label">Waktu Selesai</label>
-                                <input type="date" class="form-control @error('promo_end_date') is-invalid @enderror" id="promo_end_date" name="promo_end_date" value="{{ old('promo_end_date', optional($menu->pricePromo)->promo_end_date) }}" required>
+                                <input type="date" class="form-control @error('promo_end_date') is-invalid @enderror" id="promo_end_date" name="promo_end_date" value="{{ old('promo_end_date', optional($menu->pricePromo)->promo_end_date) }}" min="{{ \Carbon\Carbon::tomorrow()->toDateString() }}" required>
                                 @error('promo_end_date')
                                     <div class="invalid-feedback">
                                         {{ $message }}

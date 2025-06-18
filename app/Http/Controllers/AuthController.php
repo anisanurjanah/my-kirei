@@ -25,7 +25,7 @@ class AuthController extends Controller
 
         $request->validate([
             'name' => 'required|max:32',
-            'phone' => 'required|min:12|max:18',
+            'phone' => 'required|min:10|max:15',
         ]);
 
         // Check if phone number already exists in the database
@@ -65,7 +65,7 @@ class AuthController extends Controller
         $formattedPhone = '+62' . $phoneNumber;
 
         $request->validate([
-            'phone' => 'required|min:12|max:18',
+            'phone' => 'required|min:10|max:15',
         ]);
 
         $customer = Customer::where('phone', $formattedPhone)->first();

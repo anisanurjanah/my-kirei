@@ -38,4 +38,13 @@ class Menu extends Model
     {
         return 'slug';
     }
+
+    public function getProfitAttribute()
+    {
+        $cost = $this->cost_price;
+        $price = $this->price;
+        $discount = $this->pricePromo?->price_promo ?? 0;
+
+        return ($price - $discount) - $cost;
+    }
 }

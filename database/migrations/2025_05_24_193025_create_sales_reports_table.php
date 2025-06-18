@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('sales_reports', function (Blueprint $table) {
             $table->id();
             $table->timestamp('report_date');
-            $table->decimal('total_sales');
+            $table->decimal('total_sales', 10, 2);
+            $table->decimal('total_ppn', 10, 2);
+            $table->decimal('total_cost', 10, 2);
+            $table->decimal('total_profit', 10, 2);
             $table->string('pdf_path')->nullable();
             $table->timestamps();
         });
