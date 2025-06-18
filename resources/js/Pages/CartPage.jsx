@@ -25,6 +25,7 @@ export default function CartPage() {
     const [quantities, setQuantities] = useState({});
     const [subTotal, setSubTotal] = useState(0);
     const [discount, setDiscount] = useState(0);
+    const [ppn, setPpn] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods);
 
@@ -44,6 +45,7 @@ export default function CartPage() {
         }),
         sub_total: parseInt(subTotal),
         discount: parseInt(discount),
+        ppn: parseInt(ppn),
         total_price: parseInt(totalPrice),
     });
 
@@ -111,9 +113,13 @@ export default function CartPage() {
             return acc + Math.max(menuPrice, 0) * menuQuantity;
         }, 0);
 
+        const ppn = total * 0.11;
+        const totalWithTax = total + ppn;
+
         setSubTotal(subTotal);
         setDiscount(discount);
-        setTotalPrice(total);
+        setPpn(ppn);
+        setTotalPrice(totalWithTax);
     }, [menus, quantities]);
 
     useEffect(() => {
@@ -215,6 +221,7 @@ export default function CartPage() {
                                 menus={ menus }
                                 subTotal={ subTotal }
                                 discount={ discount }
+                                ppn={ ppn }
                                 totalPrice={ totalPrice }
                                 onSubmit={ handleSubmit }
                             />

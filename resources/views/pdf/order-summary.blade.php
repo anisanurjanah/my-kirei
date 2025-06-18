@@ -31,6 +31,7 @@
                 <tr><th>Nomor Pesanan</th><td>: {{ $order->order_number }}</td></tr>
                 <tr><th>Outlet</th><td>: {{ $order->outlet->name }}</td></tr>
                 <tr><th>Telepon</th><td>: {{ $order->customer->phone }}</td></tr>
+                <tr><th>Total</th><td>: Rp. {{ number_format($order->payment->amount, 0, ',', '.') }}</td></tr>
                 <tr><th>Metode Bayar</th><td>: {{ $order->payment?->payment_method?->method['name'] ?? 'N/A' }}</td></tr>
                 <tr><th>Tipe Pesanan</th><td>: {{ $order->order_type }}</td></tr>
                 <tr><th>Waktu Pesanan</th><td>: {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('l, d F Y - H:i') }}</td></tr>
@@ -61,6 +62,10 @@
                 <tr>
                     <th colspan="2" class="fw-bold">Diskon</th>
                     <th class="fw-bold">Rp. {{ number_format($order->discount, 0, ',', '.') }}</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="fw-bold">PPN 11%</th>
+                    <th class="fw-bold">Rp. {{ number_format($order->ppn, 0, ',', '.') }}</th>
                 </tr>
                 <tr>
                     <th colspan="2" class="fw-bold">Total</th>

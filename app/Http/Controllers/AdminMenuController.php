@@ -243,6 +243,17 @@ class AdminMenuController extends Controller
             $validatedData['image'] = $request->file('image')->store('menu-images');
         }
 
+        // Existing Menu
+        $existingMenu = Menu::where('name', 'LIKE', $validatedData['name'] . '%')
+            ->where('outlet_id', $request->outlet_id)
+            ->get();
+
+        if ($existingMenu->isNotEmpty()) {
+            return redirect()->back()->withErrors([
+                'name' => 'Menu dengan nama tersebut sudah ada di outlet ini.',
+            ])->withInput();
+        }
+
         // Update Data
         $menu->update($validatedData);
 

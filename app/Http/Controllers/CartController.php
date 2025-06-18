@@ -15,8 +15,8 @@ class CartController extends Controller
 
         return Inertia::render('CartPage', [
             'menus' => Menu::with(['stock', 'pricePromo'])
-            ->where('outlet_id', $outlet->id)
-            ->get(),
+                ->where('outlet_id', $outlet->id)
+                ->get(),
             'outlet_code' => $outlet_code,
             'customer' => Auth::guard('customer')->user(),
             'selectedPaymentMethod' => session('selected_payment_method', null),
