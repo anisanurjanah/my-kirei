@@ -248,11 +248,11 @@ class AdminMenuController extends Controller
             ->where('outlet_id', $request->outlet_id)
             ->get();
 
-        if ($existingMenu->isNotEmpty()) {
-            return redirect()->back()->withErrors([
-                'name' => 'Menu dengan nama tersebut sudah ada di outlet ini.',
-            ])->withInput();
-        }
+        // if ($existingMenu->isNotEmpty()) {
+        //     return redirect()->back()->withErrors([
+        //         'name' => 'Menu dengan nama tersebut sudah ada di outlet ini.',
+        //     ])->withInput();
+        // }
 
         // Update Data
         $menu->update($validatedData);

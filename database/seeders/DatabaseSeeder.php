@@ -12,7 +12,6 @@ use App\Models\Outlet;
 use App\Models\Payment;
 use App\Models\Customer;
 use App\Models\OrderItem;
-use Illuminate\Support\Str;
 use App\Models\PaymentMethod;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -25,10 +24,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $outlet = Outlet::find(2);
-        $customer = Customer::first();
+        $outlet = Outlet::find(1);
+        // $outlet = Outlet::find(2);
+        // $outlets = Outlet::all();
+        $customer = Customer::inRandomOrder()->first();
         $paymentMethod = PaymentMethod::first();
         $menus = Menu::with('pricePromo')->where('outlet_id', $outlet->id)->get();
+
+        // $menus = config('menus');
+        $methods = config('payment_methods');
 
         $menusWithoutStock = Menu::doesntHave('stock')->get();
         $menusWithoutPrice = Menu::doesntHave('pricePromo')->get();
@@ -86,7 +90,7 @@ class DatabaseSeeder extends Seeder
         // }
 
         // User::factory(10)->create();
-        // Customer::factory(10)->create();
+        // Customer::factory(2)->create();
 
         // Outlet::factory(5)->create();
 
@@ -126,6 +130,20 @@ class DatabaseSeeder extends Seeder
         //     );
         // }
 
+        // foreach ($menus as $menu) {
+        //     DB::table('menus')->insert([
+        //         'outlet_id' => $menu['outlet_id'],
+        //         'name' => $menu['name'],
+        //         'description' => $menu['description'],
+        //         'cost_price' => $menu['cost_price'],
+        //         'price' => $menu['price'],
+        //         'image' => $menu['image'],
+        //         'slug' => $menu['slug'],
+        //         'created_at' => now(),
+        //         'updated_at' => now()
+        //     ]);
+        // }
+
         // Validasi awal
         if (!$outlet || !$customer || !$paymentMethod || $menus->isEmpty()) {
             dump('Data master belum lengkap');
@@ -138,8 +156,8 @@ class DatabaseSeeder extends Seeder
         }
 
         // Seeder pesanan
-        for ($i = 0; $i < 2; $i++) {
-            $orderDate = Carbon::create(2025, 6, rand(1, 18), rand(8, 18));
+        for ($i = 0; $i < 1; $i++) {
+            $orderDate = Carbon::create(2025, 6, rand(1, 19), rand(8, 18));
             $orderItems = [];
 
             $selectedMenus = $menus->random(rand(2, 4));
@@ -151,31 +169,24 @@ class DatabaseSeeder extends Seeder
                 $normalPrice = $menu->price;
                 // $promoPrice = $menu->pricePromo->price_promo ?? 0;
 
-                // Cek apakah promo aktif saat ini
                 $promo = $menu->pricePromo;
                 $now = now();
 
-                if ($promo && $promo->promo_start_date <= $now && $promo->promo_end_date >= $now) {
-                    $promoPrice = $promo->price_promo;
-                } else {
-                    $promoPrice = $normalPrice;
-                }
+                $isPromoActive = $promo && $promo->promo_start_date <= $now && $promo->promo_end_date >= $now;
+                $appliedPrice = $isPromoActive ? $normalPrice - $promo->price_promo : $normalPrice;
 
-                $promoPrice = min($promoPrice, $normalPrice);
-
-                $price = $promoPrice;
-                // $price = ($normalPrice - $promoPrice) * $quantity;
-
-                $itemDiscount = ($normalPrice - $promoPrice) * $quantity;
+                // $appliedPrice = min($appliedPrice, $normalPrice);
 
                 $orderItems[] = [
                     'menu_id' => $menu->id,
                     'quantity' => $quantity,
-                    'price' => $price,
+                    'price' => $normalPrice,
                 ];
 
-                $subTotal += $price * $quantity;
-                $discount += $itemDiscount;
+                $subTotal += $appliedPrice * $quantity;
+                if ($isPromoActive) {
+                    $discount = $isPromoActive ? $normalPrice - ($normalPrice - $promo->price_promo) : 0;
+                }
             }
 
             $afterDiscount = $subTotal - $discount;

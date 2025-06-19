@@ -44,7 +44,7 @@ return [
             'image' => 'img/payments/bca.png'
         ],
         'instruction' => 'Lakukan transfer ke nomor virtual akun di bawah ini.',
-        'details' => "Cara bayar melalui ATM BCA:\n1. Masukkan kartu ATM dan PIN Anda.\n2. Pilih menu 'Transaksi Lainnya' > 'Transfer' > 'Ke Rek BCA Virtual Account'.\n3. Masukkan nomor Virtual Account: {virtual_account_number}.\n4. Periksa nama dan jumlah pembayaran.\n5. Konfirmasi dan selesaikan transaksi.\n\nPembayaran akan terverifikasi otomatis tanpa perlu konfirmasi manual.",
+        'details' => "Cara bayar melalui ATM BCA:\n1. Masukkan kartu ATM dan PIN Anda.\n2. Pilih menu 'Transaksi Lainnya' > 'Transfer' > 'Ke Rek BCA Virtual Account'.\n3. Masukkan nomor Virtual Account.\n4. Periksa nama dan jumlah pembayaran.\n5. Konfirmasi dan selesaikan transaksi.\n\nPembayaran akan terverifikasi otomatis tanpa perlu konfirmasi manual.",
         'midtrans_config' => json_encode([
             'payment_type' => 'bank_transfer',
             'bank_transfer' => [
@@ -62,7 +62,7 @@ return [
             'image' => 'img/payments/bni.png'
         ],
         'instruction' => 'Lakukan transfer ke nomor virtual akun di bawah ini.',
-        'details' => "Cara bayar melalui ATM BNI:\n1. Masukkan kartu dan PIN Anda.\n2. Pilih menu 'Menu Lain' > 'Transfer' > 'Virtual Account Billing'.\n3. Masukkan nomor Virtual Account: {virtual_account_number}.\n4. Periksa data yang muncul.\n5. Konfirmasi dan selesaikan transaksi.\n\nPembayaran akan terverifikasi otomatis.",
+        'details' => "Cara bayar melalui ATM BNI:\n1. Masukkan kartu dan PIN Anda.\n2. Pilih menu 'Menu Lain' > 'Transfer' > 'Virtual Account Billing'.\n3. Masukkan nomor Virtual Account.\n4. Periksa data yang muncul.\n5. Konfirmasi dan selesaikan transaksi.\n\nPembayaran akan terverifikasi otomatis.",
         'midtrans_config' => json_encode([
             'payment_type' => 'bank_transfer',
             'bank_transfer' => [
@@ -80,7 +80,7 @@ return [
             'image' => 'img/payments/bri.png'
         ],
         'instruction' => 'Lakukan transfer ke nomor virtual akun di bawah ini.',
-        'details' => "Cara bayar melalui ATM BRI:\n1. Masukkan kartu dan PIN Anda.\n2. Pilih menu 'Transaksi Lain' > 'Pembayaran' > 'BRIVA'.\n3. Masukkan nomor Virtual Account: {virtual_account_number}.\n4. Periksa nama dan jumlah.\n5. Konfirmasi untuk menyelesaikan pembayaran.\n\nPembayaran akan terverifikasi otomatis.",
+        'details' => "Cara bayar melalui ATM BRI:\n1. Masukkan kartu dan PIN Anda.\n2. Pilih menu 'Transaksi Lain' > 'Pembayaran' > 'BRIVA'.\n3. Masukkan nomor Virtual Account.\n4. Periksa nama dan jumlah.\n5. Konfirmasi untuk menyelesaikan pembayaran.\n\nPembayaran akan terverifikasi otomatis.",
         'midtrans_config' => json_encode([
             'payment_type' => 'bank_transfer',
             'bank_transfer' => [
@@ -98,7 +98,7 @@ return [
             'image' => 'img/payments/permata_bank.png'
         ],
         'instruction' => 'Lakukan transfer ke nomor virtual akun di bawah ini.',
-        'details' => "Cara bayar melalui ATM Bank Permata:\n1. Buka aplikasi mobile banking atau internet banking Anda.\n2. Pilih menu transfer ke rekening bank lain.\n3. Masukkan bank tujuan: Permata Bank.\n4. Masukkan nomor Virtual Accoun: {virtual_account_number}.\n5. Masukkan jumlah sesuai tagihan.\n6. Selesaikan transaksi.\n\nPastikan untuk menyelesaikan pembayaran sebelum batas waktu yang ditentukan.",
+        'details' => "Cara bayar melalui ATM Bank Permata:\n1. Buka aplikasi mobile banking atau internet banking Anda.\n2. Pilih menu transfer ke rekening bank lain.\n3. Masukkan bank tujuan: Permata Bank.\n4. Masukkan nomor Virtual Accoun.\n5. Masukkan jumlah sesuai tagihan.\n6. Selesaikan transaksi.\n\nPastikan untuk menyelesaikan pembayaran sebelum batas waktu yang ditentukan.",
         'midtrans_config' => json_encode([
             'payment_type' => 'bank_transfer',
             'bank_transfer' => [

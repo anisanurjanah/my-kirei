@@ -23,7 +23,7 @@
         <h2 class="text-dark">Laporan Penjualan {{ $filterLabel }}</h2>
 
         <p style="font-size: 16px;">
-            Laporan ini disusun untuk {{ $ownerName }} terkait hasil penjualan pada
+            Laporan ini disusun berdasarkan hasil penjualan pada
             <strong>{{ $report->formatted_date }}</strong>
             di outlet <strong>{{ $report->outlet_name }}</strong>.
         </p>
