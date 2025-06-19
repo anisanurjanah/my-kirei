@@ -9,6 +9,8 @@
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TANGGAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL PESANAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL PENDAPATAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL PPN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL KEUNTUNGAN <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">PDF <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
             </tr>
         </thead>
@@ -16,15 +18,24 @@
             @if ($reports->isNotEmpty())
                 @foreach ($reports as $report)
                     <tr>
-                        <td>{{ ($reports->currentPage() - 1) * $reports->perPage() + $loop->iteration }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         @if (auth()->user()->isAdministrator())
                             <td>{{ $report->outlet->name }}</td>
                         @endif
-                        <td>{{ $report->date }}</td>
+                        <td>{{ $report->formatted_date }}</td>
                         <td>{{ $report->total_order }} Pesanan</td>
-                        <td>Rp{{ number_format($report->total_revenue, 0, ',', '.') }}</td>
+                        <td class="text-success fw-bold">Rp. {{ number_format($report->total_income, 0, ',', '.') }}</td>
+                        <td>Rp. {{ number_format($report->total_ppn, 0, ',', '.') }}</td>
+                        <td><span class="badge bg-danger">Rp. {{ number_format($report->total_profit, 0, ',', '.') }}</span></td>
                         <td>
-                            <a href="{{ secure_url('/sales-report/' . Str::lower($report->outlet->outlet_code) . '/' . $report->date . '/pdf') }}" class="text-danger" target="_blank">
+                            <a href="{{
+                                    secure_url('/sales-report/' . Str::lower($report->outlet->outlet_code) . '/' . $report->download_date . '/pdf') .
+                                    '?filter=' . trim(request('filter', 'daily')) .
+                                    (request('start') ? '&start=' . trim(request('start')) : '') .
+                                    (request('end') ? '&end=' . trim(request('end')) : '')
+                                }}"
+                                class="text-danger" target="_blank"
+                            >
                                 <i class="bi bi-filetype-pdf"></i>
                             </a>
                         </td>

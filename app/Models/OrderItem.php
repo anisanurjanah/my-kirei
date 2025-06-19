@@ -27,4 +27,9 @@ class OrderItem extends Model
     {
         return $this->order->order_number;
     }
+
+    public function getProfitAttribute()
+    {
+        return ($this->price - $this->menu->cost_price) * $this->quantity;
+    }
 }

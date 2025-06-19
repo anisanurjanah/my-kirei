@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use App\Models\Menu;
 use App\Models\User;
 use App\Models\Order;
@@ -11,6 +12,7 @@ use App\Models\Outlet;
 use App\Models\Payment;
 use App\Models\Customer;
 use App\Models\OrderItem;
+use Illuminate\Support\Str;
 use App\Models\PaymentMethod;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -23,8 +25,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $outlets = [1, 2];
-        $methods = config('payment_methods');
+        $outlet = Outlet::find(2);
+        $customer = Customer::first();
+        $paymentMethod = PaymentMethod::first();
+        $menus = Menu::with('pricePromo')->where('outlet_id', $outlet->id)->get();
+
         $menusWithoutStock = Menu::doesntHave('stock')->get();
         $menusWithoutPrice = Menu::doesntHave('pricePromo')->get();
 
@@ -120,5 +125,127 @@ class DatabaseSeeder extends Seeder
         //         ]
         //     );
         // }
+
+        // Validasi awal
+        if (!$outlet || !$customer || !$paymentMethod || $menus->isEmpty()) {
+            dump('Data master belum lengkap');
+            return;
+        }
+
+        if ($menus->count() < 2) {
+            dump('Menu promo aktif kurang dari 2, seeder dibatalkan');
+            return;
+        }
+
+        // Seeder pesanan
+        for ($i = 0; $i < 2; $i++) {
+            $orderDate = Carbon::create(2025, 6, rand(1, 18), rand(8, 18));
+            $orderItems = [];
+
+            $selectedMenus = $menus->random(rand(2, 4));
+            $subTotal = 0;
+            $discount = 0;
+
+            foreach ($selectedMenus as $menu) {
+                $quantity = rand(1, 3);
+                $normalPrice = $menu->price;
+                // $promoPrice = $menu->pricePromo->price_promo ?? 0;
+
+                // Cek apakah promo aktif saat ini
+                $promo = $menu->pricePromo;
+                $now = now();
+
+                if ($promo && $promo->promo_start_date <= $now && $promo->promo_end_date >= $now) {
+                    $promoPrice = $promo->price_promo;
+                } else {
+                    $promoPrice = $normalPrice;
+                }
+
+                $promoPrice = min($promoPrice, $normalPrice);
+
+                $price = $promoPrice;
+                // $price = ($normalPrice - $promoPrice) * $quantity;
+
+                $itemDiscount = ($normalPrice - $promoPrice) * $quantity;
+
+                $orderItems[] = [
+                    'menu_id' => $menu->id,
+                    'quantity' => $quantity,
+                    'price' => $price,
+                ];
+
+                $subTotal += $price * $quantity;
+                $discount += $itemDiscount;
+            }
+
+            $afterDiscount = $subTotal - $discount;
+            $ppn = $afterDiscount * 0.11;
+            $total = $afterDiscount + $ppn;
+
+            // Simulasi inputan
+            $validatedData = [
+                'outlet_id' => $outlet->id,
+                'order_date' => $orderDate,
+            ];
+
+            // Buat Order
+            $order = Order::create([
+                'outlet_id' => $validatedData['outlet_id'],
+                'customer_id' => $customer->id,
+                'order_number' => $this->generateOrderNumber($validatedData),
+                'order_date' => $orderDate,
+                'sub_total' => $subTotal,
+                'discount' => $discount,
+                'ppn' => $ppn,
+                'total_price' => $total,
+                'order_type' => 'Dine In',
+                'order_status' => 'Dalam Proses',
+                'created_at' => $orderDate,
+                'updated_at' => $orderDate,
+            ]);
+
+            // Order Items
+            foreach ($orderItems as $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'menu_id' => $item['menu_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'created_at' => $orderDate,
+                    'updated_at' => $orderDate,
+                ]);
+            }
+
+            // Payment
+            Payment::create([
+                'order_id' => $order->id,
+                'payment_method_id' => $paymentMethod->id,
+                'payment_number' => $this->generatePaymentNumber($order),
+                'transaction_id' => null,
+                'payment_date' => $orderDate->copy()->addMinutes(rand(1, 30)),
+                'amount' => $total,
+                'payment_status' => 'Lunas',
+                'created_at' => $orderDate,
+                'updated_at' => $orderDate,
+            ]);
+        }
+    }
+
+    private function generateOrderNumber(array $validatedData)
+    {
+        $outlet = Outlet::find($validatedData['outlet_id']);
+        $formattedDate = Carbon::parse($validatedData['order_date'])->format('Ymd');
+        $randomNumber = mt_rand(100000, 999999);
+
+        return $formattedDate . $outlet->outlet_code . $randomNumber;
+    }
+
+    private function generatePaymentNumber(Order $order)
+    {
+        $outlet = $order->outlet;
+        $timestamp = now()->format('YmdHis');
+        $randomNumber = mt_rand(1000, 9999);
+
+        return 'PY' . $outlet->outlet_code . $timestamp . $randomNumber;
     }
 }
