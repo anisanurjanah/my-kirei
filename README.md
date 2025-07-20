@@ -7,7 +7,10 @@
 
 ## 📌 Description
 
-My Kirei is a simple e-commerce website built using Laravel with Inertia.js and React, developed as part of an academic project. The platform allows users to browse through Kirei food products, manage their cart, and simulate the checkout process and is styled with Tailwind CSS. The project also implements basic CRUD functionality for admin-side product management.
+Kirei Sum is a simple e-commerce website developed as a final project, built as a full-stack web application using Laravel, Inertia JS, and React JS for an online ordering system. Designed as a Progressive Web App (PWA) for a seamless mobile experience, the platform integrates a product catalog where users can browse and view detailed items, a shopping
+cart with checkout simulation, and a secure payment process using Midtrans as the payment gateway. It also features user authentication, an admin dashboard for managing products
+through CRUD operations, and utilizes Pusher to send real-time push notifications when new orders are placed, all styled with Tailwind CSS to ensure a smooth experience for both
+customers and administrators.
 
 ## ⚙️ Tech Stack
 
