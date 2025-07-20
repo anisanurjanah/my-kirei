@@ -4,8 +4,7 @@ export default function OrderSummary({ order, payment, order_items, onClick }) {
     const orders = [
         { title: 'Outlet', subtitle: order.outlet.name },
         { title: 'Telepon', subtitle: order.customer.phone },
-        // { title: 'Nomor Pesanan', subtitle: order.order_number },
-        // { title: 'Nomor Bayar', subtitle: order.payment.payment_number },
+        { title: 'Total', subtitle: `IDR ${Number(payment.amount).toLocaleString()}` },
         { title: 'Metode Bayar', subtitle: payment.payment_method.method.name },
         { title: 'Tipe Pesanan', subtitle: order.order_type  },
         { title: 'Waktu Pesanan', subtitle: new Date(order.order_date).toLocaleString('id-ID', {
@@ -65,7 +64,11 @@ export default function OrderSummary({ order, payment, order_items, onClick }) {
                                 </tr>
                                 <tr className="text-[#333] text-xs md:text-sm *:first:font-medium">
                                     <td className="px-3 py-2 whitespace-nowrap" colSpan={2}>Diskon</td>
-                                    <td className="px-3 py-2 text-right whitespace-nowrap w-[100px]">{ Number(order.discount).toLocaleString() ?? 0 }</td>
+                                    <td className="px-3 py-2 text-right whitespace-nowrap w-[100px]">IDR { Number(order.discount).toLocaleString() ?? 0 }</td>
+                                </tr>
+                                <tr className="text-[#333] text-xs md:text-sm *:first:font-medium">
+                                    <td className="px-3 py-2 whitespace-nowrap" colSpan={2}>PPN 11%</td>
+                                    <td className="px-3 py-2 text-right whitespace-nowrap w-[100px]">IDR { Number(order.ppn).toLocaleString() }</td>
                                 </tr>
                                 <tr className="text-[#333] text-xs md:text-sm *:first:font-medium">
                                     <td className="px-3 py-2 whitespace-nowrap" colSpan={2}>Total</td>

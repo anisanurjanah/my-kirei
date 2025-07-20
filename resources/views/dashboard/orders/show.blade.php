@@ -42,9 +42,9 @@
                             <td>:</td>
                             <td>{{ $order->outlet->name }}</td>
 
-                            <th scope="row">Total</th>
+                            <th scope="row" style="width: 25%">Waktu Pesanan</th>
                             <td>:</td>
-                            <td>Rp. {{ number_format($order->payment->amount, 0, ',', '.') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('l, d F Y - H:i') }}</td>
                         </tr>
                         <tr>
                             <th scope="row">Telepon</th>
@@ -56,18 +56,18 @@
                             <td>{{ $order->order_type }}</td>
                         </tr>
                         <tr>
-                            <th scope="row" style="width: 25%">Metode Bayar</th>
+                            <th scope="row">Total</th>
                             <td>:</td>
-                            <td>{{ $order->payment->payment_method?->method['name'] ?? 'N/A' }}</td>
+                            <td>Rp. {{ number_format($order->payment->amount, 0, ',', '.') }}</td>
 
                             <th scope="row" style="width: 25%">Status Pesanan</th>
                             <td>:</td>
                             <td>{!! \App\Helpers\OrderHelper::badgeOrderStatus($order->order_status) !!}</td>
                         </tr>
                         <tr>
-                            <th scope="row" style="width: 25%">Waktu Pesanan</th>
+                            <th scope="row" style="width: 25%">Metode Bayar</th>
                             <td>:</td>
-                            <td>{{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('l, d F Y - H:i') }}</td>
+                            <td>{{ $order->payment->payment_method?->method['name'] ?? 'N/A' }}</td>
 
                             <th scope="row">Status Pembayaran</th>
                             <td>:</td>

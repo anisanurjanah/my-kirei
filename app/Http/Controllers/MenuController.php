@@ -15,7 +15,8 @@ class MenuController extends Controller
         $outlet = Outlet::where('outlet_code', $outlet_code)->first();
 
         $queryMenus = Menu::with(['stock', 'pricePromo' => function ($query) {
-            $query->where('promo_end_date', '>=', now());
+            $query->where('promo_start_date', '<=', now())
+                ->where('promo_end_date', '>=', now());
         }])->where('outlet_id', $outlet->id);
 
         $recommendedMenus = (clone $queryMenus)
@@ -26,7 +27,8 @@ class MenuController extends Controller
 
         $promoMenus = (clone $queryMenus)
             ->whereHas('pricePromo', function ($query) {
-                $query->where('promo_end_date', '>=', now());
+                $query->where('promo_start_date', '<=', now())
+                    ->where('promo_end_date', '>=', now());
             })
             ->get();
 

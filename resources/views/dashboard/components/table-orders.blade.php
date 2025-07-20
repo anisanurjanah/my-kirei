@@ -31,20 +31,22 @@
                         <td>{!! \App\Helpers\OrderHelper::badgeOrderStatus($order->order_status) !!}</td>
                         <td>{!! \App\Helpers\OrderHelper::badgePaymentStatus($order->payment->payment_status) !!}</td>
                         <td>
-                            <a
-                                data-bs-toggle="tooltip"
-                                title="Lihat PDF"
-                                class="text-danger"
-                                href="{{ secure_url('/order/preview/' . Str::lower($order->order_number) . '/pdf') }}"
-                                target="_blank"
-                            >
+                            @if ($order->order_status === 'Selesai' && $order->payment->payment_status === 'Lunas')
+                                <a
+                                    data-bs-toggle="tooltip"
+                                    title="Lihat PDF"
+                                    class="text-danger"
+                                    href="{{ secure_url('/order/preview/' . Str::lower($order->order_number) . '/pdf') }}"
+                                    target="_blank"
+                                >
                                 <i class="bi bi-filetype-pdf"></i>
                             </a>
+                            @else
+                                <i class="bi bi-filetype-pdf text-muted"></i>
+                            @endif
                         </td>
                         <td>
-                            @if ($order->order_status === 'Selesai')
-                                <i class="bi bi-check2-square text-muted"></i>
-                            @else
+                            @if ($order->order_status === 'Dalam Proses' && $order->payment->payment_status === 'Lunas')
                                 <div data-bs-toggle="tooltip" title="Tandai pesanan ini sudah selesai">
                                     <form action="{{ secure_url('/order/' . $order->order_number . '/complete') }}" method="POST">
                                         @csrf
@@ -53,6 +55,8 @@
                                         </button>
                                     </form>
                                 </div>
+                            @else
+                                <i class="bi bi-check2-square text-muted"></i>
                             @endif
                         </td>
                         <td class="text-center" style="width: 64px">

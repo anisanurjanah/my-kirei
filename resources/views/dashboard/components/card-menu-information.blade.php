@@ -37,11 +37,14 @@ $outletCode = strtolower(optional($user->outlet)->outlet_code ?? '');
                 </div>
                 <p class="card-text">{{ $menu->outlet->name }}</p>
 
-                <h5 class="card-title mb-0">Harga</h5>
-                <p class="card-text">{{ $menu->price }}</p>
+                <h5 class="card-title mb-0">Harga Pokok</h5>
+                <p class="card-text">Rp. {{ number_format($menu->cost_price, 0, ',', '.') }}</p>
             </div>
         </div>
         <div class="col-lg-12 mx-3 mx-md-0">
+            <h5 class="card-title mb-0">Harga</h5>
+            <p class="card-text">Rp. {{ number_format($menu->price, 0, ',', '.') }}</p>
+
             <h5 class="card-title mb-0">Deskripsi</h5>
             <p class="card-text">{{ $menu->description }}</p>
         </div>

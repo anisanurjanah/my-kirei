@@ -19,7 +19,7 @@ $(document).ready(function () {
     });
 
     // Set price format
-    $("#price, #price_promo, #sub_total, #discount, #total_price").each(function () {
+    $("#price, #cost_price, #price_promo, #sub_total, #discount, #total_price").each(function () {
         formatPrice($(this));
     });
 

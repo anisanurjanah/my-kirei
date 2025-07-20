@@ -1,6 +1,6 @@
 import { Ticket } from "lucide-react";
 
-export default function CartSummary({ menus, subTotal, discount, totalPrice, onSubmit }) {
+export default function CartSummary({ menus, subTotal, discount, ppn, totalPrice, onSubmit }) {
     return (
         <>
             <div className="mt-8 flex justify-end border-t border-gray-100 pt-8">
@@ -14,6 +14,11 @@ export default function CartSummary({ menus, subTotal, discount, totalPrice, onS
                         <div className="flex justify-between">
                             <dt>Diskon</dt>
                             <dd>- { typeof discount === 'number' ? Number(discount).toLocaleString() : 0 }</dd>
+                        </div>
+
+                        <div className="flex justify-between">
+                            <dt>PPN 11%</dt>
+                            <dd>IDR { Number(ppn).toLocaleString() }</dd>
                         </div>
 
                         <div className="flex justify-between !text-base font-medium">

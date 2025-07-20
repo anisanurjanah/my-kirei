@@ -99,6 +99,18 @@
                             @enderror
                         </div>
                         <div class="mb-3">
+                            <label for="cost_price" class="form-label">Harga Pokok</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="text" class="form-control @error('cost_price') is-invalid @enderror" id="cost_price" name="cost_price" value="{{ number_format((int) old('cost_price', 0), 0, ',', '.') }}" autocomplete="off" required>
+                            </div>
+                            @error('cost_price')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
                             <label for="image" class="form-label">Gambar</label>
                             <img class="img-preview img-fluid mb-3 col-sm-5">
                             <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" onchange="previewImage()">

@@ -69,7 +69,7 @@ class ServiceWorkerController extends Controller
 
         $allAssets = array_merge($staticAssets, $assets, $menuImages);
 
-        $cacheName = 'my-kirei-cache-v3';
+        $cacheName = 'my-kirei-cache-v5';
 
         return response()
             ->view('service-worker', [

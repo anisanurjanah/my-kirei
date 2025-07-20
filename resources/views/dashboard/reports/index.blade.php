@@ -176,22 +176,59 @@
 
         <div class="row">
             <div class="col-lg-8">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-4 p-3 bg-white">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap rounded-top-4 border-bottom p-3 bg-white">
                     <h5 class="h5">Ringkasan Penjualan</h5>
 
-                    <a href="{{ getModuleUrl('orders', null, 'create') }}" class="text-decoration-none text-danger mb-3" style="font-size: 14px">
-                        <small><i class="bi bi-plus me-1"></i>Tambah Pesanan</small>
-                    </a>
+                    <form method="GET">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-auto">
+                                <label for="filter" class="form-label mb-0">Filter Laporan:</label>
+                            </div>
+                            <div class="col-auto">
+                                <select name="filter" id="filter" class="form-select" onchange="this.form.submit()">
+                                    <option value="daily" {{ request('filter') === 'daily' ? 'selected' : '' }}>Harian</option>
+                                    <option value="weekly" {{ request('filter') === 'weekly' ? 'selected' : '' }}>Mingguan</option>
+                                    <option value="monthly" {{ request('filter') === 'monthly' ? 'selected' : '' }}>Bulanan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="p-3 bg-white rounded shadow-sm">
+                    <form method="GET">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label for="start" class="form-label">Dari Tanggal</label>
+                                <input type="date" name="start" id="start" value="{{ request('start') }}" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="end" class="form-label">Sampai Tanggal</label>
+                                <input type="date" name="end" id="end" value="{{ request('end') }}" class="form-control">
+                            </div>
+                            <div class="col-md-4 d-flex gap-2">
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <i class="fas fa-filter"></i> Filter
+                                </button>
+
+                                @if(request('start') || request('end'))
+                                    <a href="{{ getModuleUrl('reports') }}" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-times"></i> Reset
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </form>
                 </div>
 
                 @include('dashboard.components.table-reports')
 
-                <div class="d-flex justify-content-between align-items-center py-3 py-md-0">
+                {{-- <div class="d-flex justify-content-between align-items-center py-3 py-md-0">
                     <small class="text-muted">
                         Menampilkan {{ $reports->firstItem() }} sampai {{ $reports->lastItem() }} dari {{ $reports->total() }} data
                     </small>
                     {{ $reports->links('vendor.custom-pagination') }}
-                </div>
+                </div> --}}
             </div>
             <div class="col-md-4">
                 <div class="d-flex justify-content-center p-4 bg-white">

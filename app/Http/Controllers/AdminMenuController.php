@@ -24,7 +24,8 @@ class AdminMenuController extends Controller
 
         // Menus
         $queryMenus = Menu::latest()->with(['stock', 'pricePromo' => function ($query) {
-            $query->where('promo_end_date', '>=', now());
+            $query->where('promo_start_date', '<=', now())
+                ->where('promo_end_date', '>=', now());
         }]);
 
         if ($user->username !== 'administrator') {
@@ -32,6 +33,16 @@ class AdminMenuController extends Controller
         }
 
         $menus = $queryMenus->paginate(10)->withQueryString();
+
+        foreach ($menus as $menu) {
+            $promo = optional($menu->pricePromo)->price_promo ?? 0;
+            $currentStock = $menu->stock->current_stock ?? 0;
+
+            $menu->total = $menu->price - $promo;
+            $menu->hasDiscount = $promo > 0;
+            $menu->maxStock = 200;
+            $menu->percentage = min(100, ($currentStock / $menu->maxStock) * 100);
+        }
 
         // Best Selling
         $bestSellingMenu = OrderItem::select('menu_id')
@@ -92,6 +103,7 @@ class AdminMenuController extends Controller
 
         // Remove Price's Dot
         $request->merge([
+            'cost_price' => str_replace('.', '', $request->cost_price),
             'price' => str_replace('.', '', $request->price),
             'price_promo' => str_replace('.', '', $request->price_promo),
         ]);
@@ -102,6 +114,7 @@ class AdminMenuController extends Controller
             'name' => 'required|max:32',
             'description' => 'required|max:128',
             'image' => 'required|image|file|max:2700',
+            'cost_price' => 'required|integer|min:0',
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
             'price_promo' => 'nullable|integer|min:0|max:' . $request->price,
@@ -111,22 +124,32 @@ class AdminMenuController extends Controller
 
         // Generate Menu Slug
         $outlet = Outlet::find($request->outlet_id);
-
         $slug = Str::slug($outlet->name) . '-' . Str::slug($request->name);
 
         $existingSlugCount = Menu::where('slug', 'LIKE', "$slug%")
             ->where('outlet_id', $request->outlet_id)
             ->count();
 
-        if($existingSlugCount > 0) {
+        if ($existingSlugCount > 0) {
             $slug .= '-' . ($existingSlugCount + 1);
         }
 
         $validatedData['slug'] = $slug;
 
         // Insert Image
-        if($request->file('image')) {
+        if ($request->file('image')) {
             $validatedData['image'] = $request->file('image')->store('menu-images');
+        }
+
+        // Existing Menu
+        $existingMenu = Menu::where('name', 'LIKE', $validatedData['name'] . '%')
+            ->where('outlet_id', $request->outlet_id)
+            ->get();
+
+        if ($existingMenu->isNotEmpty()) {
+            return redirect()->back()->withErrors([
+                'name' => 'Menu dengan nama tersebut sudah ada di outlet ini.',
+            ])->withInput();
         }
 
         // Insert Data
@@ -192,6 +215,7 @@ class AdminMenuController extends Controller
 
         // Remove Price's Dot
         $request->merge([
+            'cost_price' => str_replace('.', '', $request->cost_price),
             'price' => str_replace('.', '', $request->price),
             'price_promo' => $request->price_promo !== null ? str_replace('.', '', $request->price_promo) : null,
         ]);
@@ -202,6 +226,7 @@ class AdminMenuController extends Controller
             'name' => 'required|max:32',
             'description' => 'required|max:128',
             'image' => 'nullable|image|file|max:2700',
+            'cost_price' => 'required|integer|min:0',
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
             'price_promo' => 'nullable|integer|min:0|max:' . $request->price,
@@ -217,6 +242,17 @@ class AdminMenuController extends Controller
 
             $validatedData['image'] = $request->file('image')->store('menu-images');
         }
+
+        // Existing Menu
+        $existingMenu = Menu::where('name', 'LIKE', $validatedData['name'] . '%')
+            ->where('outlet_id', $request->outlet_id)
+            ->get();
+
+        // if ($existingMenu->isNotEmpty()) {
+        //     return redirect()->back()->withErrors([
+        //         'name' => 'Menu dengan nama tersebut sudah ada di outlet ini.',
+        //     ])->withInput();
+        // }
 
         // Update Data
         $menu->update($validatedData);

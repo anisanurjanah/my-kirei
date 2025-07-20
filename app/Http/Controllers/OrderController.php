@@ -103,7 +103,7 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Gagal membuat pesanan: ' . $e->getMessage());
-            
+
             return redirect()->back()->with([
                 'order_failed' => 'Maaf, terjadi kesalahan saat membuat pesanan. Silakan coba lagi.',
             ]);
@@ -168,6 +168,7 @@ class OrderController extends Controller
             'items.*.price' => 'required|integer|min:0',
             'sub_total' => 'required|integer|min:0',
             'discount' => 'nullable|integer|min:0',
+            'ppn' => 'required|integer|min:0',
             'total_price' => 'required|integer|min:0',
             'payment_method_id' => 'required|exists:payment_methods,id',
         ]);
@@ -181,14 +182,21 @@ class OrderController extends Controller
             return $item['price'] * $item['quantity'];
         });
 
+        $discount = $validatedData['discount'] ?? 0;
+        $afterDiscount = $subTotal - $discount;
+
+        $ppn = $afterDiscount * 0.11;
+        $total = $afterDiscount + $ppn;
+
         return Order::create([
             'outlet_id' => $outlet->id,
             'customer_id' => $validatedData['customer_id'],
             'order_number' => $this->generateOrderNumber($validatedData),
             'order_date' => now(),
             'sub_total' => $subTotal,
-            'discount' => $validatedData['discount'] ?? 0,
-            'total_price' => $subTotal - ($validatedData['discount'] ?? 0),
+            'discount' => $discount,
+            'ppn' => $ppn,
+            'total_price' => $total,
             'order_type' => 'Dine In',
             'order_status' => 'Ditunda',
         ]);

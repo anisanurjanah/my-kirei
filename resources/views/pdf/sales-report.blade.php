@@ -20,34 +20,43 @@
             <img src="{{ public_path('img/logo-kirei-sum.jpg') }}" alt="Logo Kirei Sum" class="img-fluid" style="max-width: 240px;">
         </div>
 
-        <h2 class="text-dark">Laporan Penjualan Harian</h2>
+        <h2 class="text-dark">Laporan Penjualan {{ $filterLabel }}</h2>
 
-        <p class="mt-4 text-justify" style="font-size: 16px;">
-            Dengan hormat, <br><br>
-            Laporan ini disusun untuk memberikan gambaran menyeluruh terkait hasil penjualan yang terjadi pada tanggal <strong>{{ \Carbon\Carbon::parse($reportData->first()['date'] ?? '-')->translatedFormat('l, d F Y') }}</strong> di outlet <strong>{{ $reportData->first()['outlet'] ?? '-' }}</strong>. Informasi dalam laporan ini mencakup jumlah total pesanan yang diterima serta total pendapatan yang diperoleh pada periode tersebut. Data ini diambil secara langsung dari sistem dan telah diverifikasi untuk menjaga akurasi dan keandalannya. <br><br>
+        <p style="font-size: 16px;">
+            Laporan ini disusun berdasarkan hasil penjualan pada
+            <strong>{{ $report->formatted_date }}</strong>
+            di outlet <strong>{{ $report->outlet_name }}</strong>.
         </p>
 
-        <table class="info-table border-0">
+        <table class="info-table border-0 mb-4">
             <tbody>
                 <tr>
                     <th>Nama</th>
-                    <td>: {{ $ownerName ?? '-' }}</td>
+                    <td>: {{ $ownerName }}</td>
                 </tr>
                 <tr>
                     <th>Outlet</th>
-                    <td>: {{ $reportData->first()['outlet'] ?? '-' }}</td>
+                    <td>: {{ $report->outlet_name }}</td>
                 </tr>
                 <tr>
                     <th>Tanggal</th>
-                    <td>: {{ \Carbon\Carbon::parse($reportData->first()['date'] ?? '-')->translatedFormat('l, d F Y') }}</td>
+                    <td>: {{ $report->formatted_date }}</td>
                 </tr>
                 <tr>
                     <th>Total Pesanan</th>
-                    <td>: {{ $reportData->first()['total_orders'] ?? '-' }}</td>
+                    <td>: {{ $report->total_order ?? '-' }} Pesanan</td>
                 </tr>
                 <tr>
                     <th>Total Pendapatan</th>
-                    <td>: Rp {{ number_format($reportData->first()['total_income'] ?? '-', 0, ',', '.') }}</td>
+                    <td>: Rp. {{ number_format($report->total_income ?? '-', 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <th>Total PPN</th>
+                    <td>: Rp. {{ number_format($report->total_ppn ?? '-', 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <th>Total Keuntungan</th>
+                    <td>: Rp. {{ number_format($report->total_profit ?? 0, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <th>Tanggal Unduh</th>
@@ -82,8 +91,8 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="3">Total Pendapatan</th>
-                    <th>Rp. {{ number_format($totalPendapatan, 0, ',', '.') }}</th>
+                    <th colspan="3">Total</th>
+                    <th>Rp. {{ number_format($total, 0, ',', '.') }}</th>
                 </tr>
             </tfoot>
         </table>

@@ -19,7 +19,8 @@ return new class extends Migration
                 ->onUpdate('cascade');
             $table->string('name');
             $table->text('description');
-            $table->decimal('price');
+            $table->decimal('cost_price', 10, 2);
+            $table->decimal('price', 10, 2);
             $table->string('image');
             $table->string('slug')->unique();
             $table->timestamps();

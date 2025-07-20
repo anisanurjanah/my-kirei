@@ -6,10 +6,14 @@
                 <th scope="col" class="text-secondary" style="font-size: 12px;">NAMA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 @if (auth()->user()->isAdministrator())
                     <th scope="col" class="text-secondary" style="font-size: 12px;">OUTLET <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                    <th scope="col" class="text-secondary" style="font-size: 12px;">HARGA POKOK <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 @endif
                 <th scope="col" class="text-secondary" style="font-size: 12px;">HARGA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">POTONGAN HARGA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col" class="text-secondary" style="font-size: 12px;">TOTAL <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                @if (auth()->user()->isAdministrator())
+                    <th scope="col" class="text-secondary" style="font-size: 12px;">LABA <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
+                @endif
                 <th scope="col" class="text-secondary w-25" style="font-size: 12px;">STOK <i class="bi bi-arrow-down-up" style="font-size: 10px"></i></th>
                 <th scope="col"></th>
             </tr>
@@ -22,18 +26,25 @@
                         <td>{{ $menu->name }}</td>
                         @if (auth()->user()->isAdministrator())
                             <td>{{ $menu->outlet->name }}</td>
+                            <td><span class="badge bg-secondary">Rp. {{ number_format($menu->cost_price, 0, ',', '.') }}</td>
                         @endif
                         <td>Rp. {{ number_format($menu->price, 0, ',', '.') }}</td>
-                        <td>Rp. {{ number_format(optional($menu->pricePromo)->price_promo ?? 0, 0, ',', '.') }}</td>
-                        @php
-                            $total = $menu->price - optional($menu->pricePromo)->price_promo
-                        @endphp
-                        <td>Rp. {{ number_format($total, 0, ',', '.') }}</td>
-                        <td class="w-25 align-middle">
-                            <div style="position: relative; display: inline-block; width: 100%;" data-bs-toggle="tooltip" title="Stok saat ini: {{ $menu->stock->current_stock }}">
-                                <div class="progress" role="progressbar" aria-valuenow="{{ $menu->stock->current_stock }}" aria-valuemin="0" aria-valuemax="1000" style="height: 20px;">
-                                    <div class="progress-bar bg-success" style="width: {{ ($menu->stock->current_stock) / 10 }}%;">
-                                        {{ ($menu->stock->current_stock ?? '0') }}
+                        <td><span class="{{ $menu->hasDiscount ? 'badge bg-danger' : '' }}">{{ number_format(optional($menu->pricePromo)->price_promo ?? 0, 0, ',', '.') }}</td>
+                        <td>Rp. {{ number_format($menu->total, 0, ',', '.') }}</td>
+                        @if (auth()->user()->isAdministrator())
+                            <td class="text-primary fw-bold">Rp. {{ number_format($menu->profit, 0, ',', '.') }}</td>
+                        @endif
+                        <td class="align-middle">
+                            <div style="position: relative; display: inline-block; width: 100%;"
+                                data-bs-toggle="tooltip"
+                                title="Stok saat ini: {{ $menu->stock->current_stock }}">
+                                <div class="progress" role="progressbar"
+                                    aria-valuenow="{{ $menu->stock->current_stock }}"
+                                    aria-valuemin="0"
+                                    aria-valuemax="{{ $menu->maxStock }}"
+                                    style="height: 20px;">
+                                    <div class="progress-bar bg-success" style="width: {{ $menu->percentage }}%;">
+                                        {{ $menu->stock->current_stock }}
                                     </div>
                                 </div>
                             </div>

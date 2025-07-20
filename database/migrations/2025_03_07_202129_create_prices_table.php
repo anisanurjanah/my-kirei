@@ -18,7 +18,7 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade')
                 ->unique();
-            $table->decimal('price_promo')->nullable();
+            $table->decimal('price_promo', 10, 2)->nullable();
             $table->date('promo_start_date')->nullable();
             $table->date('promo_end_date')->nullable();
             $table->timestamps();

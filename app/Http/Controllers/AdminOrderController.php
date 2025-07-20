@@ -132,6 +132,7 @@ class AdminOrderController extends Controller
             'price.*' => 'integer|min:0',
             'sub_total' => 'required|integer|min:0',
             'discount' => 'nullable|integer|min:0',
+            'ppn' => 'required|integer|min:0',
             'total_price' => 'required|integer|min:0',
             'order_type' => 'required|string|in:Dine In,Take Away',
             'order_status' => 'Dalam Proses',
@@ -139,14 +140,13 @@ class AdminOrderController extends Controller
             'payment_status' => 'required|string|in:Lunas,Gagal,Ditunda,Kadaluarsa',
         ]);
 
-        // Generate Order Number
-        // $outlet = Outlet::find($request->outlet_id);
-        // $formattedDate = Carbon::parse($validatedData['order_date'])->format('Ymd');
-        // $randomNumber = mt_rand(100000, 999999);
+        // PPN
+        $subTotal = $validatedData['sub_total'];
+        $discount = $validatedData['discount'] ?? 0;
+        $afterDiscount = $subTotal - $discount;
 
-        // $order_number = $formattedDate . Str::slug($outlet->outlet_code) . $randomNumber;
-
-        // $validatedData['order_number'] = $order_number;
+        $ppn = $afterDiscount * 0.11;
+        $totalPrice = $afterDiscount + $ppn;
 
         // Insert Data
         $order = Order::create([
@@ -155,8 +155,9 @@ class AdminOrderController extends Controller
             'order_number' => $this->generateOrderNumber($validatedData),
             'order_date' => $validatedData['order_date'],
             'sub_total' => $validatedData['sub_total'],
-            'discount' => $validatedData['discount'],
-            'total_price' => $validatedData['total_price'],
+            'discount' => $discount,
+            'ppn' => $ppn,
+            'total_price' => $totalPrice,
             'order_type' => $validatedData['order_type'],
             'order_status' => 'Dalam Proses',
         ]);
@@ -336,18 +337,6 @@ class AdminOrderController extends Controller
         return redirect()->to(secure_url("/" . ($outlet_code ? "$outlet_code/" : "") . "dashboard/orders"))
             ->with('success', 'Pesanan berhasil dihapus!');
     }
-
-    // public function getUsers($outletCode)
-    // {
-    //     $outlet = Outlet::where('outlet_code', $outletCode)->first();
-
-    //     if (!$outlet) {
-    //         return response()->json(['message' => 'Outlet tidak ditemukan'], 404);
-    //     }
-
-    //     $users = User::where('outlet_id', $outlet->id)->get();
-    //     return response()->json($users);
-    // }
 
     private function generateOrderNumber(array $validatedData)
     {

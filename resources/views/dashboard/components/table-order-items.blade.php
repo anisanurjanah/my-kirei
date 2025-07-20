@@ -54,6 +54,10 @@
                     <th colspan="2" class="fw-bold">Rp. {{ number_format($order->discount, 0, ',', '.') }}</th>
                 </tr>
                 <tr>
+                    <th colspan="3" class="fw-bold">PPN 11%</th>
+                    <th colspan="2" class="fw-bold">Rp. {{ number_format($order->ppn, 0, ',', '.') }}</th>
+                </tr>
+                <tr>
                     <th colspan="3" class="fw-bold">Total</th>
                     <th colspan="2" class="fw-bold">Rp. {{ number_format($order->payment->amount, 0, ',', '.') }}</th>
                 </tr>
