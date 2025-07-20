@@ -30,29 +30,42 @@ customers and administrators.
 
 To run this project locally:
 
-1. Clone this repository
-2. Import the database file (`mykirei.sql`) to your local MySQL
-3. Run the project using XAMPP/Laragon/etc.
-4. Visit `http://localhost/my-kirei`
+1. Clone this repository: git clone https://github.com/username/my-kirei.git
+2. Install Laravel dependencies using Composer: composer install
+3. Copy the example environment file: cp .env.example .env
+4. Generate the application key: php artisan key:generate
+5. Create a new database in MySQL: CREATE DATABASE my_kirei;
+6. Configure database credentials in .env
+7. Run php artisan migration
+8. Run the Laravel server: php artisan serve
 
 ## 📸 Screenshots
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/ef5c952e-e80c-4673-8722-7504224383c9" width="45%"/>
-    <img src="https://github.com/user-attachments/assets/e9e1f773-ae8c-402f-9c46-5d74f7a81b2c" width="45%"/>
+    <img width="100%" src="https://github.com/user-attachments/assets/39cc3cb6-ef6e-4baa-b881-204818ad9dc9" />
 </p>
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/c0a7f864-f8ff-41e2-b97a-36a8ac39da62" width="45%"/>
-    <img src="https://github.com/user-attachments/assets/430f7822-2a0f-4c22-a126-0f1a04feed94" width="45%"/>
+    <img width="30%" src="https://github.com/user-attachments/assets/67ba1e91-2a2a-47c2-acfb-cb9f90299916" />
+    <img width="30%" src="https://github.com/user-attachments/assets/cb1b1344-843c-430f-aede-2251fd706aa5" />
+    <img width="30%" src="https://github.com/user-attachments/assets/0592f797-0702-4642-ae79-7a70afdd5174" />
 </p>
-<p align="center">    
-    <img src="https://github.com/user-attachments/assets/5004b76c-3a13-488a-8ff5-b27cf49cefad" width="45%"/>
-    <img src="https://github.com/user-attachments/assets/8eecbe88-3291-49ce-a044-c9b4502c0796" width="45%"/>
+<p align="center">
+    <img width="30%" src="https://github.com/user-attachments/assets/a4ad2131-4b23-45e5-8e92-eee622a1b120" />
+    <img width="30%" src="https://github.com/user-attachments/assets/f61dd83a-a9d8-4c70-b695-07a2d2eb82a8" />
+    <img width="30%" src="https://github.com/user-attachments/assets/b5b2695d-f198-45bd-9f2a-94dfe6a914f3" />
+</p>
+<p align="center">
+    <img width="45%" src="https://github.com/user-attachments/assets/97b9cd42-b526-43cb-a871-acaaf928395d" />
+    <img width="45%" src="https://github.com/user-attachments/assets/74709094-8af7-4927-8da7-7c497195eba1" />
+</p>
+<p align="center">
+    <img width="45%" src="https://github.com/user-attachments/assets/f2ddcafe-c51f-4081-87fb-7837cd7ef473" />
+    <img width="45%" src="https://github.com/user-attachments/assets/9588a05a-7927-4678-b95b-975b61e5e46a" />
 </p>
 
-### 📲 Follow Us
+### 📲 Follow Me
 
-Follow **[@kireisum](https://www.instagram.com/kireisum/)** on Instagram to see our latest food products and updates!
+Follow **[me](https://www.instagram.com/nissxxse/)** on Instagram!
 
 ## 📝 License
 
